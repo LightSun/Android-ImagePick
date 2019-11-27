@@ -9,7 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 
-public class SystemConfig {
+/*public*/ class SystemConfig {
 
     private static final String STATUS_BAR_HEIGHT_RES_NAME = "status_bar_height";
     private static final String NAV_BAR_HEIGHT_RES_NAME = "navigation_bar_height";
