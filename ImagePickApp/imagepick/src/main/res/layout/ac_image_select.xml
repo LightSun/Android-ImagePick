@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_page_bg"
+    android:fitsSystemWindows="true"
+    >
+
+    <RelativeLayout
+        android:id="@+id/vg_top"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="16dp"
+        >
+        <ImageButton
+            android:id="@+id/iv_close"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:background="@null"
+            android:padding="10dp"
+            android:onClick="onClickClose"
+            />
+
+        <TextView
+            android:id="@+id/tv_upload"
+            style="@style/tv_common"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:gravity="center"
+            android:text="@string/upload"
+            />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

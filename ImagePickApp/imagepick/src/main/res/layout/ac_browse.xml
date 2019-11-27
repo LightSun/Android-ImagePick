@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_page_bg"
+    android:fitsSystemWindows="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        >
+        <ImageButton
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:background="@null"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:onClick="onClickBack"
+            />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_big_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="186dp"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            >
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="#888888"
+            android:background="@drawable/shape_tv_delete"
+            android:text="@string/delete"
+            android:onClick="onClickDelete"
+            />
+    </LinearLayout>
+
+</LinearLayout>
