@@ -43,6 +43,7 @@ public class SeeBigImageActivity extends BaseActivity {
 
     private BigImageSelectParam mParam;
     private List<ImageItem> mItems;
+    private ImageItem mLastSingleItem;
 
     @Override
     protected int getLayoutId() {
@@ -61,10 +62,17 @@ public class SeeBigImageActivity extends BaseActivity {
         mIv_select = findViewById(R.id.iv_select);
         setListeners();
 
+        mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mItems = ImagePickManager.getDefault().getImageItems();
         mVp.setAdapter(new PageAdapter0(mItems));
         setUiState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mItems = ImagePickManager.getDefault().getImageItems();
     }
 
     @Keep
@@ -117,6 +125,14 @@ public class SeeBigImageActivity extends BaseActivity {
             if(l != null){
                 l.onSelectStateChanged(item, select);
             }
+        }
+        //handle for single select
+        if(!hasFlag(PickConstants.FLAG_MULTI_SELECT)){
+            //single select mode. target is select .last must be unselect
+            if(select && mLastSingleItem != null){
+                mLastSingleItem.setSelected(false);
+            }
+            mLastSingleItem = item;
         }
         item.setSelected(select);
         setSelectedText();

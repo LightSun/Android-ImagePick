@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -39,7 +38,6 @@ import java.util.List;
 public class ImageSelectActivity extends BaseActivity implements MediaResourceHelper.Callback, ImagePickManager.OnSelectStateChangedListener {
 
     public static final String KEY_RESULT = "result";
-    private static final int REQ_BIG_IMAGE = 1;
     private TextView mTv_upload;
     private RecyclerView mRv;
 
@@ -153,6 +151,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             }else {
                 adapter.getSelectHelper().unselect(index);
             }
+            setSelectText();
         }
     }
 
@@ -200,12 +199,19 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 public void onClick(View v) {
                     List<MediaResourceHelper.MediaResourceItem> items = getAdapterManager().getItems();
                     SelectHelper<MediaResourceHelper.MediaResourceItem> sh = getAdapterManager().getSelectHelper();
-                    int selectCount = sh.getSelectPosition() != null ? sh.getSelectPosition().length : 0;
+                    int[] selectPoss = sh.getSelectPosition();
+                    int selectCount = selectPoss != null ? selectPoss.length : 0;
+                    int initSelectPos;
                     int flags = PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM
                             | PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON | PickConstants.FLAG_SHOW_TOP_END_BUTTON;
                     if(mMaxSelect > 1){
                         flags |= PickConstants.FLAG_MULTI_SELECT;
+                        initSelectPos = -1;
+                    }else {
+                        initSelectPos = selectPoss != null &&  selectPoss.length > 0 ? selectPoss[0] : -1;
                     }
+                    MediaResourceHelper.MediaResourceItem singleItem = initSelectPos >= 0 ? items.get(initSelectPos) : null;
+                    ImageItem imageItem = singleItem != null ? Utils.createImageItem(singleItem) : null;
                     BigImageSelectParam param = new BigImageSelectParam.Builder()
                             .setCurrentOrder(position + 1)
                             .setTotalCount(items.size())
@@ -214,10 +220,12 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             .setTopRightText(getString(R.string.upload))
                             .setFlags(flags)
                             .build();
-                    ImagePickManager.getDefault().setImageItems(Utils.createImageItems(items, sh.getSelectPosition()));
+                    ImagePickManager.getDefault().setImageItems(Utils.createImageItems(items));
                     new LauncherIntent.Builder().setClass(ImageSelectActivity.this, SeeBigImageActivity.class)
                             .putExtra(PickConstants.KEY_PARAMS, param)
-                            .build().startActivity();
+                            .putExtra(PickConstants.KEY_SINGLE_ITEM, imageItem)
+                            .build()
+                            .startActivity();
                 }
             });
         }

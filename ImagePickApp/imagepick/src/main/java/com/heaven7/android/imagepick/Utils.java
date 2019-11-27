@@ -28,21 +28,22 @@ import java.util.List;
         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);*/
     }
 
-    public static List<ImageItem> createImageItems(List<MediaResourceHelper.MediaResourceItem> items, int[] selectPosition) {
-        List<Integer> poss = new ArrayList<>();
-        if(selectPosition != null){
-            for (int pos : selectPosition){
-                poss.add(pos);
-            }
-        }
+    public static List<ImageItem> createImageItems(List<MediaResourceHelper.MediaResourceItem> items) {
         List<ImageItem> list = new ArrayList<>(items.size() * 4 / 3 + 1);
         for (int i = 0 , size = items.size() ; i < size ; i ++){
             MediaResourceHelper.MediaResourceItem item = items.get(i);
             ImageItem ii = new ImageItem();
             ii.setFilePath(item.getFilePath());
-            ii.setSelected(poss.contains(i));
+            ii.setSelected(item.isSelected());
             list.add(ii);
         }
         return list;
+    }
+
+    public static ImageItem createImageItem(MediaResourceHelper.MediaResourceItem item) {
+        ImageItem ii = new ImageItem();
+        ii.setFilePath(item.getFilePath());
+        ii.setSelected(item.isSelected());
+        return ii;
     }
 }
