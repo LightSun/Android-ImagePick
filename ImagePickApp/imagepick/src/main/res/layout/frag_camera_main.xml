@@ -22,7 +22,7 @@
                 android:id="@+id/iv_image"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/ic_camera"
+                android:src="@drawable/lib_pick_ic_camera"
                 android:layout_gravity="center"
                 />
         </FrameLayout>
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_camera"
+                android:src="@drawable/lib_pick_ic_camera"
                 />
         </FrameLayout>
         <FrameLayout
@@ -46,12 +46,12 @@
             >
             <TextView
                 android:id="@+id/tv_finish"
-                style="@style/tv_common"
+                style="@style/lib_pik_tv_common"
                 android:layout_width="69dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/finish"
+                android:text="@string/lib_pick_finish"
                 />
         </FrameLayout>
     </LinearLayout>
@@ -67,7 +67,7 @@
             android:id="@+id/iv_flash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_flash_on"
+            android:src="@drawable/lib_pick_ic_flash_on"
             android:background="@null"
             android:padding="10dp"
             android:layout_marginStart="6dp"

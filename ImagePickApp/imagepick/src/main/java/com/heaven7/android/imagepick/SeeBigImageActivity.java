@@ -139,10 +139,10 @@ public class SeeBigImageActivity extends BaseActivity {
     private void setImageBySelectState(boolean select) {
         if(!select){
             mIv_select.setTag(null);
-            mIv_select.setImageResource(R.drawable.ic_unselect);
+            mIv_select.setImageResource(R.drawable.lib_pick_ic_unselect);
         }else {
             mIv_select.setTag(true);
-            mIv_select.setImageResource(R.drawable.ic_selected);
+            mIv_select.setImageResource(R.drawable.lib_pick_ic_selected);
         }
     }
 
@@ -180,7 +180,7 @@ public class SeeBigImageActivity extends BaseActivity {
     private void setSelectedText() {
         if(hasFlag(PickConstants.FLAG_SHOW_TOP_END_BUTTON)){
             mTv_upload.setVisibility(View.VISIBLE);
-            String text = mParam.getTopRightText() == null ? getString(R.string.upload) : mParam.getTopRightText();
+            String text = mParam.getTopRightText() == null ? getString(R.string.lib_pick_upload) : mParam.getTopRightText();
             if(hasFlag(PickConstants.FLAG_MULTI_SELECT)){
                 text += String.format(Locale.getDefault(), "(%d/%d)", mParam.getSelectCount(), mParam.getMaxSelectCount());
                 mTv_upload.setText(text);

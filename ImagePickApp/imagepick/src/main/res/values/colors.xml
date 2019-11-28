@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="c_page_bg">#333333</color>
-    <color name="c_btn_bg">#36A1F8</color>
+    <color name="lib_pick_c_page_bg">#333333</color>
+    <color name="lib_pick_c_btn_bg">#36A1F8</color>
 
-    <color name="c_page_bg_half_transparent">#99333333</color>
+    <color name="lib_pick_c_bg_half_transparent">#99333333</color>
 </resources>

@@ -123,7 +123,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             Adapter0 adapter = (Adapter0) mRv.getAdapter();
             List<MediaResourceHelper.MediaResourceItem> items = adapter.getSelectHelper().getSelectedItems();
             int size = items != null ? items.size() : 0;
-            String text = getString(R.string.upload) + String.format("(%d/%d)", size , mParam.getMaxSelect());
+            String text = getString(R.string.lib_pick_upload) + String.format("(%d/%d)", size , mParam.getMaxSelect());
             mTv_upload.setText(text);
         }
     }
@@ -172,7 +172,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             lp.setMarginStart(position != 0 ? mParam.getSpace() : 0);
             rootView.setLayoutParams(lp);
 
-            helper.setImageResource(R.id.iv_select_state, item.isSelected() ? R.drawable.ic_selected : R.drawable.ic_unselect)
+            helper.setImageResource(R.id.iv_select_state, item.isSelected() ? R.drawable.lib_pick_ic_selected : R.drawable.lib_pick_ic_unselect)
                     .performViewGetter(R.id.iv, new Getters.ImageViewGetter() {
                         @Override
                         public void onGotView(ImageView imageView, ViewHelper viewHelper) {
@@ -188,7 +188,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     List<MediaResourceHelper.MediaResourceItem> items = getSelectHelper().getSelectedItems();
                     if(mParam.getMaxSelect() > 1 && items != null && items.size() >= mParam.getMaxSelect()){
                         if(!items.contains(item)){ //if already contains .it will be cancel
-                            Toaster.show(v.getContext(), getString(R.string.select_reach_max));
+                            Toaster.show(v.getContext(), getString(R.string.lib_pick_select_reach_max));
                             return;
                         }
                     }
@@ -218,7 +218,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             .setTotalCount(items.size())
                             .setSelectCount(selectCount)
                             .setMaxSelectCount(mParam.getMaxSelect())
-                            .setTopRightText(getString(R.string.upload))
+                            .setTopRightText(getString(R.string.lib_pick_upload))
                             .setFlags(flags)
                             .build();
                     ImagePickManager.get().getImagePickDelegate()

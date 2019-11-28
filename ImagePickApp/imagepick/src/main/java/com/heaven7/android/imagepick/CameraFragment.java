@@ -1,8 +1,6 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,10 +76,10 @@ public class CameraFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 if(mCameraView.getFlash() == CameraView.FLASH_AUTO){
-                    mIv_flash.setImageResource(R.drawable.ic_flash_off);
+                    mIv_flash.setImageResource(R.drawable.lib_pick_ic_flash_off);
                     mCameraView.setFlash(CameraView.FLASH_OFF);
                 }else {
-                    mIv_flash.setImageResource(R.drawable.ic_flash_on);
+                    mIv_flash.setImageResource(R.drawable.lib_pick_ic_flash_on);
                     mCameraView.setFlash(CameraView.FLASH_ON);
                 }
             }
@@ -202,12 +200,12 @@ public class CameraFragment extends Fragment{
     }
     private void setCameraEnabled(boolean enabled){
         if(enabled){
-            mIv_camera.setImageResource(R.drawable.ic_camera);
+            mIv_camera.setImageResource(R.drawable.lib_pick_ic_camera);
             mIv_camera.setTag(null);
             mIv_image.setVisibility(View.GONE);
             mTv_finish.setVisibility(View.GONE);
         }else {
-            mIv_camera.setImageResource(R.drawable.ic_re_camera);
+            mIv_camera.setImageResource(R.drawable.lib_pick_ic_re_camera);
             mIv_camera.setTag(true);
             mIv_image.setVisibility(View.VISIBLE);
             mTv_finish.setVisibility(View.VISIBLE);

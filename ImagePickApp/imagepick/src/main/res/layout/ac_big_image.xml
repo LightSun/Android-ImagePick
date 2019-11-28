@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/c_page_bg"
+    android:background="@color/lib_pick_c_page_bg"
     android:fitsSystemWindows="true"
     >
     <android.support.v4.view.ViewPager
@@ -16,8 +16,8 @@
     <RelativeLayout
         android:id="@+id/vg_top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/common_top_height"
-        android:background="@color/c_page_bg_half_transparent"
+        android:layout_height="@dimen/lib_pick_common_top_height"
+        android:background="@color/lib_pick_c_bg_half_transparent"
         android:paddingEnd="16dp"
         android:paddingStart="6dp"
         android:layout_gravity="top"
@@ -26,7 +26,7 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_back"
+            android:src="@drawable/lib_pick_ic_back"
             android:background="@null"
             android:padding="10dp"
             android:layout_centerVertical="true"
@@ -47,7 +47,7 @@
 
         <TextView
             android:id="@+id/tv_upload"
-            style="@style/tv_common"
+            style="@style/lib_pik_tv_common"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
@@ -57,15 +57,15 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:gravity="center"
-            android:text="@string/upload"
+            android:text="@string/lib_pick_upload"
             />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/vg_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/common_top_height"
-        android:background="@color/c_page_bg_half_transparent"
+        android:layout_height="@dimen/lib_pick_common_top_height"
+        android:background="@color/lib_pick_c_bg_half_transparent"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:layout_gravity="bottom"
@@ -82,7 +82,7 @@
                 android:id="@+id/iv_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_unselect"
+                android:src="@drawable/lib_pick_ic_unselect"
                 android:layout_gravity="center_vertical"
                 />
             <TextView
@@ -91,7 +91,7 @@
                 android:textColor="@android:color/white"
                 android:paddingStart="8dp"
                 android:textSize="17sp"
-                android:text="@string/select"
+                android:text="@string/lic_pick_select"
                 />
         </LinearLayout>
 

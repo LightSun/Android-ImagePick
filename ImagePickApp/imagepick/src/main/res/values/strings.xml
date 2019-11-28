@@ -1,7 +1,7 @@
 <resources>
-    <string name="finish">完成</string>
-    <string name="delete">删除</string>
-    <string name="upload">上传</string>
-    <string name="select_reach_max">选择数量已达上限！</string>
-    <string name="select">选择</string>
+    <string name="lib_pick_finish">完成</string>
+    <string name="lib_pick_delete">删除</string>
+    <string name="lib_pick_upload">上传</string>
+    <string name="lib_pick_select_reach_max">选择数量已达上限！</string>
+    <string name="lic_pick_select">选择</string>
 </resources>
