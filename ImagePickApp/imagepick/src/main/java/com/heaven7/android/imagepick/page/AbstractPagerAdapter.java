@@ -39,7 +39,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
         notifyDataSetChanged();
     }
 
-    public void clearCache(){
+    public void clearCacheViews(){
         mCacher.clear();
     }
 

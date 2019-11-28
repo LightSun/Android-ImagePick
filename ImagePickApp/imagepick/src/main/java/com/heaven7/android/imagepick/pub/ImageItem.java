@@ -3,9 +3,7 @@ package com.heaven7.android.imagepick.pub;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.heaven7.adapter.ISelectable;
-
-public class ImageItem implements Parcelable, ISelectable {
+public class ImageItem implements Parcelable, IImageItem {
 
     private boolean selected;
     private String filePath;

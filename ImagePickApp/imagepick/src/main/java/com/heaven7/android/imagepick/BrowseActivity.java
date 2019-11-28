@@ -20,6 +20,7 @@ import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.SelectHelper;
 import com.heaven7.adapter.util.ViewHelper2;
+import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
 
@@ -125,16 +126,17 @@ public class BrowseActivity extends BaseActivity {
             helper.clearSelectedPosition();
             //load
             List<Item> items = mAdapter.getAdapterManager().getItems();
-            if(items.size() > 2){
+            if(items.size() >= 2){
                 //remove item
                 Item deleteItem = items.get(posToDelete);
-                mAdapter.getAdapterManager().removeItem(deleteItem);
-                ImagePickManager.getDefault().removeImagePath(deleteItem.file);
-                //select and load item
                 Item item = items.get(showPos);
+                mAdapter.getAdapterManager().removeItem(deleteItem);
+                ImagePickDelegateImpl.getDefault().removeImagePath(deleteItem.file);
+                //select and load item
                 loadImage(this, item);
                 helper.select(items.indexOf(item));
             }else {
+                mAdapter.getAdapterManager().clearItems();
                 mIv_big_image.setImageBitmap(null);
             }
         }
@@ -142,7 +144,7 @@ public class BrowseActivity extends BaseActivity {
 
     private static List<Item> createItems() {
         List<Item> list = new ArrayList<>();
-        List<String> images = ImagePickManager.getDefault().getImages();
+        List<String> images = ImagePickDelegateImpl.getDefault().getImages();
         for (String file : images){
             list.add(new Item(file));
         }

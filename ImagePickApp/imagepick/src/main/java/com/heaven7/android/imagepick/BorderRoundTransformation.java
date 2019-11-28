@@ -15,6 +15,9 @@ import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 
+/**
+ * from internet
+ */
 public class BorderRoundTransformation implements Transformation<Bitmap> {
 
     /**

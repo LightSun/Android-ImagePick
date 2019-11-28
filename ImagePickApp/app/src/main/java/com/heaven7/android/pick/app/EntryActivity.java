@@ -8,18 +8,20 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.heaven7.android.imagepick.CameraActivity;
-import com.heaven7.android.imagepick.ImageSelectActivity;
+import com.heaven7.android.imagepick.pub.ImagePickManager;
+import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
 
 import java.util.ArrayList;
 
+import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
+import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
+
 public class EntryActivity extends AppCompatActivity {
 
     private final PermissionHelper mHelper = new PermissionHelper(this);
-    public static final int REQ_CAMERA  = 1;
-    public static final int REQ_GALLERY = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            startActivityForResult(new Intent(EntryActivity.this, CameraActivity.class), REQ_CAMERA);
+                            ImagePickManager.get().getImagePickDelegate().startCamera(EntryActivity.this);
                         }
                     }
                 });
@@ -50,7 +52,10 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            startActivityForResult(new Intent(EntryActivity.this, ImageSelectActivity.class), REQ_GALLERY);
+                            ImagePickManager.get().getImagePickDelegate().startBrowseImages(EntryActivity.this,
+                                    new ImageSelectParameter.Builder()
+                                            .setMaxSelect(8)
+                                    .build());
                         }
                     }
                 });
@@ -62,13 +67,13 @@ public class EntryActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK){
             switch (requestCode){
                 case REQ_CAMERA: {
-                    ArrayList<String> images = data.getStringArrayListExtra(ImageSelectActivity.KEY_RESULT);
+                    ArrayList<String> images = data.getStringArrayListExtra(PickConstants.KEY_RESULT);
                     Logger.d("EntryActivity", "onActivityResult", "REQ_CAMERA >> " + images);
                     break;
                 }
                     
                 case REQ_GALLERY:
-                    ArrayList<String> images = data.getStringArrayListExtra(ImageSelectActivity.KEY_RESULT);
+                    ArrayList<String> images = data.getStringArrayListExtra(PickConstants.KEY_RESULT);
                     Logger.d("EntryActivity", "onActivityResult", "REQ_GALLERY >> " + images);
                     break;
             }

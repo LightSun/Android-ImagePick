@@ -34,6 +34,7 @@ import java.io.OutputStream;
 
 /**
  * camera fragment
+ * @author heaven7
  */
 public class CameraFragment extends Fragment{
 

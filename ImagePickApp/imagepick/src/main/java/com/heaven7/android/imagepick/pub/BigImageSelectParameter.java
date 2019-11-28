@@ -3,7 +3,11 @@ package com.heaven7.android.imagepick.pub;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class BigImageSelectParam implements Parcelable {
+/**
+ * the bit image select parameter
+ * @author heaven7
+ */
+public class BigImageSelectParameter implements Parcelable {
 
     private int mFlags;
     private int mSelectCount;
@@ -20,7 +24,7 @@ public class BigImageSelectParam implements Parcelable {
         this.mFlags &= ~flags;
     }
 
-    protected BigImageSelectParam(BigImageSelectParam.Builder builder) {
+    protected BigImageSelectParameter(BigImageSelectParameter.Builder builder) {
         this.mFlags = builder.mFlags;
         this.mSelectCount = builder.mSelectCount;
         this.mMaxSelectCount = builder.mMaxSelectCount;
@@ -98,8 +102,8 @@ public class BigImageSelectParam implements Parcelable {
             return this;
         }
 
-        public BigImageSelectParam build() {
-            return new BigImageSelectParam(this);
+        public BigImageSelectParameter build() {
+            return new BigImageSelectParameter(this);
         }
     }
 
@@ -118,7 +122,7 @@ public class BigImageSelectParam implements Parcelable {
         dest.writeInt(this.mTotalCount);
     }
 
-    protected BigImageSelectParam(Parcel in) {
+    protected BigImageSelectParameter(Parcel in) {
         this.mFlags = in.readInt();
         this.mSelectCount = in.readInt();
         this.mMaxSelectCount = in.readInt();
@@ -127,15 +131,15 @@ public class BigImageSelectParam implements Parcelable {
         this.mTotalCount = in.readInt();
     }
 
-    public static final Creator<BigImageSelectParam> CREATOR = new Creator<BigImageSelectParam>() {
+    public static final Creator<BigImageSelectParameter> CREATOR = new Creator<BigImageSelectParameter>() {
         @Override
-        public BigImageSelectParam createFromParcel(Parcel source) {
-            return new BigImageSelectParam(source);
+        public BigImageSelectParameter createFromParcel(Parcel source) {
+            return new BigImageSelectParameter(source);
         }
 
         @Override
-        public BigImageSelectParam[] newArray(int size) {
-            return new BigImageSelectParam[size];
+        public BigImageSelectParameter[] newArray(int size) {
+            return new BigImageSelectParameter[size];
         }
     };
 }

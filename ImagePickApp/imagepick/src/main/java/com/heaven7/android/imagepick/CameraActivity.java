@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.heaven7.android.imagepick.pub.PickConstants;
+
 import java.util.ArrayList;
 
 public class CameraActivity extends BaseActivity implements CameraFragment.ActionCallback {
@@ -25,10 +27,16 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
     }
 
     @Override
+    protected void onDestroy() {
+        ImagePickDelegateImpl.getDefault().clearImages();
+        super.onDestroy();
+    }
+
+    @Override
     public void onClickFinish() {
         //submit
-        setResult(RESULT_OK, new Intent().putExtra(ImageSelectActivity.KEY_RESULT,
-                new ArrayList<String>(ImagePickManager.getDefault().getImages())));
+        setResult(RESULT_OK, new Intent().putExtra(PickConstants.KEY_RESULT,
+                new ArrayList<String>(ImagePickDelegateImpl.getDefault().getImages())));
         finish();
     }
     @Override
@@ -39,7 +47,7 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
     private class PictureCallbackImpl extends CameraFragment.PictureCallback{
         @Override
         protected void onTakePictureResult(String file) {
-            ImagePickManager.getDefault().addImagePath(file);
+            ImagePickDelegateImpl.getDefault().addImagePath(file);
         }
     }
 }

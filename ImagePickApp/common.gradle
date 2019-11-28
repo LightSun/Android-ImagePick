@@ -29,7 +29,7 @@ dependencies {
     implementation "com.android.support:support-v4:${support}"
     implementation "com.android.support:recyclerview-v7:${support}"
 
-    implementation 'com.github.LightSun:android-Component:1.1.3'
+    //implementation 'com.github.LightSun:android-Component:1.1.3'
     implementation 'com.github.LightSun:SuperAdapter:2.0.6'
     implementation('com.github.LightSun:util-v1:1.1.4') {
         exclude group: 'com.android.support'

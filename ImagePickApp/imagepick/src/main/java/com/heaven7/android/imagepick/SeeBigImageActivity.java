@@ -1,28 +1,23 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.heaven7.android.imagepick.page.AbstractPagerAdapter;
 import com.heaven7.android.imagepick.page.BigImageAdapter;
-import com.heaven7.android.imagepick.pub.BigImageSelectParam;
-import com.heaven7.android.imagepick.pub.ImageItem;
+import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,16 +29,16 @@ public class SeeBigImageActivity extends BaseActivity {
     TextView mTv_upload;
     TextView mTv_indexes;
 
-    ViewGroup mVg_select;
+    ViewGroup mVg_select; //select group
     ImageView mIv_select;
     ViewPager mVp;
 
     ViewGroup mVg_top;
     ViewGroup mVg_bottom;
 
-    private BigImageSelectParam mParam;
-    private List<ImageItem> mItems;
-    private ImageItem mLastSingleItem;
+    private BigImageSelectParameter mParam;
+    private List<IImageItem> mItems;
+    private IImageItem mLastSingleItem;
 
     @Override
     protected int getLayoutId() {
@@ -64,7 +59,7 @@ public class SeeBigImageActivity extends BaseActivity {
 
         mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
-        mItems = ImagePickManager.getDefault().getImageItems();
+        mItems = ImagePickDelegateImpl.getDefault().getImageItems();
         mVp.setAdapter(new PageAdapter0(mItems));
         setUiState();
     }
@@ -72,7 +67,7 @@ public class SeeBigImageActivity extends BaseActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mItems = ImagePickManager.getDefault().getImageItems();
+        mItems = ImagePickDelegateImpl.getDefault().getImageItems();
     }
 
     @Keep
@@ -118,13 +113,10 @@ public class SeeBigImageActivity extends BaseActivity {
     }
     private void setSelectState(boolean select){
         setImageBySelectState(select);
-        ImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
+        IImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
         if(item.isSelected() != select){
             mParam.addSelectedCount(select ? 1: -1);
-            ImagePickManager.OnSelectStateChangedListener l = ImagePickManager.getDefault().getOnSelectStateChangedListener();
-            if(l != null){
-                l.onSelectStateChanged(item, select);
-            }
+            ImagePickDelegateImpl.getDefault().dispatchSelectStateChanged(item, select);
         }
         //handle for single select
         if(!hasFlag(PickConstants.FLAG_MULTI_SELECT)){
@@ -160,12 +152,6 @@ public class SeeBigImageActivity extends BaseActivity {
 
         setTopHeight();
         setBottomHeight();
-        if(hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON)){
-            //current only have one button
-            mVg_bottom.setVisibility(View.VISIBLE);
-        }else {
-            mVg_bottom.setVisibility(View.GONE);
-        }
         setSelectedText();
         //handle position
         mVp.getAdapter().notifyDataSetChanged();
@@ -173,24 +159,16 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     private void setTopHeight() {
-        int height = getResources().getDimensionPixelSize(R.dimen.common_top_height);
-        ViewGroup.LayoutParams lp = mVg_top.getLayoutParams();
-        if(hasFlag(PickConstants.FLAG_SHOW_TOP)){
-            lp.height = height;
-        }else {
-            lp.height = 0;
-        }
-        mVg_top.setLayoutParams(lp);
+        mVg_top.setVisibility(hasFlag(PickConstants.FLAG_SHOW_TOP) ? View.VISIBLE : View.GONE);
     }
     private void setBottomHeight() {
-        int height = getResources().getDimensionPixelSize(R.dimen.common_top_height);
-        ViewGroup.LayoutParams lp = mVg_bottom.getLayoutParams();
-        if(hasFlag(PickConstants.FLAG_SHOW_BOTTOM)){
-            lp.height = height;
+        mVg_bottom.setVisibility(hasFlag(PickConstants.FLAG_SHOW_BOTTOM) ? View.VISIBLE : View.GONE);
+        if(hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON)){
+            //current only have one button
+            mVg_select.setVisibility(View.VISIBLE);
         }else {
-            lp.height = 0;
+            mVg_select.setVisibility(View.GONE);
         }
-        mVg_bottom.setLayoutParams(lp);
     }
 
     private void setSelectedText() {
@@ -212,13 +190,13 @@ public class SeeBigImageActivity extends BaseActivity {
         return (mParam.getFlags() & flags) == flags;
     }
 
-    private class PageAdapter0 extends BigImageAdapter<ImageItem>{
+    private class PageAdapter0 extends BigImageAdapter<IImageItem>{
 
-        public PageAdapter0(List<ImageItem> mDatas) {
+        public PageAdapter0(List<IImageItem> mDatas) {
             super(false, mDatas);
         }
         @Override
-        protected void onBindItem(ImageView iv, int index, ImageItem data) {
+        protected void onBindItem(ImageView iv, int index, IImageItem data) {
             RequestManager rm = Glide.with(iv.getContext());
             if(data.getFilePath() != null){
                 rm

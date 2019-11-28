@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vg_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,13 +7,20 @@
     android:background="@color/c_page_bg"
     android:fitsSystemWindows="true"
     >
-
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </android.support.v4.view.ViewPager>
     <RelativeLayout
         android:id="@+id/vg_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_top_height"
+        android:background="@color/c_page_bg_half_transparent"
         android:paddingEnd="16dp"
         android:paddingStart="6dp"
+        android:layout_gravity="top"
         >
         <ImageButton
             android:id="@+id/iv_back"
@@ -58,9 +65,10 @@
         android:id="@+id/vg_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_top_height"
+        android:background="@color/c_page_bg_half_transparent"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         >
         <LinearLayout
             android:id="@+id/vg_select"
@@ -89,12 +97,4 @@
 
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/vg_bottom"
-        android:layout_below="@+id/vg_top"
-        >
-    </android.support.v4.view.ViewPager>
-</RelativeLayout>
+</FrameLayout>

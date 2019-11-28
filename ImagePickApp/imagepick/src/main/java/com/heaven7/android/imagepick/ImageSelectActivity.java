@@ -20,10 +20,13 @@ import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.RecyclerViewUtils;
 import com.heaven7.adapter.SelectHelper;
 import com.heaven7.adapter.util.ViewHelper2;
-import com.heaven7.android.imagepick.pub.BigImageSelectParam;
+import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageItem;
+import com.heaven7.android.imagepick.pub.ImagePickDelegate;
+import com.heaven7.android.imagepick.pub.ImagePickManager;
+import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.util2.LauncherIntent;
 import com.heaven7.core.util.Toaster;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
@@ -35,21 +38,16 @@ import java.util.List;
 /**
  * the image select activity.
  */
-public class ImageSelectActivity extends BaseActivity implements MediaResourceHelper.Callback, ImagePickManager.OnSelectStateChangedListener {
+public class ImageSelectActivity extends BaseActivity implements MediaResourceHelper.Callback, ImagePickDelegate.OnSelectStateChangedListener {
 
-    public static final String KEY_RESULT = "result";
     private TextView mTv_upload;
     private RecyclerView mRv;
 
     private MediaResourceHelper mMediaHelper;
     private int mItemWidth;
     private int mItemHeight;
-    //may be config from intent
-    private int mSpanCount = 4;
-    private int mSpace = 0;
-    private int mAspectX = 1;
-    private int mAspectY = 1;
-    private int mMaxSelect = 1;
+
+    private ImageSelectParameter mParam;
 
     @Override
     protected int getLayoutId() {
@@ -58,11 +56,13 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
 
     @Override
     protected void init(Context context, Bundle savedInstanceState) {
+        mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
+
         mMediaHelper = new MediaResourceHelper(this);
         int width = getWidth();
-        mItemWidth = (width - mSpace * (mSpanCount - 1)) / mSpanCount;
+        mItemWidth = (width - mParam.getSpace() * (mParam.getSpanCount() - 1)) / mParam.getSpanCount();
         //x / y = mItemWidth / mItemHeight
-        mItemHeight = mAspectY * mItemWidth / mAspectX;
+        mItemHeight = mParam.getAspectY() * mItemWidth / mParam.getAspectX();
 
         mTv_upload = findViewById(R.id.tv_upload);
         mRv = findViewById(R.id.rv);
@@ -78,19 +78,20 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 for (MediaResourceHelper.MediaResourceItem item: items){
                     files.add(item.getFilePath());
                 }
-                setResult(RESULT_OK, new Intent().putExtra(KEY_RESULT, files));
+                setResult(RESULT_OK, new Intent().putExtra(PickConstants.KEY_RESULT, files));
                 finish();
             }
         });
         setAdapter();
         setSelectText();
 
-        ImagePickManager.getDefault().setOnSelectStateChangedListener(this);
+        ImagePickDelegateImpl.getDefault().addOnSelectStateChangedListener(this);
         mMediaHelper.getMediaResource(MediaResourceHelper.FLAG_IMAGE, this);
     }
     @Override
     protected void onDestroy() {
-        ImagePickManager.getDefault().setOnSelectStateChangedListener(null);
+        ImagePickDelegateImpl.getDefault().clearImages();
+        ImagePickDelegateImpl.getDefault().removeOnSelectStateChangedListener(this);
         mMediaHelper.cancel();
         super.onDestroy();
     }
@@ -104,7 +105,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     private void setAdapter() {
         Utils.closeDefaultAnimator(mRv);
         Adapter0 adapter = new Adapter0(null);
-        GridLayoutManager layoutManager = RecyclerViewUtils.createGridLayoutManager(adapter, this, mSpanCount);
+        GridLayoutManager layoutManager = RecyclerViewUtils.createGridLayoutManager(adapter, this, mParam.getSpanCount());
         mRv.setLayoutManager(layoutManager);
         mRv.setAdapter(adapter);
     }
@@ -118,11 +119,11 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
 
     private void setSelectText() {
         //1 no need
-        if(mMaxSelect > 1){
+        if(mParam.getMaxSelect() > 1){
             Adapter0 adapter = (Adapter0) mRv.getAdapter();
             List<MediaResourceHelper.MediaResourceItem> items = adapter.getSelectHelper().getSelectedItems();
             int size = items != null ? items.size() : 0;
-            String text = getString(R.string.upload) + String.format("(%d/%d)", size , mMaxSelect);
+            String text = getString(R.string.upload) + String.format("(%d/%d)", size , mParam.getMaxSelect());
             mTv_upload.setText(text);
         }
     }
@@ -134,7 +135,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     }
 
     @Override
-    public void onSelectStateChanged(ImageItem item, boolean select) {
+    public void onSelectStateChanged(IImageItem item, boolean select) {
         Adapter0 adapter = (Adapter0) mRv.getAdapter();
         List<MediaResourceHelper.MediaResourceItem> items = adapter.getAdapterManager().getItems();
         int index = -1;
@@ -158,7 +159,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     private class Adapter0 extends QuickRecycleViewAdapter<MediaResourceHelper.MediaResourceItem> {
 
         public Adapter0(List<MediaResourceHelper.MediaResourceItem> mDatas) {
-            super(R.layout.item_select_image, mDatas, mMaxSelect == 1 ? ISelectable.SELECT_MODE_SINGLE : ISelectable.SELECT_MODE_MULTI);
+            super(R.layout.item_select_image, mDatas, mParam.getMaxSelect() == 1 ? ISelectable.SELECT_MODE_SINGLE : ISelectable.SELECT_MODE_MULTI);
         }
 
         @Override
@@ -168,7 +169,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rootView.getLayoutParams();
             lp.width = mItemWidth;
             lp.height = mItemHeight;
-            lp.setMarginStart(position != 0 ? mSpace : 0);
+            lp.setMarginStart(position != 0 ? mParam.getSpace() : 0);
             rootView.setLayoutParams(lp);
 
             helper.setImageResource(R.id.iv_select_state, item.isSelected() ? R.drawable.ic_selected : R.drawable.ic_unselect)
@@ -185,7 +186,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 @Override
                 public void onClick(View v) {
                     List<MediaResourceHelper.MediaResourceItem> items = getSelectHelper().getSelectedItems();
-                    if(mMaxSelect > 1 && items != null && items.size() >= mMaxSelect){
+                    if(mParam.getMaxSelect() > 1 && items != null && items.size() >= mParam.getMaxSelect()){
                         if(!items.contains(item)){ //if already contains .it will be cancel
                             Toaster.show(v.getContext(), getString(R.string.select_reach_max));
                             return;
@@ -204,7 +205,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     int initSelectPos;
                     int flags = PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM
                             | PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON | PickConstants.FLAG_SHOW_TOP_END_BUTTON;
-                    if(mMaxSelect > 1){
+                    if(mParam.getMaxSelect() > 1){
                         flags |= PickConstants.FLAG_MULTI_SELECT;
                         initSelectPos = -1;
                     }else {
@@ -212,20 +213,16 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     }
                     MediaResourceHelper.MediaResourceItem singleItem = initSelectPos >= 0 ? items.get(initSelectPos) : null;
                     ImageItem imageItem = singleItem != null ? Utils.createImageItem(singleItem) : null;
-                    BigImageSelectParam param = new BigImageSelectParam.Builder()
+                    BigImageSelectParameter param = new BigImageSelectParameter.Builder()
                             .setCurrentOrder(position + 1)
                             .setTotalCount(items.size())
                             .setSelectCount(selectCount)
-                            .setMaxSelectCount(mMaxSelect)
+                            .setMaxSelectCount(mParam.getMaxSelect())
                             .setTopRightText(getString(R.string.upload))
                             .setFlags(flags)
                             .build();
-                    ImagePickManager.getDefault().setImageItems(Utils.createImageItems(items));
-                    new LauncherIntent.Builder().setClass(ImageSelectActivity.this, SeeBigImageActivity.class)
-                            .putExtra(PickConstants.KEY_PARAMS, param)
-                            .putExtra(PickConstants.KEY_SINGLE_ITEM, imageItem)
-                            .build()
-                            .startActivity();
+                    ImagePickManager.get().getImagePickDelegate()
+                            .startBrowseBigImages(ImageSelectActivity.this, param, Utils.createImageItems(items), imageItem);
                 }
             });
         }

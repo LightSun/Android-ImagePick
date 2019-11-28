@@ -3,6 +3,7 @@ package com.heaven7.android.imagepick;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 
+import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageItem;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ import java.util.List;
         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);*/
     }
 
-    public static List<ImageItem> createImageItems(List<MediaResourceHelper.MediaResourceItem> items) {
-        List<ImageItem> list = new ArrayList<>(items.size() * 4 / 3 + 1);
+    public static List<? extends IImageItem> createImageItems(List<MediaResourceHelper.MediaResourceItem> items) {
+        List<IImageItem> list = new ArrayList<>(items.size() * 4 / 3 + 1);
         for (int i = 0 , size = items.size() ; i < size ; i ++){
             MediaResourceHelper.MediaResourceItem item = items.get(i);
             ImageItem ii = new ImageItem();
