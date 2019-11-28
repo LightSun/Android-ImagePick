@@ -4,14 +4,25 @@ import android.app.Activity;
 
 import java.util.List;
 
+/**
+ * image pick delegate
+ * @author heaven7
+ */
 public interface ImagePickDelegate {
 
+    /**
+     * add select state change listener
+     * @param l the listener
+     */
     void addOnSelectStateChangedListener(OnSelectStateChangedListener l);
-
+    /**
+     * remove select state change listener
+     * @param l the listener
+     */
     void removeOnSelectStateChangedListener(OnSelectStateChangedListener l);
 
     /**
-     * start browse images
+     * start camera
      * @param context the context
      */
     void startCamera(Activity context);
