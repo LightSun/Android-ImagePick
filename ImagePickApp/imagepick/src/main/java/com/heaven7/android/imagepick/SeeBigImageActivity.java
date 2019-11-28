@@ -70,6 +70,12 @@ public class SeeBigImageActivity extends BaseActivity {
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
     }
 
+    @Override
+    protected void onDestroy() {
+        ImagePickDelegateImpl.getDefault().getImageItems().clear();
+        super.onDestroy();
+    }
+
     @Keep
     public void onClickBack(View view) {
         finish();

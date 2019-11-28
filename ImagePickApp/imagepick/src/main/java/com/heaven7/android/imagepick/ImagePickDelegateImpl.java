@@ -51,7 +51,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         return mItems;
     }
     public void setImageItems(List<? extends IImageItem> mItems) {
-        this.mItems = (List<IImageItem>) mItems;
+        this.mItems = new ArrayList<>(mItems);
     }
     public void clearImages() {
         mImages.clear();
