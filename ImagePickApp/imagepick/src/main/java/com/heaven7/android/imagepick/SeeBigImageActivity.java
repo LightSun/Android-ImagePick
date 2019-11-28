@@ -16,6 +16,7 @@ import com.heaven7.android.imagepick.page.BigImageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.core.util.Toaster;
 
 import java.io.File;
 import java.util.List;
@@ -118,8 +119,17 @@ public class SeeBigImageActivity extends BaseActivity {
         });
     }
     private void setSelectState(boolean select){
+        //check reach max
+        if(select && hasFlag(PickConstants.FLAG_MULTI_SELECT)){
+            if(mParam.getSelectCount() >= mParam.getMaxSelectCount()){
+                Toaster.show(getApplication(), getString(R.string.lib_pick_select_reach_max));
+                return;
+            }
+        }
+        //set ui
         setImageBySelectState(select);
         IImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
+        //state changed
         if(item.isSelected() != select){
             mParam.addSelectedCount(select ? 1: -1);
             ImagePickDelegateImpl.getDefault().dispatchSelectStateChanged(item, select);
@@ -133,6 +143,7 @@ public class SeeBigImageActivity extends BaseActivity {
             mLastSingleItem = item;
         }
         item.setSelected(select);
+        //set button text
         setSelectedText();
     }
 
