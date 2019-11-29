@@ -12,6 +12,7 @@ import com.heaven7.android.util2.LauncherIntent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.heaven7.android.imagepick.pub.PickConstants.REQ_BROWSE_BIG_IMAGE;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 
@@ -111,6 +112,6 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                 .putExtra(PickConstants.KEY_PARAMS, param)
                 .putExtra(PickConstants.KEY_SINGLE_ITEM, single)
                 .build()
-                .startActivity();
+                .startActivityForResult(REQ_BROWSE_BIG_IMAGE);
     }
 }

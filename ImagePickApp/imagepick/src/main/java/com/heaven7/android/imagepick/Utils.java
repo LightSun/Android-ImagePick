@@ -47,4 +47,12 @@ import java.util.List;
         ii.setSelected(item.isSelected());
         return ii;
     }
+
+    public static ArrayList<String> getFilePaths(List<MediaResourceHelper.MediaResourceItem> items) {
+        ArrayList<String> paths = new ArrayList<>();
+        for (MediaResourceHelper.MediaResourceItem item : items){
+            paths.add(item.getFilePath());
+        }
+        return paths;
+    }
 }

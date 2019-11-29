@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -153,6 +154,18 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 adapter.getSelectHelper().unselect(index);
             }
             setSelectText();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(resultCode == RESULT_OK){
+            Adapter0 adapter = (Adapter0) mRv.getAdapter();
+            List<MediaResourceHelper.MediaResourceItem> items = adapter.getAdapterManager().getSelectHelper().getSelectedItems();
+
+            ArrayList<String> paths = Utils.getFilePaths(items);
+            setResult(RESULT_OK, new Intent().putExtra(PickConstants.KEY_RESULT, paths));
+            finish();
         }
     }
 
