@@ -167,18 +167,7 @@ public class SeeBigImageActivity extends BaseActivity {
     private void setUiState() {
         setSelectOrder(mParam.getCurrentOrder());
 
-        setTopHeight();
-        setBottomHeight();
-        setSelectedText();
-        //handle position
-        mVp.getAdapter().notifyDataSetChanged();
-        mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
-    }
-
-    private void setTopHeight() {
         mVg_top.setVisibility(hasFlag(PickConstants.FLAG_SHOW_TOP) ? View.VISIBLE : View.GONE);
-    }
-    private void setBottomHeight() {
         mVg_bottom.setVisibility(hasFlag(PickConstants.FLAG_SHOW_BOTTOM) ? View.VISIBLE : View.GONE);
         if(hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON)){
             //current only have one button
@@ -186,6 +175,10 @@ public class SeeBigImageActivity extends BaseActivity {
         }else {
             mVg_select.setVisibility(View.GONE);
         }
+        setSelectedText();
+        //handle position
+        mVp.getAdapter().notifyDataSetChanged();
+        mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
     }
 
     private void setSelectedText() {
