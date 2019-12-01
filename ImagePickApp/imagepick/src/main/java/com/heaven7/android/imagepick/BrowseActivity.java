@@ -34,7 +34,7 @@ public class BrowseActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_browse;
+        return R.layout.lib_pick_ac_browse;
     }
     @Override
     protected void init(Context context, Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class BrowseActivity extends BaseActivity {
         final int round = SystemConfig.dip2px(context, 8);
         final int borderColor = Color.parseColor("#677DB8");
         final int border =  SystemConfig.dip2px(context, 1);
-        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(R.layout.item_image, createItems()) {
+        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(R.layout.lib_pick_item_image, createItems()) {
             @Override
             protected void onBindData(final Context context, final int position, final Item item, int itemLayoutId, ViewHelper2 helper) {
                 View rootView = helper.getRootView();

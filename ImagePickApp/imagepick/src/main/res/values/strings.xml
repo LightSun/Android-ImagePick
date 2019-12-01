@@ -4,4 +4,8 @@
     <string name="lib_pick_upload">上传</string>
     <string name="lib_pick_select_reach_max">选择数量已达上限！</string>
     <string name="lic_pick_select">选择</string>
+
+    <string name="lib_pick_all">图片和视频</string>
+    <string name="lib_pick_all_video">所有视频</string>
+    <string name="lib_pick_all_images">所有图片</string>
 </resources>

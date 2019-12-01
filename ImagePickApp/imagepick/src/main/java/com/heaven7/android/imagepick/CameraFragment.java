@@ -55,7 +55,7 @@ public class CameraFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_camera_main, container, false);
+        View view = inflater.inflate(R.layout.lib_pick_frag_camera_main, container, false);
         mCameraView = view.findViewById(R.id.cameraView);
         mIv_image = view.findViewById(R.id.iv_image);
         mIv_camera = view.findViewById(R.id.iv_camera);

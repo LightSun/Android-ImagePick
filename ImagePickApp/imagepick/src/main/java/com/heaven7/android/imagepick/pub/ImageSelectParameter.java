@@ -2,6 +2,7 @@ package com.heaven7.android.imagepick.pub;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 
 /**
  * the image select parameter
@@ -9,11 +10,14 @@ import android.os.Parcelable;
  */
 public class ImageSelectParameter implements Parcelable {
 
-    private int mSpanCount;
+    private int mSpanCount = 4;
     private int mSpace;
-    private int mAspectX;
-    private int mAspectY;
-    private int mMaxSelect;
+    private int mAspectX = 1;
+    private int mAspectY = 1;
+    private int mMaxSelect = 1;
+    private int mFlags = PickConstants.FLAG_IMAGE;
+
+    private @DrawableRes int mDefaultDirIconId;
 
     protected ImageSelectParameter(ImageSelectParameter.Builder builder) {
         this.mSpanCount = builder.mSpanCount;
@@ -21,6 +25,8 @@ public class ImageSelectParameter implements Parcelable {
         this.mAspectX = builder.mAspectX;
         this.mAspectY = builder.mAspectY;
         this.mMaxSelect = builder.mMaxSelect;
+        this.mFlags = builder.mFlags;
+        this.mDefaultDirIconId = builder.mDefaultDirIconId;
     }
 
     public int getSpanCount() {
@@ -43,12 +49,23 @@ public class ImageSelectParameter implements Parcelable {
         return this.mMaxSelect;
     }
 
+    public int getFlags() {
+        return this.mFlags;
+    }
+
+    public int getDefaultDirIconId() {
+        return this.mDefaultDirIconId;
+    }
+
     public static class Builder {
         private int mSpanCount = 4;
-        private int mSpace = 0;
+        private int mSpace;
         private int mAspectX = 1;
         private int mAspectY = 1;
-        private int mMaxSelect = 1; //i means single select
+        private int mMaxSelect = 1;
+        private int mFlags = PickConstants.FLAG_IMAGE;
+        private @DrawableRes
+        int mDefaultDirIconId;
 
         public Builder setSpanCount(int mSpanCount) {
             this.mSpanCount = mSpanCount;
@@ -75,6 +92,16 @@ public class ImageSelectParameter implements Parcelable {
             return this;
         }
 
+        public Builder setFlags(int mFlags) {
+            this.mFlags = mFlags;
+            return this;
+        }
+
+        public Builder setDefaultDirIconId(int mDefaultDirIconId) {
+            this.mDefaultDirIconId = mDefaultDirIconId;
+            return this;
+        }
+
         public ImageSelectParameter build() {
             return new ImageSelectParameter(this);
         }
@@ -92,6 +119,8 @@ public class ImageSelectParameter implements Parcelable {
         dest.writeInt(this.mAspectX);
         dest.writeInt(this.mAspectY);
         dest.writeInt(this.mMaxSelect);
+        dest.writeInt(this.mFlags);
+        dest.writeInt(this.mDefaultDirIconId);
     }
 
     protected ImageSelectParameter(Parcel in) {
@@ -100,9 +129,11 @@ public class ImageSelectParameter implements Parcelable {
         this.mAspectX = in.readInt();
         this.mAspectY = in.readInt();
         this.mMaxSelect = in.readInt();
+        this.mFlags = in.readInt();
+        this.mDefaultDirIconId = in.readInt();
     }
 
-    public static final Parcelable.Creator<ImageSelectParameter> CREATOR = new Parcelable.Creator<ImageSelectParameter>() {
+    public static final Creator<ImageSelectParameter> CREATOR = new Creator<ImageSelectParameter>() {
         @Override
         public ImageSelectParameter createFromParcel(Parcel source) {
             return new ImageSelectParameter(source);

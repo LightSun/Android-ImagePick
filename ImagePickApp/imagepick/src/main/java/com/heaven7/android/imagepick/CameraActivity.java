@@ -12,7 +12,7 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_camera;
+        return R.layout.lib_pick_ac_camera;
     }
 
     @Override

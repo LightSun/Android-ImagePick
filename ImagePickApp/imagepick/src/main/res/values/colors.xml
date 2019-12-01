@@ -4,4 +4,5 @@
     <color name="lib_pick_c_btn_bg">#36A1F8</color>
 
     <color name="lib_pick_c_bg_half_transparent">#99333333</color>
+    <color name="lib_pick_c_3f3f3f">#3f3f3f</color>
 </resources>

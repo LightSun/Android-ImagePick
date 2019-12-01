@@ -43,7 +43,7 @@ public class SeeBigImageActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_big_image;
+        return R.layout.lib_pick_ac_big_image;
     }
 
     @Override
@@ -211,14 +211,15 @@ public class SeeBigImageActivity extends BaseActivity {
             if(data.getFilePath() != null){
                 rm
                         .load(new File(data.getFilePath()))
+                        .asBitmap()
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(iv);
             }else {
                 rm
                         .load(data.getUrl())
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(iv);
             }
             iv.setOnClickListener(new View.OnClickListener() {

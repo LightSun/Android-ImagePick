@@ -26,6 +26,23 @@
             />
 
         <TextView
+            android:id="@+id/tv_dir"
+            style="@style/lib_pik_tv_common"
+            android:layout_toEndOf="@+id/iv_close"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:maxWidth="300dp"
+            android:background="@null"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/lib_pick_all"
+            android:drawableEnd="@drawable/lib_pick_ic_arrow_down"
+            android:drawablePadding="8dp"
+            android:onClick="onClickSwitchDir"
+            />
+
+        <TextView
             android:id="@+id/tv_upload"
             style="@style/lib_pik_tv_common"
             android:layout_centerVertical="true"
@@ -41,11 +58,25 @@
             />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_dir"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            >
+        </android.support.v7.widget.RecyclerView>
+    </FrameLayout>
+
 
 </LinearLayout>

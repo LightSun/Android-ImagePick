@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.heaven7.adapter.BaseSelector;
+import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.util2.WeakContextOwner;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MainWorker;
@@ -81,7 +82,7 @@ public final class MediaResourceHelper{
                 if ((flags & FLAG_IMAGE) == FLAG_IMAGE) {
                     photos = getAllLocalPhotos(getContext());
                 } else {
-                    photos = null;
+                    photos = new ArrayList<>();
                 }
                 if (mDestroies.get()) {
                     return;
@@ -90,7 +91,7 @@ public final class MediaResourceHelper{
                 if ((flags & FLAG_VIDEO) == FLAG_VIDEO) {
                     videoes = getAllLocalVideos(getContext(), minDuration, maxDuration);
                 } else {
-                    videoes = null;
+                    videoes = new ArrayList<>();
                 }
                 if (mDestroies.get()) {
                     return;
@@ -404,7 +405,7 @@ public final class MediaResourceHelper{
 
     }
 
-    public static class MediaResourceItem extends BaseSelector implements Parcelable {
+    public static class MediaResourceItem extends BaseSelector implements Parcelable, IImageItem {
         private String title;
         private long time; //time of photo/video .the last modified
         private String filePath;
@@ -472,11 +473,9 @@ public final class MediaResourceHelper{
         public String getTitle() {
             return title;
         }
-
         public void setTitle(String title) {
             this.title = title;
         }
-
         /** in mills */
         public long getTime() {
             return time;
@@ -484,7 +483,11 @@ public final class MediaResourceHelper{
         public void setTime(long time) {
             this.time = time;
         }
-
+        @Override
+        public String getUrl() {
+            return null;
+        }
+        @Override
         public String getFilePath() {
             return filePath;
         }
@@ -510,6 +513,7 @@ public final class MediaResourceHelper{
         public MediaResourceItem() {
         }
         public MediaResourceItem(MediaResourceItem item) {
+            setSelected(item.isSelected());
             title = item.title;
             time = item.time;
             filePath = item.filePath;
@@ -523,6 +527,7 @@ public final class MediaResourceHelper{
         }
 
         protected MediaResourceItem(Parcel in) {
+            setSelected(in.readByte() == 1);
             title = in.readString();
             time = in.readLong();
             filePath = in.readString();
@@ -553,6 +558,7 @@ public final class MediaResourceHelper{
         }
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte((byte) (isSelected() ? 1 : 0));
             dest.writeString(title);
             dest.writeLong(time);
             dest.writeString(filePath);
