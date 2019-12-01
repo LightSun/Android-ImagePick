@@ -75,11 +75,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 if(items == null || items.size() == 0){
                     return;
                 }
-                ArrayList<String> files = new ArrayList<>();
-                for (MediaResourceHelper.MediaResourceItem item: items){
-                    files.add(item.getFilePath());
-                }
-                setResult(RESULT_OK, new Intent().putExtra(PickConstants.KEY_RESULT, files));
+                setResult(RESULT_OK, new Intent().putExtra(PickConstants.KEY_RESULT, Utils.getFilePaths(items)));
                 finish();
             }
         });
