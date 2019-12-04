@@ -54,8 +54,8 @@ public class EntryActivity extends AppCompatActivity {
                         if (b) {
                             ImagePickManager.get().getImagePickDelegate().startBrowseImages(EntryActivity.this,
                                     new ImageSelectParameter.Builder()
-                                            .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
-                                            .setMaxSelect(1)
+                                           // .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
+                                            .setMaxSelect(4)
                                     .build());
                         }
                     }

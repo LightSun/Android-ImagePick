@@ -17,7 +17,10 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
 
     @Override
     protected void init(Context context, Bundle savedInstanceState) {
+        Bundle extras = getIntent().getExtras();
+        
         CameraFragment fragment = new CameraFragment();
+        fragment.setArguments(extras);
         fragment.setPictureCallback(new PictureCallbackImpl());
         fragment.setActionCallback(this);
         getSupportFragmentManager()

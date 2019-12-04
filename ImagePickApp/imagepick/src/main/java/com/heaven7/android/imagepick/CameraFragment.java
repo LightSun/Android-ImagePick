@@ -24,6 +24,7 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.google.android.cameraview.CameraView;
+import com.heaven7.android.imagepick.pub.PickConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +37,6 @@ import java.io.OutputStream;
  */
 public class CameraFragment extends Fragment{
 
-    public static final String KEY_SAVE_DIR = "save_dir";
     private static final String TAG = "CameraFragment";
     private CameraView mCameraView;
 
@@ -140,18 +140,19 @@ public class CameraFragment extends Fragment{
         this.mPictureCallback = pictureCallback;
     }
     private void setSaveDir() {
+        String dir = null;
         if(getArguments() != null){
-            String dir = getArguments().getString(KEY_SAVE_DIR);
-            if(!TextUtils.isEmpty(dir)){
-                File file = new File(dir);
-                if(!file.exists()){
-                    file.mkdirs();
-                }
-                mSaveDir = file;
-            }
+            dir = getArguments().getString(PickConstants.KEY_SAVE_DIR);
         }
-        if(mSaveDir == null){
-            mSaveDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(dir == null){
+            dir = Environment.getExternalStorageDirectory() + "/lib_pick";
+        }
+        if(!TextUtils.isEmpty(dir)){
+            File file = new File(dir);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            mSaveDir = file;
         }
     }
     private Handler getBackgroundHandler() {

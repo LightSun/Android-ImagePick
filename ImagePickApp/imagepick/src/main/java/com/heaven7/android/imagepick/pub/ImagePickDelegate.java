@@ -26,6 +26,7 @@ public interface ImagePickDelegate {
      * @param context the context
      */
     void startCamera(Activity context);
+
     /**
      * start browse images
      * @param context the context
