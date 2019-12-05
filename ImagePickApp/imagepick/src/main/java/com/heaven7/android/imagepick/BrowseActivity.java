@@ -135,6 +135,7 @@ public class BrowseActivity extends BaseActivity {
             }else {
                 mAdapter.getAdapterManager().clearItems();
                 mIv_big_image.setImageBitmap(null);
+                ImagePickDelegateImpl.getDefault().clearImages();
             }
         }
     }
