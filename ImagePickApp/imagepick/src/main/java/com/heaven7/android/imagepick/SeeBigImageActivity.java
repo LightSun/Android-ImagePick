@@ -212,13 +212,11 @@ public class SeeBigImageActivity extends BaseActivity {
                 rm
                         .load(new File(data.getFilePath()))
                         .asBitmap()
-                        .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(iv);
             }else {
                 rm
                         .load(data.getUrl())
-                        .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(iv);
             }

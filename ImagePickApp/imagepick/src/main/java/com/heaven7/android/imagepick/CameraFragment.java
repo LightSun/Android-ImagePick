@@ -25,7 +25,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.core.util.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -120,12 +119,12 @@ public class CameraFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        mCameraView.start();
         List<String> images = ImagePickDelegateImpl.getDefault().getImages();
         //Logger.d("CameraFragment", "onResume", "" + images);
         if(images.isEmpty()){
             mIv_image.setVisibility(View.GONE);
         }
+        mCameraView.start();
     }
 
     @Override
