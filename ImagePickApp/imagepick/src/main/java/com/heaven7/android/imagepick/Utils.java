@@ -1,10 +1,13 @@
 package com.heaven7.android.imagepick;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageItem;
+import com.heaven7.core.util.ImageParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +57,9 @@ import java.util.List;
             paths.add(item.getFilePath());
         }
         return paths;
+    }
+
+    public static void scaleImage(Context context, byte[] data) {
+        Bitmap bitmap = new ImageParser(4000, 4000).parseToBitmap(data);
     }
 }

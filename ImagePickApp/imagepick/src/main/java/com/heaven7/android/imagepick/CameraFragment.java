@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.core.util.ImageParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -248,6 +250,8 @@ public class CameraFragment extends Fragment{
     }
 
     private class InternalCallback extends CameraView.Callback{
+
+        final ImageParser mImgParser = new ImageParser(4000, 4000);
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             if(!mPictureCallback.shouldSavePicture()){
@@ -261,12 +265,13 @@ public class CameraFragment extends Fragment{
                     if(context == null){
                         return;
                     }
+                    Bitmap bitmap = mImgParser.parseToBitmap(data);
                     File file = new File(mSaveDir, System.currentTimeMillis() + ".jpg");
                     OutputStream os = null;
                     try {
                         os = new FileOutputStream(file);
-                        os.write(data);
-                        os.close();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, os);
+                        os.flush();
                     } catch (IOException e) {
                         Log.w(TAG, "Cannot write to " + file, e);
                         mPictureCallback.onTakePictureResult(null);
