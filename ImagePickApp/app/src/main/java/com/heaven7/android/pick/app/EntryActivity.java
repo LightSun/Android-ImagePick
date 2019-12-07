@@ -16,8 +16,6 @@ import com.heaven7.core.util.PermissionHelper;
 
 import java.util.ArrayList;
 
-import io.reactivex.functions.Consumer;
-
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 
@@ -76,7 +74,7 @@ public class EntryActivity extends AppCompatActivity {
                 case REQ_CAMERA: {
                     ArrayList<String> images = data.getStringArrayListExtra(PickConstants.KEY_RESULT);
                     Logger.d("EntryActivity", "onActivityResult", "REQ_CAMERA >> " + images);
-                    mComponent.ofUploadImages(url, images).jsonConsumer(new Consumer<String>() {
+                   /* mComponent.ofUploadImages(url, images).jsonConsumer(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
                             Logger.d("EntryActivity", "accept", "" + s);
@@ -91,7 +89,7 @@ public class EntryActivity extends AppCompatActivity {
                         public void run() {
 
                         }
-                    }).subscribe();
+                    }).subscribe();*/
                     break;
                 }
                     

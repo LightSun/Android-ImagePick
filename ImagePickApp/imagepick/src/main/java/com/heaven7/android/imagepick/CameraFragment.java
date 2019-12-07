@@ -24,15 +24,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.util.Util;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
+import com.heaven7.core.util.MainWorker;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * camera fragment
@@ -54,6 +57,7 @@ public class CameraFragment extends Fragment{
     private Handler mBackgroundHandler;
 
     private File mSaveDir;
+    private final AtomicBoolean mProcessing = new AtomicBoolean(false);
 
     @Nullable
     @Override
@@ -126,7 +130,12 @@ public class CameraFragment extends Fragment{
         if(images.isEmpty()){
             mIv_image.setVisibility(View.GONE);
         }
-        mCameraView.start();
+        MainWorker.postDelay(200, new Runnable() {
+            @Override
+            public void run() {
+                mCameraView.start();
+            }
+        });
     }
 
     @Override
@@ -258,11 +267,15 @@ public class CameraFragment extends Fragment{
                 setCameraEnabled(false);
                 return;
             }
+            if(!mProcessing.compareAndSet(false, true)){
+                return;
+            }
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     Context context = getContext();
                     if(context == null){
+                        mProcessing.compareAndSet(true, false);
                         return;
                     }
                     Bitmap bitmap = mImgParser.parseToBitmap(data);
@@ -284,6 +297,7 @@ public class CameraFragment extends Fragment{
                                 // Ignore
                             }
                         }
+                        mProcessing.compareAndSet(true, false);
                     }
                     mPictureCallback.onTakePictureResult(file.getAbsolutePath());
                     setImageFile(file.getAbsolutePath());
