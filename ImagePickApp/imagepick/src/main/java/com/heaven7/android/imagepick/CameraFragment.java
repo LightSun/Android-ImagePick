@@ -76,7 +76,7 @@ public class CameraFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSaveDir();
-        createImageParser();
+        handleArguments();
 
         mCameraView.setFlash(CameraView.FLASH_AUTO);
         mCameraView.addCallback(mPictureCallback);
@@ -176,7 +176,7 @@ public class CameraFragment extends Fragment{
     public void setPictureCallback(PictureCallback pictureCallback) {
         this.mPictureCallback = pictureCallback;
     }
-    private void createImageParser() {
+    private void handleArguments() {
         Bundle arguments = getArguments();
         if(arguments != null){
             CameraParameter cp = arguments.getParcelable(PickConstants.KEY_PARAMS);
@@ -201,9 +201,11 @@ public class CameraFragment extends Fragment{
             }
             mImgParser = new ImageParser(cp.getMaxWidth(), cp.getMaxHeight(),
                     config, true);
+            mCameraView.setAutoFocus(cp.isAutoFocus());
         }else {
             mImgParser = new ImageParser(4000, 4000,
                     Bitmap.Config.RGB_565, true);
+            mCameraView.setAutoFocus(true);
         }
     }
     private void setSaveDir() {

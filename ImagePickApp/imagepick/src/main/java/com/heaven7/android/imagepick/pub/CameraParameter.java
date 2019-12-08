@@ -16,11 +16,13 @@ public class CameraParameter implements Parcelable {
     private int maxWidth = 4000;
     private int maxHeight = 4000;
     private int format = FORMAT_RGB_565;
+    private boolean autoFocus;
 
     protected CameraParameter(CameraParameter.Builder builder) {
         this.maxWidth = builder.maxWidth;
         this.maxHeight = builder.maxHeight;
         this.format = builder.format;
+        this.autoFocus = builder.autoFocus;
     }
 
     public int getMaxWidth() {
@@ -35,10 +37,15 @@ public class CameraParameter implements Parcelable {
         return this.format;
     }
 
+    public boolean isAutoFocus() {
+        return this.autoFocus;
+    }
+
     public static class Builder {
         private int maxWidth = 4000;
         private int maxHeight = 4000;
         private int format = FORMAT_RGB_565;
+        private boolean autoFocus;
 
         public Builder setMaxWidth(int maxWidth) {
             this.maxWidth = maxWidth;
@@ -52,6 +59,11 @@ public class CameraParameter implements Parcelable {
 
         public Builder setFormat(int format) {
             this.format = format;
+            return this;
+        }
+
+        public Builder setAutoFocus(boolean autoFocus) {
+            this.autoFocus = autoFocus;
             return this;
         }
 
@@ -70,15 +82,17 @@ public class CameraParameter implements Parcelable {
         dest.writeInt(this.maxWidth);
         dest.writeInt(this.maxHeight);
         dest.writeInt(this.format);
+        dest.writeByte(this.autoFocus ? (byte) 1 : (byte) 0);
     }
 
     protected CameraParameter(Parcel in) {
         this.maxWidth = in.readInt();
         this.maxHeight = in.readInt();
         this.format = in.readInt();
+        this.autoFocus = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<CameraParameter> CREATOR = new Parcelable.Creator<CameraParameter>() {
+    public static final Creator<CameraParameter> CREATOR = new Creator<CameraParameter>() {
         @Override
         public CameraParameter createFromParcel(Parcel source) {
             return new CameraParameter(source);
