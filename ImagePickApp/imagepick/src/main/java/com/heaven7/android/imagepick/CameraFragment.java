@@ -84,6 +84,9 @@ public class CameraFragment extends Fragment{
         mIv_flash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mProcessing.get()){
+                    return;
+                }
                 if(mCameraView.getFlash() == CameraView.FLASH_AUTO){
                     mIv_flash.setImageResource(R.drawable.lib_pick_ic_flash_off);
                     mCameraView.setFlash(CameraView.FLASH_OFF);
@@ -96,6 +99,9 @@ public class CameraFragment extends Fragment{
         mIv_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mProcessing.get()){
+                    return;
+                }
                 if(v.getTag() != null){
                     //re-camera
                     setCameraEnabled(true);
@@ -108,6 +114,9 @@ public class CameraFragment extends Fragment{
         mIv_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mProcessing.get()){
+                    return;
+                }
                 if(mActionCallback != null){
                     mActionCallback.onClickImage();
                 }
@@ -116,6 +125,9 @@ public class CameraFragment extends Fragment{
         mTv_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mProcessing.get()){
+                    return;
+                }
                 if(mActionCallback != null ){
                     mActionCallback.onClickFinish();
                 }
@@ -300,11 +312,12 @@ public class CameraFragment extends Fragment{
 
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
-            if(!mPictureCallback.shouldSavePicture()){
-                setCameraEnabled(false);
+            if(!mProcessing.compareAndSet(false, true)){
                 return;
             }
-            if(!mProcessing.compareAndSet(false, true)){
+            if(!mPictureCallback.shouldSavePicture()){
+                setCameraEnabled(false);
+                mProcessing.compareAndSet(true, false);
                 return;
             }
             getBackgroundHandler().post(new Runnable() {
@@ -315,10 +328,10 @@ public class CameraFragment extends Fragment{
                         mProcessing.compareAndSet(true, false);
                         return;
                     }
-                    Bitmap bitmap = mImgParser.parseToBitmap(data);
                     File file = new File(mSaveDir, System.currentTimeMillis() + ".jpg");
                     OutputStream os = null;
                     try {
+                        Bitmap bitmap = mImgParser.parseToBitmap(data);
                         os = new FileOutputStream(file);
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, os);
                         os.flush();
