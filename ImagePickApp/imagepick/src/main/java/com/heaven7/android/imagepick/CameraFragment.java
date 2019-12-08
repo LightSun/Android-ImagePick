@@ -135,6 +135,9 @@ public class CameraFragment extends Fragment{
         MainWorker.postDelay(200, new Runnable() {
             @Override
             public void run() {
+                if(isDetached()){
+                    return;
+                }
                 mCameraView.start();
             }
         });
