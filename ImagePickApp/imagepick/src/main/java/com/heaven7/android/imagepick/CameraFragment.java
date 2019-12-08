@@ -132,6 +132,8 @@ public class CameraFragment extends Fragment{
         if(images.isEmpty()){
             mIv_image.setVisibility(View.GONE);
         }
+        //for some phone have bug . when jump to another activity, then return. like samsung.
+        //so just use a delay message to start camera.
         MainWorker.postDelay(200, new Runnable() {
             @Override
             public void run() {
