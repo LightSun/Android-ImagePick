@@ -58,12 +58,12 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         }
 
-        Canvas canvas = new Canvas(bitmap);//新建一个空白的bitmap
+        Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));//设置要绘制的图形
 
-        Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//设置边框样式
+        Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint.setColor(mBorderColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(mBorderWidth);
@@ -93,9 +93,9 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
         path.addRoundRect(new RectF(mMargin + halfBorder, mMargin + halfBorder, right - halfBorder, bottom - halfBorder),
                 pos, Path.Direction.CW);
 
-        canvas.drawPath(path, paint);//绘制要加载的图形
+        canvas.drawPath(path, paint);
 
-        canvas.drawPath(path, borderPaint);//绘制边框
+        canvas.drawPath(path, borderPaint);//
 
     }
 
