@@ -22,10 +22,18 @@ public interface ImagePickDelegate {
     void removeOnSelectStateChangedListener(OnSelectStateChangedListener l);
 
     /**
-     * start camera
+     * start camera with default parameter. for more see {@linkplain #startCamera(Activity, CameraParameter)}.
      * @param context the context
      */
     void startCamera(Activity context);
+
+    /**
+     * start camera
+     * @param context the context
+     * @param parameter the camera param
+     * @since 1.0.1
+     */
+    void startCamera(Activity context, CameraParameter parameter);
 
     /**
      * start browse images

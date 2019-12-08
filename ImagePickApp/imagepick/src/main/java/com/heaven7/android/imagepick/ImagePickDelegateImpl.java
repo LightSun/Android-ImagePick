@@ -3,6 +3,7 @@ package com.heaven7.android.imagepick;
 import android.app.Activity;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
@@ -85,6 +86,15 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     public void startCamera(Activity context) {
         new LauncherIntent.Builder()
                 .setClass(context, CameraActivity.class)
+                .build()
+                .startActivityForResult(REQ_CAMERA);
+    }
+
+    @Override
+    public void startCamera(Activity context, CameraParameter parameter) {
+        new LauncherIntent.Builder()
+                .setClass(context, CameraActivity.class)
+                .putExtra(PickConstants.KEY_PARAMS, parameter)
                 .build()
                 .startActivityForResult(REQ_CAMERA);
     }

@@ -24,8 +24,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.util.Util;
 import com.google.android.cameraview.CameraView;
+import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
@@ -58,6 +58,7 @@ public class CameraFragment extends Fragment{
 
     private File mSaveDir;
     private final AtomicBoolean mProcessing = new AtomicBoolean(false);
+    private ImageParser mImgParser;
 
     @Nullable
     @Override
@@ -75,6 +76,7 @@ public class CameraFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSaveDir();
+        createImageParser();
 
         mCameraView.setFlash(CameraView.FLASH_AUTO);
         mCameraView.addCallback(mPictureCallback);
@@ -153,8 +155,39 @@ public class CameraFragment extends Fragment{
     public void setActionCallback(ActionCallback mActionCallback) {
         this.mActionCallback = mActionCallback;
     }
+
     public void setPictureCallback(PictureCallback pictureCallback) {
         this.mPictureCallback = pictureCallback;
+    }
+    private void createImageParser() {
+        Bundle arguments = getArguments();
+        if(arguments != null){
+            CameraParameter cp = arguments.getParcelable(PickConstants.KEY_PARAMS);
+            final Bitmap.Config config;
+            switch (cp.getFormat()){
+                default:
+                case CameraParameter.FORMAT_RGB_565:
+                    config = Bitmap.Config.RGB_565;
+                    break;
+                case CameraParameter.FORMAT_ARGB_8888:
+                    config = Bitmap.Config.ARGB_8888;
+                    break;
+                case CameraParameter.FORMAT_RGBA_F16:
+                    //API26
+                    if(Build.VERSION.SDK_INT >= 26){
+                        config = Bitmap.Config.RGBA_F16;
+                    }else {
+                        System.err.println("CameraParameter >> the format of camera parameter can't support RGBA_F16. force to use ARGB_8888 now.");
+                        config = Bitmap.Config.ARGB_8888;
+                    }
+                    break;
+            }
+            mImgParser = new ImageParser(cp.getMaxWidth(), cp.getMaxHeight(),
+                    config, true);
+        }else {
+            mImgParser = new ImageParser(4000, 4000,
+                    Bitmap.Config.RGB_565, true);
+        }
     }
     private void setSaveDir() {
         String dir = null;
@@ -260,7 +293,6 @@ public class CameraFragment extends Fragment{
 
     private class InternalCallback extends CameraView.Callback{
 
-        final ImageParser mImgParser = new ImageParser(4000, 4000);
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             if(!mPictureCallback.shouldSavePicture()){

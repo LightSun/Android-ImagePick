@@ -45,6 +45,10 @@ public class EntryActivity extends AppCompatActivity {
                             ImagePickManager.get().getImagePickDelegate().startCamera(EntryActivity.this);
                         }
                     }
+                    @Override
+                    public boolean handlePermissionHadRefused(String s, int i, Runnable runnable) {
+                        return false;
+                    }
                 });
     }
 
@@ -60,6 +64,10 @@ public class EntryActivity extends AppCompatActivity {
                                             .setMaxSelect(4)
                                     .build());
                         }
+                    }
+                    @Override
+                    public boolean handlePermissionHadRefused(String s, int i, Runnable runnable) {
+                        return false;
                     }
                 });
     }
