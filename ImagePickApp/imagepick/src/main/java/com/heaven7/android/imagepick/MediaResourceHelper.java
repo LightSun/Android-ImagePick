@@ -592,7 +592,9 @@ public final class MediaResourceHelper{
         public long getDuration() {
             return duration;
         }
-
+        public boolean isGif() {
+            return getMime().contains("image/gif");
+        }
     }
 
 }

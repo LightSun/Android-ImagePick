@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -26,6 +27,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.CameraParameter;
+import com.heaven7.android.imagepick.pub.ImageParameter;
+import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
@@ -54,7 +57,7 @@ public class CameraFragment extends Fragment{
 
     private PictureCallback mPictureCallback;
     private ActionCallback mActionCallback;
-    private Handler mBackgroundHandler;
+    private final ThreadHelper mThreadHelper = new ThreadHelper();
 
     private File mSaveDir;
     private final AtomicBoolean mProcessing = new AtomicBoolean(false);
@@ -180,28 +183,15 @@ public class CameraFragment extends Fragment{
         Bundle arguments = getArguments();
         if(arguments != null){
             CameraParameter cp = arguments.getParcelable(PickConstants.KEY_PARAMS);
-            final Bitmap.Config config;
-            switch (cp.getFormat()){
-                default:
-                case CameraParameter.FORMAT_RGB_565:
-                    config = Bitmap.Config.RGB_565;
-                    break;
-                case CameraParameter.FORMAT_ARGB_8888:
-                    config = Bitmap.Config.ARGB_8888;
-                    break;
-                case CameraParameter.FORMAT_RGBA_F16:
-                    //API26
-                    if(Build.VERSION.SDK_INT >= 26){
-                        config = Bitmap.Config.RGBA_F16;
-                    }else {
-                        System.err.println("CameraParameter >> the format of camera parameter can't support RGBA_F16. force to use ARGB_8888 now.");
-                        config = Bitmap.Config.ARGB_8888;
-                    }
-                    break;
+            if(cp == null){
+                mImgParser = new ImageParser(4000, 4000,
+                        Bitmap.Config.RGB_565, true);
+                mCameraView.setAutoFocus(true);
+            }else {
+                ImageParameter ip = cp.getImageParameter();
+                mImgParser = Utils.createImageParser(ip, true);
+                mCameraView.setAutoFocus(cp.isAutoFocus());
             }
-            mImgParser = new ImageParser(cp.getMaxWidth(), cp.getMaxHeight(),
-                    config, true);
-            mCameraView.setAutoFocus(cp.isAutoFocus());
         }else {
             mImgParser = new ImageParser(4000, 4000,
                     Bitmap.Config.RGB_565, true);
@@ -225,22 +215,10 @@ public class CameraFragment extends Fragment{
         }
     }
     private Handler getBackgroundHandler() {
-        if (mBackgroundHandler == null) {
-            HandlerThread thread = new HandlerThread("background");
-            thread.start();
-            mBackgroundHandler = new Handler(thread.getLooper());
-        }
-        return mBackgroundHandler;
+        return mThreadHelper.getBackgroundHandler();
     }
     private void quit(){
-        if (mBackgroundHandler != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mBackgroundHandler.getLooper().quitSafely();
-            } else {
-                mBackgroundHandler.getLooper().quit();
-            }
-            mBackgroundHandler = null;
-        }
+        mThreadHelper.quit(false);
     }
     private void runOnUi(Runnable r){
         FragmentActivity activity = getActivity();
@@ -279,6 +257,31 @@ public class CameraFragment extends Fragment{
             mIv_camera.setTag(true);
             mIv_image.setVisibility(View.VISIBLE);
             mTv_finish.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showProcessingDialog() {
+        final FragmentActivity activity = getActivity();
+        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        if(activity != null && dd != null){
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dd.showImageProcessing(activity);
+                }
+            });
+        }
+    }
+    private void dismissProcessingDialog(final Runnable next) {
+        final FragmentActivity activity = getActivity();
+        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        if(activity != null && dd != null){
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dd.dismissImageProcessing(next);
+                }
+            });
         }
     }
 
@@ -325,12 +328,14 @@ public class CameraFragment extends Fragment{
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    Context context = getContext();
+                    Activity context = getActivity();
                     if(context == null){
                         mProcessing.compareAndSet(true, false);
                         return;
                     }
-                    File file = new File(mSaveDir, System.currentTimeMillis() + ".jpg");
+                    //show dialog
+                    ImagePickDelegateImpl.getDefault().showProcessingDialog(context);
+                    final File file = new File(mSaveDir, System.currentTimeMillis() + ".jpg");
                     OutputStream os = null;
                     try {
                         Bitmap bitmap = mImgParser.parseToBitmap(data);
@@ -351,8 +356,14 @@ public class CameraFragment extends Fragment{
                         }
                         mProcessing.compareAndSet(true, false);
                     }
-                    mPictureCallback.onTakePictureResult(file.getAbsolutePath());
-                    setImageFile(file.getAbsolutePath());
+                    //do next
+                    ImagePickDelegateImpl.getDefault().dismissProcessingDialog(context, new Runnable() {
+                        @Override
+                        public void run() {
+                            mPictureCallback.onTakePictureResult(file.getAbsolutePath());
+                            setImageFile(file.getAbsolutePath());
+                        }
+                    });
                 }
             });
         }

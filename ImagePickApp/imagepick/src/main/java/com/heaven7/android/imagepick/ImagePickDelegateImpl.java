@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.CameraParameter;
@@ -24,6 +25,8 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     private static ImagePickDelegateImpl sInstance;
+    private DialogDelegate mDialogDelegate;
+
     private ImagePickDelegateImpl(){}
 
     private List<String> mImages = new ArrayList<>(5);
@@ -66,6 +69,14 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
     }
     @Override
+    public void setDialogDelegate(DialogDelegate dd) {
+        mDialogDelegate = dd;
+    }
+    @Override
+    public DialogDelegate getDialogDelegate() {
+        return mDialogDelegate;
+    }
+    @Override
     public void addOnSelectStateChangedListener(OnSelectStateChangedListener l) {
         if(mSelectListeners == null){
             mSelectListeners = new ArrayList<>(3);
@@ -86,6 +97,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     public void startCamera(Activity context) {
         new LauncherIntent.Builder()
                 .setClass(context, CameraActivity.class)
+                .putExtra(PickConstants.KEY_PARAMS, new CameraParameter.Builder().build())
                 .build()
                 .startActivityForResult(REQ_CAMERA);
     }
@@ -123,5 +135,36 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                 .putExtra(PickConstants.KEY_SINGLE_ITEM, single)
                 .build()
                 .startActivityForResult(REQ_BROWSE_BIG_IMAGE);
+    }
+
+    /*private*/ void showProcessingDialog(final Activity activity) {
+        if(activity == null){
+            return;
+        }
+        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        if(dd != null){
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dd.showImageProcessing(activity);
+                }
+            });
+        }
+    }
+    /*private*/ void dismissProcessingDialog(final Activity activity, final Runnable task) {
+        if(activity == null){
+            return;
+        }
+        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        if(dd != null){
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dd.dismissImageProcessing(task);
+                }
+            });
+        }else {
+            task.run();
+        }
     }
 }

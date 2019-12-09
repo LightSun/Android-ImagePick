@@ -16,6 +16,11 @@ public interface PickConstants {
     int FLAG_SHOW_BOTTOM_END_BUTTON      = 0x0008;
     int FLAG_MULTI_SELECT         = 0x0010;
 
+    /** image formats */
+    int FORMAT_RGB_565    = 1;
+    int FORMAT_ARGB_8888  = 2;
+    int FORMAT_RGBA_F16   = 3;
+
     /** the flags for select in image-select */
     int FLAG_IMAGE = MediaResourceHelper.FLAG_IMAGE;
     int FLAG_VIDEO = MediaResourceHelper.FLAG_VIDEO;

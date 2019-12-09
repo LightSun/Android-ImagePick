@@ -3,11 +3,13 @@ package com.heaven7.android.pick.app;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
@@ -58,8 +60,11 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
+                            String cacheDir = Environment.getExternalStorageDirectory() + "/lib_pick";
                             ImagePickManager.get().getImagePickDelegate().startBrowseImages(EntryActivity.this,
                                     new ImageSelectParameter.Builder()
+                                            .setImageParameter(ImageParameter.DEFAULT)
+                                            .setCacheDir(cacheDir)
                                            // .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
                                             .setMaxSelect(4)
                                     .build());

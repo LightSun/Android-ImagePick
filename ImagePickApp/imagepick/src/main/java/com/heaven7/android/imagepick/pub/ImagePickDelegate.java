@@ -11,6 +11,19 @@ import java.util.List;
 public interface ImagePickDelegate {
 
     /**
+     * set dialog delegate
+     * @param dd the dialog delegate
+     * @since 1.0.2
+     */
+    void setDialogDelegate(DialogDelegate dd);
+
+    /**
+     * get dialog delegate
+     * @return the dialog delegate
+     */
+    DialogDelegate getDialogDelegate();
+
+    /**
      * add select state change listener
      * @param l the listener
      */
@@ -49,6 +62,25 @@ public interface ImagePickDelegate {
      * @param single the single selected item.can be null for multi-select it must be null.
      */
     void startBrowseBigImages(Activity context, BigImageSelectParameter param, List<? extends IImageItem> allItems, IImageItem single);
+
+
+    /**
+     * the dialog delegate used to helpful handle image.
+     * @since 1.0.2
+     */
+    interface DialogDelegate{
+
+        /**
+         * show image processing
+         * @param activity the activity
+         */
+        void showImageProcessing(Activity activity);
+        /**
+         * dismiss image processing dialog
+         * @param next the task used to do next. this is helpful for animate dialog
+         */
+        void dismissImageProcessing(Runnable next);
+    }
     /**
      * on select state change listener
      */

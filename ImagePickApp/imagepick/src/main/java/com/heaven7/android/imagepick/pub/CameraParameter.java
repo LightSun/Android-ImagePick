@@ -10,67 +10,8 @@ import android.os.Parcelable;
  */
 public class CameraParameter implements Parcelable {
 
-    public static final int FORMAT_RGB_565    = 1;
-    public static final int FORMAT_ARGB_8888  = 2;
-    public static final int FORMAT_RGBA_F16   = 3;
-    private int maxWidth = 4000;
-    private int maxHeight = 4000;
-    private int format = FORMAT_RGB_565;
-    private boolean autoFocus;
-
-    protected CameraParameter(CameraParameter.Builder builder) {
-        this.maxWidth = builder.maxWidth;
-        this.maxHeight = builder.maxHeight;
-        this.format = builder.format;
-        this.autoFocus = builder.autoFocus;
-    }
-
-    public int getMaxWidth() {
-        return this.maxWidth;
-    }
-
-    public int getMaxHeight() {
-        return this.maxHeight;
-    }
-
-    public int getFormat() {
-        return this.format;
-    }
-
-    public boolean isAutoFocus() {
-        return this.autoFocus;
-    }
-
-    public static class Builder {
-        private int maxWidth = 4000;
-        private int maxHeight = 4000;
-        private int format = FORMAT_RGB_565;
-        private boolean autoFocus;
-
-        public Builder setMaxWidth(int maxWidth) {
-            this.maxWidth = maxWidth;
-            return this;
-        }
-
-        public Builder setMaxHeight(int maxHeight) {
-            this.maxHeight = maxHeight;
-            return this;
-        }
-
-        public Builder setFormat(int format) {
-            this.format = format;
-            return this;
-        }
-
-        public Builder setAutoFocus(boolean autoFocus) {
-            this.autoFocus = autoFocus;
-            return this;
-        }
-
-        public CameraParameter build() {
-            return new CameraParameter(this);
-        }
-    }
+    private ImageParameter imageParameter = ImageParameter.DEFAULT;
+    private boolean autoFocus = true;
 
     @Override
     public int describeContents() {
@@ -79,16 +20,12 @@ public class CameraParameter implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.maxWidth);
-        dest.writeInt(this.maxHeight);
-        dest.writeInt(this.format);
+        dest.writeParcelable(this.imageParameter, flags);
         dest.writeByte(this.autoFocus ? (byte) 1 : (byte) 0);
     }
 
     protected CameraParameter(Parcel in) {
-        this.maxWidth = in.readInt();
-        this.maxHeight = in.readInt();
-        this.format = in.readInt();
+        this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.autoFocus = in.readByte() != 0;
     }
 
@@ -103,4 +40,36 @@ public class CameraParameter implements Parcelable {
             return new CameraParameter[size];
         }
     };
+
+    protected CameraParameter(CameraParameter.Builder builder) {
+        this.imageParameter = builder.imageParameter;
+        this.autoFocus = builder.autoFocus;
+    }
+
+    public ImageParameter getImageParameter() {
+        return this.imageParameter;
+    }
+
+    public boolean isAutoFocus() {
+        return this.autoFocus;
+    }
+
+    public static class Builder {
+        private ImageParameter imageParameter = ImageParameter.DEFAULT;
+        private boolean autoFocus = true;
+
+        public Builder setImageParameter(ImageParameter imageParameter) {
+            this.imageParameter = imageParameter;
+            return this;
+        }
+
+        public Builder setAutoFocus(boolean autoFocus) {
+            this.autoFocus = autoFocus;
+            return this;
+        }
+
+        public CameraParameter build() {
+            return new CameraParameter(this);
+        }
+    }
 }
