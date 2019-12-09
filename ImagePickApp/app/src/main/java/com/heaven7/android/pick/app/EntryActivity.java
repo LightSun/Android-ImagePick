@@ -1,6 +1,7 @@
 package com.heaven7.android.pick.app;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.heaven7.android.imagepick.pub.ImageParameter;
+import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
@@ -31,6 +33,18 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_entry);
         mComponent = new RetrofitRxComponent();
+
+        ImagePickManager.get().getImagePickDelegate().setDialogDelegate(new ImagePickDelegate.DialogDelegate() {
+            @Override
+            public void showImageProcessing(Activity activity) {
+                System.err.println("showImageProcessing");
+            }
+            @Override
+            public void dismissImageProcessing(Runnable next) {
+                System.err.println("dismissImageProcessing");
+                next.run();
+            }
+        });
     }
 
     @Override

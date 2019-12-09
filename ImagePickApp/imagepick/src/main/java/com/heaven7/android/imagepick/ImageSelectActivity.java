@@ -132,48 +132,49 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             if(!file.exists()){
                 file.mkdirs();
             }
-            final Map<MediaResourceHelper.MediaResourceItem, String> map = new HashMap<>();
+            //need handle items
             final List<MediaResourceHelper.MediaResourceItem> imageItems = VisitServices.from(items)
                     .filter(new PredicateVisitor<MediaResourceHelper.MediaResourceItem>() {
                 @Override
                 public Boolean visit(MediaResourceHelper.MediaResourceItem item, Object param) {
-                    return item.isImage();
+                    if(item.isImage() && !item.isGif()){
+                        if(item.getWidth() > ip.getMaxWidth() || item.getHeight() > ip.getMaxHeight()){
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             }).getAsList();
             if(imageItems.isEmpty()){
                 publishResultImpl(Utils.getFilePaths(items));
             }else {
                 ImagePickDelegateImpl.getDefault().showProcessingDialog(this);
-
                 mThreadHelper.getBackgroundHandler().post(new Runnable() {
                     @Override
                     public void run() {
+                        final Map<MediaResourceHelper.MediaResourceItem, String> map = new HashMap<>();
                         VisitServices.from(imageItems).fire(new FireVisitor<MediaResourceHelper.MediaResourceItem>() {
                             @Override
                             public Boolean visit(MediaResourceHelper.MediaResourceItem item, Object param) {
-                                if(item.isGif()){
+                                Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
+                                String extension = FileUtils.getFileExtension(item.getFilePath());
+                                Bitmap.CompressFormat format = Utils.getCompressFormat(extension);
+                                if(format == null){
                                     return null;
                                 }
-                                if(item.getWidth() > ip.getMaxWidth() || item.getHeight() > ip.getMaxHeight()){
-                                    Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
-                                    String extension = FileUtils.getFileExtension(item.getFilePath());
-                                    Bitmap.CompressFormat format = Utils.getCompressFormat(extension);
-                                    if(format == null){
-                                        return null;
-                                    }
-                                    //compress io
-                                    File file = new File(cacheDir, System.currentTimeMillis() + "." + extension);
-                                    FileOutputStream fos = null;
-                                    try {
-                                        fos = new FileOutputStream(file);
-                                        bitmap.compress(format, 100, fos);
-                                        fos.flush();
-                                        map.put(item, file.getAbsolutePath());
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    } finally {
-                                        IOUtils.closeQuietly(fos);
-                                    }
+                                //compress io
+                                File file = new File(cacheDir, System.currentTimeMillis() + "." + extension);
+                                FileOutputStream fos = null;
+                                try {
+                                    fos = new FileOutputStream(file);
+                                    bitmap.compress(format, 100, fos);
+                                    fos.flush();
+                                    System.out.println(file.getAbsolutePath());
+                                    map.put(item, file.getAbsolutePath());
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                } finally {
+                                    IOUtils.closeQuietly(fos);
                                 }
                                 return null;
                             }
