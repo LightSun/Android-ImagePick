@@ -1,14 +1,11 @@
 package com.heaven7.android.imagepick;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 
-import com.heaven7.android.imagepick.pub.IImageItem;
-import com.heaven7.android.imagepick.pub.ImageItem;
 import com.heaven7.android.imagepick.pub.ImageParameter;
+import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 
@@ -17,27 +14,21 @@ import java.util.List;
 
 /*public*/ final class Utils {
 
-    public static void openDefaultAnimator(RecyclerView mRv) {
+    /*public static void openDefaultAnimator(RecyclerView mRv) {
         RecyclerView.ItemAnimator animator = mRv.getItemAnimator();
         animator.setAddDuration(120);
         animator.setChangeDuration(250);
         animator.setMoveDuration(250);
         animator.setRemoveDuration(120);
         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(true);
-    }
+    }*/
     public static void closeDefaultAnimator(RecyclerView mRv) {
         mRv.setItemAnimator(new com.heaven7.android.imagepick.DefaultItemAnimator());
-       /* RecyclerView.ItemAnimator animator = mRv.getItemAnimator();
-        animator.setAddDuration(0);
-        animator.setChangeDuration(0);
-        animator.setMoveDuration(0);
-        animator.setRemoveDuration(0);
-        ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);*/
     }
 
-    public static ArrayList<String> getFilePaths(List<MediaResourceHelper.MediaResourceItem> items) {
+    public static ArrayList<String> getFilePaths(List<MediaResourceItem> items) {
         ArrayList<String> paths = new ArrayList<>();
-        for (MediaResourceHelper.MediaResourceItem item : items){
+        for (MediaResourceItem item : items){
             paths.add(item.getFilePath());
         }
         return paths;

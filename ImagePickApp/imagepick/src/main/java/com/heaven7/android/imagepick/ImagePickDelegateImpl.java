@@ -5,9 +5,11 @@ import android.support.v4.app.FragmentActivity;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.CameraParameter;
+import com.heaven7.android.imagepick.pub.ExceptionHandler;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.util2.LauncherIntent;
 
@@ -26,6 +28,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     private static ImagePickDelegateImpl sInstance;
     private OnImageProcessListener mImageListener;
+    private ExceptionHandler mHandler;
 
     private ImagePickDelegateImpl(){}
 
@@ -69,6 +72,14 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
     }
 
+    @Override
+    public void setExceptionHandler(ExceptionHandler handler) {
+        this.mHandler = handler;
+    }
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        return mHandler;
+    }
     @Override
     public void setOnImageProcessListener(OnImageProcessListener l) {
         mImageListener = l;
@@ -181,9 +192,13 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
     }
 
-    public boolean onImageProcessException(final Activity activity, final int order,
-                                           final int size,final Exception e) {
+    /*public*/ boolean onImageProcessException(final Activity activity, final int order,
+                                               final int size, MediaResourceItem item, final Exception e) {
         final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
-        return dd != null && dd.onProcessException(activity, order, size, e);
+        return dd != null && dd.onProcessException(activity, order, size, item, e);
+    }
+
+    /*public*/ boolean handleException(FragmentActivity activity, int code, Exception e) {
+        return mHandler != null && mHandler.handleException(activity, code, e);
     }
 }

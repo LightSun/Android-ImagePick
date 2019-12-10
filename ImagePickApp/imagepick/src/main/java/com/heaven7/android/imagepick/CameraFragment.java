@@ -32,6 +32,7 @@ import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
+import com.heaven7.core.util.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -155,7 +156,14 @@ public class CameraFragment extends Fragment{
                 if(isDetached()){
                     return;
                 }
-                mCameraView.start();
+                try {
+                    mCameraView.start();
+                }catch (Exception e){
+                    FragmentActivity activity = getActivity();
+                    if(activity != null && !ImagePickDelegateImpl.getDefault().handleException(activity, PickConstants.CODE_CAMERA, e)){
+                        Toaster.show(activity, activity.getString(R.string.lib_pick_camera_failed));
+                    }
+                }
             }
         });
     }

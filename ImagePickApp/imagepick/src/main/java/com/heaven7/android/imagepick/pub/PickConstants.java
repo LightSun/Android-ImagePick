@@ -30,4 +30,9 @@ public interface PickConstants {
     int REQ_CAMERA  = 999;
     /** the request code indicate browse the big images. */
     int REQ_BROWSE_BIG_IMAGE  = 997;
+
+
+    // from codes
+    /** indicate open camera or start preview failed. */
+    int CODE_CAMERA = 1;
 }

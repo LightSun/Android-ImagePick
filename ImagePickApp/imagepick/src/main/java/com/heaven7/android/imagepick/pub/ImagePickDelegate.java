@@ -11,6 +11,16 @@ import java.util.List;
 public interface ImagePickDelegate {
 
     /**
+     * void set exception handler
+     * @param handler the exception handler
+     */
+    void setExceptionHandler(ExceptionHandler handler);
+
+    /**
+     * void set exception handler
+     */
+    ExceptionHandler getExceptionHandler();
+    /**
      * set on image process listener
      * @param l the dialog delegate
      * @since 1.0.2
@@ -96,7 +106,7 @@ public interface ImagePickDelegate {
          * @param e the exception of handle image process. may be null. like image mime not support to scale.
          * @return true if you handled this exception and want to continue processing
          */
-        boolean onProcessException(Activity activity, int order, int size, Exception e);
+        boolean onProcessException(Activity activity, int order, int size, MediaResourceItem item, Exception e);
     }
     /**
      * on select state change listener

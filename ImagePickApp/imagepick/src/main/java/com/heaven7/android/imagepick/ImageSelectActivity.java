@@ -30,22 +30,19 @@ import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.Logger;
-import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
 import com.heaven7.java.base.util.FileUtils;
 import com.heaven7.java.base.util.IOUtils;
 import com.heaven7.java.base.util.TextUtils;
-import com.heaven7.java.visitor.FireIndexedVisitor;
-import com.heaven7.java.visitor.FireVisitor;
 import com.heaven7.java.visitor.MapResultVisitor;
 import com.heaven7.java.visitor.PredicateVisitor;
 import com.heaven7.java.visitor.ResultVisitor;
-import com.heaven7.java.visitor.ThrowableVisitor;
 import com.heaven7.java.visitor.collection.KeyValuePair;
 import com.heaven7.java.visitor.collection.VisitServices;
 import com.heaven7.java.visitor.util.Predicates;
@@ -62,7 +59,7 @@ import java.util.Map;
  * @author heaven7
  */
 public class ImageSelectActivity extends BaseActivity implements MediaResourceHelper.Callback,
-        ImagePickDelegate.OnSelectStateChangedListener, Selector.Callback<MediaResourceHelper.MediaResourceItem> {
+        ImagePickDelegate.OnSelectStateChangedListener, Selector.Callback<MediaResourceItem> {
 
     private static final String TAG = "ImageSelectAc";
     private TextView mTv_upload;
@@ -75,7 +72,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     private int mItemHeight;
 
     private ImageSelectParameter mParam;
-    private final Selector<MediaResourceHelper.MediaResourceItem> mSelector = new Selector<>(this);
+    private final Selector<MediaResourceItem> mSelector = new Selector<>(this);
     private final ThreadHelper mThreadHelper = new ThreadHelper();
 
     @Override
@@ -101,7 +98,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mTv_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<MediaResourceHelper.MediaResourceItem> items = mSelector.getSelects();
+                List<MediaResourceItem> items = mSelector.getSelects();
                 if(items == null || items.size() == 0){
                     setResult(RESULT_CANCELED);
                     finish();
@@ -117,7 +114,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mMediaHelper.getMediaResource(mParam.getFlags(), this);
     }
 
-    private void publishResult(final List<MediaResourceHelper.MediaResourceItem> items) {
+    private void publishResult(final List<MediaResourceItem> items) {
         final ImageParameter ip = mParam.getImageParameter();
         if(ip == null){
             publishResultImpl(Utils.getFilePaths(items));
@@ -135,10 +132,10 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 file.mkdirs();
             }
             //need handle items
-            final List<MediaResourceHelper.MediaResourceItem> imageItems = VisitServices.from(items)
-                    .filter(new PredicateVisitor<MediaResourceHelper.MediaResourceItem>() {
+            final List<MediaResourceItem> imageItems = VisitServices.from(items)
+                    .filter(new PredicateVisitor<MediaResourceItem>() {
                 @Override
-                public Boolean visit(MediaResourceHelper.MediaResourceItem item, Object param) {
+                public Boolean visit(MediaResourceItem item, Object param) {
                     if(item.isImage() && !item.isGif()){
                         if(item.getWidth() > ip.getMaxWidth() || item.getHeight() > ip.getMaxHeight()){
                             return true;
@@ -154,17 +151,17 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 mThreadHelper.getBackgroundHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        final Map<MediaResourceHelper.MediaResourceItem, String> map = new HashMap<>();
-                        boolean doNext = true;
+                        final Map<MediaResourceItem, String> map = new HashMap<>();
+                        boolean doNext;
                         for (int i = 0, size = imageItems.size() ; i< size ; i ++){
-                            MediaResourceHelper.MediaResourceItem item = imageItems.get(i);
+                            MediaResourceItem item = imageItems.get(i);
                             Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
                             String extension = FileUtils.getFileExtension(item.getFilePath());
                             Bitmap.CompressFormat format = Utils.getCompressFormat(extension);
                             if(format == null){
-                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, null);
+                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, null);
                                 if(!doNext){
-                                    break;
+                                    return;
                                 }else {
                                     continue;
                                 }
@@ -180,18 +177,18 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                                 map.put(item, file.getAbsolutePath());
                                 ImagePickDelegateImpl.getDefault().onImageProcessUpdate(ImageSelectActivity.this, i + 1, size);
                             }catch (Exception e){
-                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, e);
+                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, e);
                                 if(!doNext){
-                                    break;
+                                    return;
                                 }
                             } finally {
                                 IOUtils.closeQuietly(fos);
                             }
                         }
                         //map to file path
-                        final List<String> list = VisitServices.from(items).map(new ResultVisitor<MediaResourceHelper.MediaResourceItem, String>() {
+                        final List<String> list = VisitServices.from(items).map(new ResultVisitor<MediaResourceItem, String>() {
                             @Override
-                            public String visit(MediaResourceHelper.MediaResourceItem item, Object param) {
+                            public String visit(MediaResourceItem item, Object param) {
                                 String s = map.get(item);
                                 if (!TextUtils.isEmpty(s)) {
                                     return s;
@@ -228,7 +225,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(resultCode == RESULT_OK){
-            List<MediaResourceHelper.MediaResourceItem> items = mSelector.getSelects();
+            List<MediaResourceItem> items = mSelector.getSelects();
             publishResult(items);
         }
     }
@@ -236,7 +233,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     @Override
     public void onSelectStateChanged(IImageItem item, boolean select) {
         //handle in selector and ui
-        MediaResourceHelper.MediaResourceItem mrItem = (MediaResourceHelper.MediaResourceItem) item;
+        MediaResourceItem mrItem = (MediaResourceItem) item;
         if(select){
             mSelector.select(mrItem);
         }else {
@@ -300,7 +297,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     private void setSelectText() {
         //1 no need
         if(mParam.getMaxSelect() > 1){
-            List<MediaResourceHelper.MediaResourceItem> selects = mSelector.getSelects();
+            List<MediaResourceItem> selects = mSelector.getSelects();
             String text = getString(R.string.lib_pick_upload) + String.format("(%d/%d)", selects.size() , mParam.getMaxSelect());
             mTv_upload.setText(text);
         }
@@ -315,24 +312,24 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         adapter.getAdapterManager().replaceAllItems(list);
     }
 
-    private List<PairItem> groupItems(ArrayList<MediaResourceHelper.MediaResourceItem> all) {
-        return VisitServices.from(all).groupService(new ResultVisitor<MediaResourceHelper.MediaResourceItem, String>() {
+    private List<PairItem> groupItems(ArrayList<MediaResourceItem> all) {
+        return VisitServices.from(all).groupService(new ResultVisitor<MediaResourceItem, String>() {
                 @Override
-                public String visit(MediaResourceHelper.MediaResourceItem item, Object param) {
+                public String visit(MediaResourceItem item, Object param) {
                     return FileUtils.getFileDir(item.getFilePath(), 1, false);
                 }
-            }).map(new MapResultVisitor<String, List<MediaResourceHelper.MediaResourceItem>, PairItem>() {
+            }).map(new MapResultVisitor<String, List<MediaResourceItem>, PairItem>() {
                 @Override
-                public PairItem visit(KeyValuePair<String, List<MediaResourceHelper.MediaResourceItem>> t, Object param) {
+                public PairItem visit(KeyValuePair<String, List<MediaResourceItem>> t, Object param) {
                     return new PairItem(t.getKey(), t.getValue());
                 }
             }).getAsList();
     }
 
     @Override
-    public void onCallback(List<MediaResourceHelper.MediaResourceItem> photoes, List<MediaResourceHelper.MediaResourceItem> videoes) {
+    public void onCallback(List<MediaResourceItem> photoes, List<MediaResourceItem> videoes) {
         //default is all
-        ArrayList<MediaResourceHelper.MediaResourceItem> all = new ArrayList<>(videoes);
+        ArrayList<MediaResourceItem> all = new ArrayList<>(videoes);
         all.addAll(photoes);
         if(all.isEmpty()){
             return;
@@ -371,21 +368,21 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     }
 
     @Override
-    public void onSelect(List<MediaResourceHelper.MediaResourceItem> items, MediaResourceHelper.MediaResourceItem item) {
+    public void onSelect(List<MediaResourceItem> items, MediaResourceItem item) {
         notifyItemChangeIfNeed(item);
         setSelectText();
         Logger.d(TAG, "onSelect", item.getFilePath());
     }
     @Override
-    public void onUnselect(List<MediaResourceHelper.MediaResourceItem> items, MediaResourceHelper.MediaResourceItem item) {
+    public void onUnselect(List<MediaResourceItem> items, MediaResourceItem item) {
         notifyItemChangeIfNeed(item);
         setSelectText();
         Logger.d(TAG, "onUnselect", item.getFilePath());
     }
 
-    private void notifyItemChangeIfNeed(MediaResourceHelper.MediaResourceItem item) {
+    private void notifyItemChangeIfNeed(MediaResourceItem item) {
         ContentAdapter adapter = (ContentAdapter) mRv_content.getAdapter();
-        List<MediaResourceHelper.MediaResourceItem> aitems = adapter.getAdapterManager().getItems();
+        List<MediaResourceItem> aitems = adapter.getAdapterManager().getItems();
         int index = aitems.indexOf(item);
         if(index >= 0){
             adapter.getAdapterManager().notifyItemChanged(index);
@@ -427,14 +424,14 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         }
     }
 
-    private class ContentAdapter extends QuickRecycleViewAdapter<MediaResourceHelper.MediaResourceItem> {
+    private class ContentAdapter extends QuickRecycleViewAdapter<MediaResourceItem> {
 
-        public ContentAdapter(List<MediaResourceHelper.MediaResourceItem> mDatas) {
+        public ContentAdapter(List<MediaResourceItem> mDatas) {
             super(R.layout.lib_pick_item_select_image, mDatas);
         }
 
         @Override
-        protected void onBindData(final Context context, final int position, final MediaResourceHelper.MediaResourceItem item,
+        protected void onBindData(final Context context, final int position, final MediaResourceItem item,
                                   int itemLayoutId, ViewHelper2 helper) {
             View rootView = helper.getRootView();
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rootView.getLayoutParams();
@@ -457,7 +454,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     }).setOnClickListener(R.id.iv_select_state, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<MediaResourceHelper.MediaResourceItem> items = mSelector.getSelects();
+                    List<MediaResourceItem> items = mSelector.getSelects();
                     if(mParam.getMaxSelect() > 1 && items != null && items.size() >= mParam.getMaxSelect()){
                         if(!items.contains(item)){ //if already contains .it will be cancel
                             Toaster.show(v.getContext(), getString(R.string.lib_pick_select_reach_max));
@@ -469,9 +466,9 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             }).setRootOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<MediaResourceHelper.MediaResourceItem> items = getAdapterManager().getItems();
-                    List<MediaResourceHelper.MediaResourceItem> selects = mSelector.getSelects();
-                    MediaResourceHelper.MediaResourceItem selectItem = null;
+                    List<MediaResourceItem> items = getAdapterManager().getItems();
+                    List<MediaResourceItem> selects = mSelector.getSelects();
+                    MediaResourceItem selectItem = null;
 
                     int flags = PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM
                             | PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON | PickConstants.FLAG_SHOW_TOP_END_BUTTON;
@@ -497,16 +494,16 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     /*private*/ static class PairItem extends BaseSelector {
 
         private final String dirname;
-        private final List<MediaResourceHelper.MediaResourceItem> items;
+        private final List<MediaResourceItem> items;
 
-        public PairItem(String dirname, List<MediaResourceHelper.MediaResourceItem> items) {
+        public PairItem(String dirname, List<MediaResourceItem> items) {
             this.dirname = dirname;
             this.items = items;
         }
         public String getDirName() {
             return dirname;
         }
-        public List<MediaResourceHelper.MediaResourceItem> getItems() {
+        public List<MediaResourceItem> getItems() {
             return items;
         }
     }
