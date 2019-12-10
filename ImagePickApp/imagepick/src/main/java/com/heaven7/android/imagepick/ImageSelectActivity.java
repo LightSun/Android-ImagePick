@@ -152,7 +152,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     @Override
                     public void run() {
                         final Map<MediaResourceItem, String> map = new HashMap<>();
-                        boolean doNext;
+                        boolean doNext = true;
                         for (int i = 0, size = imageItems.size() ; i< size ; i ++){
                             MediaResourceItem item = imageItems.get(i);
                             Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
@@ -161,6 +161,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             if(format == null){
                                 doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, null);
                                 if(!doNext){
+                                    Toaster.show(getApplicationContext(), getString(R.string.lib_pick_unsupport_image_format));
                                     return;
                                 }else {
                                     continue;
@@ -179,6 +180,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             }catch (Exception e){
                                 doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, e);
                                 if(!doNext){
+                                    Toaster.show(getApplicationContext(), getString(R.string.lib_pick_process_image_failed));
                                     return;
                                 }
                             } finally {

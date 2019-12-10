@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 
+import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
@@ -37,6 +39,24 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.ac_entry);
         mComponent = new RetrofitRxComponent();
 
+        ImagePickDelegateImpl.getDefault().setOnImageProcessListener(new ImagePickDelegate.OnImageProcessListener() {
+            @Override
+            public void onProcessStart(Activity activity, int totalCount) {
+
+            }
+            @Override
+            public void onProcessUpdate(Activity activity, int finishCount, int totalCount) {
+
+            }
+            @Override
+            public void onProcessEnd(Runnable next) {
+
+            }
+            @Override
+            public boolean onProcessException(Activity activity, int order, int size, MediaResourceItem item, Exception e) {
+                return false;
+            }
+        });
         test1();
     }
 
