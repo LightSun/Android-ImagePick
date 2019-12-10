@@ -259,32 +259,6 @@ public class CameraFragment extends Fragment{
             mTv_finish.setVisibility(View.VISIBLE);
         }
     }
-
-    private void showProcessingDialog() {
-        final FragmentActivity activity = getActivity();
-        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
-        if(activity != null && dd != null){
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dd.showImageProcessing(activity);
-                }
-            });
-        }
-    }
-    private void dismissProcessingDialog(final Runnable next) {
-        final FragmentActivity activity = getActivity();
-        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
-        if(activity != null && dd != null){
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dd.dismissImageProcessing(next);
-                }
-            });
-        }
-    }
-
     public interface ActionCallback{
         /**
          * called on click finish
@@ -334,7 +308,7 @@ public class CameraFragment extends Fragment{
                         return;
                     }
                     //show dialog
-                    ImagePickDelegateImpl.getDefault().showProcessingDialog(context);
+                    ImagePickDelegateImpl.getDefault().onImageProcessStart(context, 0);
                     final File file = new File(mSaveDir, System.currentTimeMillis() + ".jpg");
                     OutputStream os = null;
                     try {
@@ -357,7 +331,7 @@ public class CameraFragment extends Fragment{
                         mProcessing.compareAndSet(true, false);
                     }
                     //do next
-                    ImagePickDelegateImpl.getDefault().dismissProcessingDialog(context, new Runnable() {
+                    ImagePickDelegateImpl.getDefault().onImageProcessEnd(context, new Runnable() {
                         @Override
                         public void run() {
                             mPictureCallback.onTakePictureResult(file.getAbsolutePath());

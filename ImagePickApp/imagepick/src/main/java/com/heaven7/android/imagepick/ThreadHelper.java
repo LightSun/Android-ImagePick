@@ -4,6 +4,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+/**
+ * @author heaven7
+ */
 /*public*/ final class ThreadHelper {
 
     private Handler mBackgroundHandler;

@@ -25,7 +25,7 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     private static ImagePickDelegateImpl sInstance;
-    private DialogDelegate mDialogDelegate;
+    private OnImageProcessListener mImageListener;
 
     private ImagePickDelegateImpl(){}
 
@@ -68,13 +68,14 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
             }
         }
     }
+
     @Override
-    public void setDialogDelegate(DialogDelegate dd) {
-        mDialogDelegate = dd;
+    public void setOnImageProcessListener(OnImageProcessListener l) {
+        mImageListener = l;
     }
     @Override
-    public DialogDelegate getDialogDelegate() {
-        return mDialogDelegate;
+    public OnImageProcessListener getOnImageProcessListener() {
+        return mImageListener;
     }
     @Override
     public void addOnSelectStateChangedListener(OnSelectStateChangedListener l) {
@@ -137,34 +138,52 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                 .startActivityForResult(REQ_BROWSE_BIG_IMAGE);
     }
 
-    /*private*/ void showProcessingDialog(final Activity activity) {
+    /*public*/ void onImageProcessStart(final Activity activity, final int count) {
         if(activity == null){
             return;
         }
-        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         if(dd != null){
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    dd.showImageProcessing(activity);
+                    dd.onProcessStart(activity, count);
                 }
             });
         }
     }
-    /*private*/ void dismissProcessingDialog(final Activity activity, final Runnable task) {
+    /*public*/ void onImageProcessEnd(final Activity activity, final Runnable next) {
         if(activity == null){
             return;
         }
-        final ImagePickDelegate.DialogDelegate dd = ImagePickDelegateImpl.getDefault().getDialogDelegate();
+        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         if(dd != null){
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    dd.dismissImageProcessing(task);
+                    dd.onProcessEnd(next);
                 }
             });
-        }else {
-            task.run();
         }
+    }
+    /*public*/ void onImageProcessUpdate(final Activity activity, final int update, final int total) {
+        if(activity == null){
+            return;
+        }
+        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        if(dd != null){
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dd.onProcessUpdate(activity, update, total);
+                }
+            });
+        }
+    }
+
+    public boolean onImageProcessException(final Activity activity, final int order,
+                                           final int size,final Exception e) {
+        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        return dd != null && dd.onProcessException(activity, order, size, e);
     }
 }

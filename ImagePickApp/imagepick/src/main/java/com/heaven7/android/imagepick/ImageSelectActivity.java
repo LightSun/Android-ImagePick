@@ -40,10 +40,12 @@ import com.heaven7.core.util.viewhelper.action.Getters;
 import com.heaven7.java.base.util.FileUtils;
 import com.heaven7.java.base.util.IOUtils;
 import com.heaven7.java.base.util.TextUtils;
+import com.heaven7.java.visitor.FireIndexedVisitor;
 import com.heaven7.java.visitor.FireVisitor;
 import com.heaven7.java.visitor.MapResultVisitor;
 import com.heaven7.java.visitor.PredicateVisitor;
 import com.heaven7.java.visitor.ResultVisitor;
+import com.heaven7.java.visitor.ThrowableVisitor;
 import com.heaven7.java.visitor.collection.KeyValuePair;
 import com.heaven7.java.visitor.collection.VisitServices;
 import com.heaven7.java.visitor.util.Predicates;
@@ -148,37 +150,44 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
             if(imageItems.isEmpty()){
                 publishResultImpl(Utils.getFilePaths(items));
             }else {
-                ImagePickDelegateImpl.getDefault().showProcessingDialog(this);
+                ImagePickDelegateImpl.getDefault().onImageProcessStart(this, imageItems.size());
                 mThreadHelper.getBackgroundHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         final Map<MediaResourceHelper.MediaResourceItem, String> map = new HashMap<>();
-                        VisitServices.from(imageItems).fire(new FireVisitor<MediaResourceHelper.MediaResourceItem>() {
-                            @Override
-                            public Boolean visit(MediaResourceHelper.MediaResourceItem item, Object param) {
-                                Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
-                                String extension = FileUtils.getFileExtension(item.getFilePath());
-                                Bitmap.CompressFormat format = Utils.getCompressFormat(extension);
-                                if(format == null){
-                                    return null;
+                        boolean doNext = true;
+                        for (int i = 0, size = imageItems.size() ; i< size ; i ++){
+                            MediaResourceHelper.MediaResourceItem item = imageItems.get(i);
+                            Bitmap bitmap = mParser.parseToBitmap(item.getFilePath());
+                            String extension = FileUtils.getFileExtension(item.getFilePath());
+                            Bitmap.CompressFormat format = Utils.getCompressFormat(extension);
+                            if(format == null){
+                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, null);
+                                if(!doNext){
+                                    break;
+                                }else {
+                                    continue;
                                 }
-                                //compress io
-                                File file = new File(cacheDir, System.currentTimeMillis() + "." + extension);
-                                FileOutputStream fos = null;
-                                try {
-                                    fos = new FileOutputStream(file);
-                                    bitmap.compress(format, 100, fos);
-                                    fos.flush();
-                                    System.out.println(file.getAbsolutePath());
-                                    map.put(item, file.getAbsolutePath());
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                } finally {
-                                    IOUtils.closeQuietly(fos);
-                                }
-                                return null;
                             }
-                        });
+                            //compress io
+                            File file = new File(cacheDir, System.currentTimeMillis() + "." + extension);
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(file);
+                                bitmap.compress(format, 100, fos);
+                                fos.flush();
+                                System.out.println(file.getAbsolutePath());
+                                map.put(item, file.getAbsolutePath());
+                                ImagePickDelegateImpl.getDefault().onImageProcessUpdate(ImageSelectActivity.this, i + 1, size);
+                            }catch (Exception e){
+                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, e);
+                                if(!doNext){
+                                    break;
+                                }
+                            } finally {
+                                IOUtils.closeQuietly(fos);
+                            }
+                        }
                         //map to file path
                         final List<String> list = VisitServices.from(items).map(new ResultVisitor<MediaResourceHelper.MediaResourceItem, String>() {
                             @Override
@@ -190,7 +199,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                                 return item.getFilePath();
                             }
                         }).getAsList();
-                        ImagePickDelegateImpl.getDefault().dismissProcessingDialog(ImageSelectActivity.this, new Runnable() {
+                        ImagePickDelegateImpl.getDefault().onImageProcessEnd(ImageSelectActivity.this, new Runnable() {
                             @Override
                             public void run() {
                                 publishResultImpl(new ArrayList<>(list));

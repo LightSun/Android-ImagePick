@@ -11,17 +11,17 @@ import java.util.List;
 public interface ImagePickDelegate {
 
     /**
-     * set dialog delegate
-     * @param dd the dialog delegate
+     * set on image process listener
+     * @param l the dialog delegate
      * @since 1.0.2
      */
-    void setDialogDelegate(DialogDelegate dd);
+    void setOnImageProcessListener(OnImageProcessListener l);
 
     /**
-     * get dialog delegate
-     * @return the dialog delegate
+     * get on image process listener
+     * @return image process listener
      */
-    DialogDelegate getDialogDelegate();
+    OnImageProcessListener getOnImageProcessListener();
 
     /**
      * add select state change listener
@@ -66,20 +66,37 @@ public interface ImagePickDelegate {
 
     /**
      * the dialog delegate used to helpful handle image.
-     * @since 1.0.2
+     * @since 1.0.3
      */
-    interface DialogDelegate{
+    interface OnImageProcessListener{
 
         /**
-         * show image processing
+         * called on processing start.
          * @param activity the activity
+         * @param totalCount the total task count , 0 means not care about it. like camera.
          */
-        void showImageProcessing(Activity activity);
+        void onProcessStart(Activity activity, int totalCount);
         /**
-         * dismiss image processing dialog
+         * called on processing image
+         * @param activity the activity
+         * @param finishCount finished task count
+         * @param totalCount the total task count
+         */
+        void onProcessUpdate(Activity activity, int finishCount, int totalCount);
+        /**
+         * called on processing end
          * @param next the task used to do next. this is helpful for animate dialog
          */
-        void dismissImageProcessing(Runnable next);
+        void onProcessEnd(Runnable next);
+        /**
+         * called on image process image exception
+         * @param activity the activity
+         * @param order the order of task index. start from 1.
+         * @param size the task count
+         * @param e the exception of handle image process. may be null. like image mime not support to scale.
+         * @return true if you handled this exception and want to continue processing
+         */
+        boolean onProcessException(Activity activity, int order, int size, Exception e);
     }
     /**
      * on select state change listener
