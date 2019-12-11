@@ -12,6 +12,50 @@ public class CameraParameter implements Parcelable {
 
     private ImageParameter imageParameter = ImageParameter.DEFAULT;
     private boolean autoFocus = true;
+    private int maxCount;
+
+    protected CameraParameter(CameraParameter.Builder builder) {
+        this.imageParameter = builder.imageParameter;
+        this.autoFocus = builder.autoFocus;
+        this.maxCount = builder.maxCount;
+    }
+
+    public ImageParameter getImageParameter() {
+        return this.imageParameter;
+    }
+
+    public boolean isAutoFocus() {
+        return this.autoFocus;
+    }
+
+    public int getMaxCount() {
+        return this.maxCount;
+    }
+
+    public static class Builder {
+        private ImageParameter imageParameter = ImageParameter.DEFAULT;
+        private boolean autoFocus = true;
+        private int maxCount;
+
+        public Builder setImageParameter(ImageParameter imageParameter) {
+            this.imageParameter = imageParameter;
+            return this;
+        }
+
+        public Builder setAutoFocus(boolean autoFocus) {
+            this.autoFocus = autoFocus;
+            return this;
+        }
+
+        public Builder setMaxCount(int maxCount) {
+            this.maxCount = maxCount;
+            return this;
+        }
+
+        public CameraParameter build() {
+            return new CameraParameter(this);
+        }
+    }
 
     @Override
     public int describeContents() {
@@ -22,11 +66,13 @@ public class CameraParameter implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.imageParameter, flags);
         dest.writeByte(this.autoFocus ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.maxCount);
     }
 
     protected CameraParameter(Parcel in) {
         this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.autoFocus = in.readByte() != 0;
+        this.maxCount = in.readInt();
     }
 
     public static final Creator<CameraParameter> CREATOR = new Creator<CameraParameter>() {
@@ -40,36 +86,4 @@ public class CameraParameter implements Parcelable {
             return new CameraParameter[size];
         }
     };
-
-    protected CameraParameter(CameraParameter.Builder builder) {
-        this.imageParameter = builder.imageParameter;
-        this.autoFocus = builder.autoFocus;
-    }
-
-    public ImageParameter getImageParameter() {
-        return this.imageParameter;
-    }
-
-    public boolean isAutoFocus() {
-        return this.autoFocus;
-    }
-
-    public static class Builder {
-        private ImageParameter imageParameter = ImageParameter.DEFAULT;
-        private boolean autoFocus = true;
-
-        public Builder setImageParameter(ImageParameter imageParameter) {
-            this.imageParameter = imageParameter;
-            return this;
-        }
-
-        public Builder setAutoFocus(boolean autoFocus) {
-            this.autoFocus = autoFocus;
-            return this;
-        }
-
-        public CameraParameter build() {
-            return new CameraParameter(this);
-        }
-    }
 }

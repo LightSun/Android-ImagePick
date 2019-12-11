@@ -63,6 +63,7 @@ public class CameraFragment extends Fragment{
     private File mSaveDir;
     private final AtomicBoolean mProcessing = new AtomicBoolean(false);
     private ImageParser mImgParser;
+    private CameraParameter mCameraParam;
 
     @Nullable
     @Override
@@ -111,6 +112,11 @@ public class CameraFragment extends Fragment{
                     setCameraEnabled(true);
                 }else {
                     //normal
+                    if(mCameraParam != null && mCameraParam.getMaxCount() > 0 &&
+                            ImagePickDelegateImpl.getDefault().getImageItems().size() >= mCameraParam.getMaxCount()){
+                        Toaster.show(v.getContext(), getString(R.string.lib_pick_camera_reach_max, mCameraParam.getMaxCount()));
+                        return;
+                    }
                     mCameraView.takePicture();
                 }
             }
@@ -191,6 +197,7 @@ public class CameraFragment extends Fragment{
         Bundle arguments = getArguments();
         if(arguments != null){
             CameraParameter cp = arguments.getParcelable(PickConstants.KEY_PARAMS);
+            mCameraParam = cp;
             if(cp == null){
                 mImgParser = new ImageParser(4000, 4000,
                         Bitmap.Config.RGB_565, true);
