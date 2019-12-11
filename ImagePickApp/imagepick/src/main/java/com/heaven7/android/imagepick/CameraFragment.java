@@ -33,6 +33,7 @@ import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
+import com.heaven7.java.base.util.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -113,7 +114,9 @@ public class CameraFragment extends Fragment{
                 }else {
                     //normal
                     if(mCameraParam != null && mCameraParam.getMaxCount() > 0 &&
-                            ImagePickDelegateImpl.getDefault().getImageItems().size() >= mCameraParam.getMaxCount()){
+                            ImagePickDelegateImpl.getDefault().getImages().size() >= mCameraParam.getMaxCount()){
+                        setCameraEnabled(false);
+                        setReachMax(true);
                         Toaster.show(v.getContext(), getString(R.string.lib_pick_camera_reach_max, mCameraParam.getMaxCount()));
                         return;
                     }
@@ -154,6 +157,11 @@ public class CameraFragment extends Fragment{
         if(images.isEmpty()){
             mIv_image.setVisibility(View.GONE);
         }
+        //check if max reach and remove some.
+        if(mCameraParam != null && mCameraParam.getMaxCount() > 0 &&
+                images.size() < mCameraParam.getMaxCount() ){
+            setReachMax(false);
+        }
         //for some phone have bug . when jump to another activity, then return. like samsung.
         //so just use a delay message to start camera.
         MainWorker.postDelay(200, new Runnable() {
@@ -192,6 +200,14 @@ public class CameraFragment extends Fragment{
 
     public void setPictureCallback(PictureCallback pictureCallback) {
         this.mPictureCallback = pictureCallback;
+    }
+
+    private void setReachMax(boolean reachMax) {
+        if(reachMax){
+            mIv_camera.setEnabled(false);
+        }else {
+            mIv_camera.setEnabled(true);
+        }
     }
     private void handleArguments() {
         Bundle arguments = getArguments();
@@ -336,13 +352,7 @@ public class CameraFragment extends Fragment{
                         mPictureCallback.onTakePictureResult(null);
                         return;
                     } finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            } catch (IOException e) {
-                                // Ignore
-                            }
-                        }
+                        IOUtils.closeQuietly(os);
                         mProcessing.compareAndSet(true, false);
                     }
                     //do next

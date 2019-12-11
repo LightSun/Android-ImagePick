@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.heaven7.android.imagepick.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
@@ -50,7 +51,7 @@ public class EntryActivity extends AppCompatActivity {
             }
             @Override
             public void onProcessEnd(Runnable next) {
-
+                next.run();
             }
             @Override
             public boolean onProcessException(Activity activity, int order, int size, MediaResourceItem item, Exception e) {
@@ -71,7 +72,10 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            ImagePickManager.get().getImagePickDelegate().startCamera(EntryActivity.this);
+                            ImagePickManager.get().getImagePickDelegate().startCamera(EntryActivity.this,
+                                    new CameraParameter.Builder()
+                                            .setMaxCount(4)
+                                    .build());
                         }
                     }
                     @Override
