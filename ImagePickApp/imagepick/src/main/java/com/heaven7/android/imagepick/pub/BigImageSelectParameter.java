@@ -13,8 +13,11 @@ public class BigImageSelectParameter implements Parcelable {
     private int mSelectCount;
     private int mMaxSelectCount;
     private String mTopRightText;
-    private int mCurrentOrder;  // from 1
-    private int mTotalCount;    // max
+    private int mCurrentOrder;           // from 1
+    private int mTotalCount;             // max
+    // true if support gesture image. if set to true . the gradle should include.
+    // implementation 'com.github.chrisbanes:PhotoView:latest.release.here'
+    private boolean mSupportGestureImage;
 
     public void addFlags(int flags) {
         this.mFlags |= flags;
@@ -24,6 +27,13 @@ public class BigImageSelectParameter implements Parcelable {
         this.mFlags &= ~flags;
     }
 
+    public void setCurrentOrder(int index) {
+        this.mCurrentOrder = index;
+    }
+    public void addSelectedCount(int count) {
+        mSelectCount += count;
+    }
+
     protected BigImageSelectParameter(BigImageSelectParameter.Builder builder) {
         this.mFlags = builder.mFlags;
         this.mSelectCount = builder.mSelectCount;
@@ -31,6 +41,7 @@ public class BigImageSelectParameter implements Parcelable {
         this.mTopRightText = builder.mTopRightText;
         this.mCurrentOrder = builder.mCurrentOrder;
         this.mTotalCount = builder.mTotalCount;
+        this.mSupportGestureImage = builder.mSupportGestureImage;
     }
 
     public int getFlags() {
@@ -57,11 +68,8 @@ public class BigImageSelectParameter implements Parcelable {
         return this.mTotalCount;
     }
 
-    public void setCurrentOrder(int index) {
-        this.mCurrentOrder = index;
-    }
-    public void addSelectedCount(int count) {
-        mSelectCount += count;
+    public boolean isSupportGestureImage() {
+        return this.mSupportGestureImage;
     }
 
     public static class Builder {
@@ -69,8 +77,9 @@ public class BigImageSelectParameter implements Parcelable {
         private int mSelectCount;
         private int mMaxSelectCount;
         private String mTopRightText;
-        private int mCurrentOrder; //from 1
-        private int mTotalCount;    // max
+        private int mCurrentOrder;           // from 1
+        private int mTotalCount;             // max
+        private boolean mSupportGestureImage;
 
         public Builder setFlags(int mFlags) {
             this.mFlags = mFlags;
@@ -102,6 +111,11 @@ public class BigImageSelectParameter implements Parcelable {
             return this;
         }
 
+        public Builder setSupportGestureImage(boolean mSupportGestureImage) {
+            this.mSupportGestureImage = mSupportGestureImage;
+            return this;
+        }
+
         public BigImageSelectParameter build() {
             return new BigImageSelectParameter(this);
         }
@@ -120,6 +134,7 @@ public class BigImageSelectParameter implements Parcelable {
         dest.writeString(this.mTopRightText);
         dest.writeInt(this.mCurrentOrder);
         dest.writeInt(this.mTotalCount);
+        dest.writeByte(this.mSupportGestureImage ? (byte) 1 : (byte) 0);
     }
 
     protected BigImageSelectParameter(Parcel in) {
@@ -129,6 +144,7 @@ public class BigImageSelectParameter implements Parcelable {
         this.mTopRightText = in.readString();
         this.mCurrentOrder = in.readInt();
         this.mTotalCount = in.readInt();
+        this.mSupportGestureImage = in.readByte() != 0;
     }
 
     public static final Creator<BigImageSelectParameter> CREATOR = new Creator<BigImageSelectParameter>() {
