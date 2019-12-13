@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,25 @@ import java.util.List;
         animator.setRemoveDuration(120);
         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(true);
     }*/
+    static Constructor<?> getGestureImageViewConstructor(){
+        Class mClazz = null;
+        try {
+            mClazz = Class.forName("com.github.chrisbanes.photoview.PhotoView");
+        } catch (Exception e) {
+            //ignore
+            System.err.println("for support gesture image. you should include PhotoView lib ,such as \n" +
+                    "{ implementation 'com.github.chrisbanes:PhotoView:2.1.4'}");
+        }
+        if(mClazz != null){
+            try {
+                return mClazz.getConstructor(Context.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                //never happen
+            }
+        }
+        return null;
+    }
     public static void closeDefaultAnimator(RecyclerView mRv) {
         mRv.setItemAnimator(new com.heaven7.android.imagepick.DefaultItemAnimator());
     }

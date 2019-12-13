@@ -19,6 +19,7 @@ import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.Toaster;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,9 +95,9 @@ public class SeeBigImageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Object tag = mIv_select.getTag();
-                if(tag != null){
+                if (tag != null) {
                     setSelectState(false);
-                }else {
+                } else {
                     setSelectState(true);
                 }
             }
@@ -106,22 +107,25 @@ public class SeeBigImageActivity extends BaseActivity {
             public void onPageScrolled(int i, float v, int i1) {
 
             }
+
             @Override
             public void onPageSelected(int i) {
                 setSelectOrder(i + 1);
             }
+
             @Override
             public void onPageScrollStateChanged(int i) {
-                if(i == ViewPager.SCROLL_STATE_IDLE){
+                if (i == ViewPager.SCROLL_STATE_IDLE) {
                     setSelectOrder(mVp.getCurrentItem() + 1);
                 }
             }
         });
     }
-    private void setSelectState(boolean select){
+
+    private void setSelectState(boolean select) {
         //check reach max
-        if(select && hasFlag(PickConstants.FLAG_MULTI_SELECT)){
-            if(mParam.getSelectCount() >= mParam.getMaxSelectCount()){
+        if (select && hasFlag(PickConstants.FLAG_MULTI_SELECT)) {
+            if (mParam.getSelectCount() >= mParam.getMaxSelectCount()) {
                 Toaster.show(getApplication(), getString(R.string.lib_pick_select_reach_max));
                 return;
             }
@@ -130,14 +134,14 @@ public class SeeBigImageActivity extends BaseActivity {
         setImageBySelectState(select);
         IImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
         //state changed
-        if(item.isSelected() != select){
-            mParam.addSelectedCount(select ? 1: -1);
+        if (item.isSelected() != select) {
+            mParam.addSelectedCount(select ? 1 : -1);
             ImagePickDelegateImpl.getDefault().dispatchSelectStateChanged(item, select);
         }
         //handle for single select
-        if(!hasFlag(PickConstants.FLAG_MULTI_SELECT)){
+        if (!hasFlag(PickConstants.FLAG_MULTI_SELECT)) {
             //single select mode. target is select .last must be unselect
-            if(select && mLastSingleItem != null){
+            if (select && mLastSingleItem != null) {
                 mLastSingleItem.setSelected(false);
             }
             mLastSingleItem = item;
@@ -148,31 +152,32 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     private void setImageBySelectState(boolean select) {
-        if(!select){
+        if (!select) {
             mIv_select.setTag(null);
             mIv_select.setImageResource(R.drawable.lib_pick_ic_unselect);
-        }else {
+        } else {
             mIv_select.setTag(true);
             mIv_select.setImageResource(R.drawable.lib_pick_ic_selected);
         }
     }
 
-    private void setSelectOrder(int order){
+    private void setSelectOrder(int order) {
         mParam.setCurrentOrder(order);
         mTv_indexes.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
 
         boolean isSelect = mItems.get(mParam.getCurrentOrder() - 1).isSelected();
         setImageBySelectState(isSelect);
     }
+
     private void setUiState() {
         setSelectOrder(mParam.getCurrentOrder());
 
         mVg_top.setVisibility(hasFlag(PickConstants.FLAG_SHOW_TOP) ? View.VISIBLE : View.GONE);
         mVg_bottom.setVisibility(hasFlag(PickConstants.FLAG_SHOW_BOTTOM) ? View.VISIBLE : View.GONE);
-        if(hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON)){
+        if (hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON)) {
             //current only have one button
             mVg_select.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mVg_select.setVisibility(View.GONE);
         }
         setSelectedText();
@@ -182,39 +187,58 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     private void setSelectedText() {
-        if(hasFlag(PickConstants.FLAG_SHOW_TOP_END_BUTTON)){
+        if (hasFlag(PickConstants.FLAG_SHOW_TOP_END_BUTTON)) {
             mTv_upload.setVisibility(View.VISIBLE);
             String text = mParam.getTopRightText() == null ? getString(R.string.lib_pick_upload) : mParam.getTopRightText();
-            if(hasFlag(PickConstants.FLAG_MULTI_SELECT)){
+            if (hasFlag(PickConstants.FLAG_MULTI_SELECT)) {
                 text += String.format(Locale.getDefault(), "(%d/%d)", mParam.getSelectCount(), mParam.getMaxSelectCount());
                 mTv_upload.setText(text);
-            }else {
+            } else {
                 mTv_upload.setText(text);
             }
-        }else {
+        } else {
             mTv_upload.setVisibility(View.GONE);
         }
     }
 
-    private boolean hasFlag(int flags){
+    private boolean hasFlag(int flags) {
         return (mParam.getFlags() & flags) == flags;
     }
 
-    private class PageAdapter0 extends BigImageAdapter<IImageItem>{
+    private class PageAdapter0 extends BigImageAdapter<IImageItem> {
+
+        Constructor mCons;
 
         public PageAdapter0(List<IImageItem> mDatas) {
             super(false, mDatas);
+            mCons = mParam.isSupportGestureImage() ? Utils.getGestureImageViewConstructor() : null;
         }
+
+        @Override
+        protected ImageView onCreateItemView(ItemViewContext context) {
+            if(mCons != null){
+                try {
+                    ImageView iv = (ImageView)mCons.newInstance(context.context);
+                    iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+                    return iv;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return super.onCreateItemView(context);
+        }
+
         @Override
         protected void onBindItem(ImageView iv, int index, IImageItem data) {
             RequestManager rm = Glide.with(iv.getContext());
-            if(data.getFilePath() != null){
+            if (data.getFilePath() != null) {
                 rm
                         .load(new File(data.getFilePath()))
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(iv);
-            }else {
+            } else {
                 rm
                         .load(data.getUrl())
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -223,9 +247,9 @@ public class SeeBigImageActivity extends BaseActivity {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(hasFlag(PickConstants.FLAG_SHOW_TOP) || hasFlag(PickConstants.FLAG_SHOW_BOTTOM)){
+                    if (hasFlag(PickConstants.FLAG_SHOW_TOP) || hasFlag(PickConstants.FLAG_SHOW_BOTTOM)) {
                         mParam.deleteFlags(PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM);
-                    }else {
+                    } else {
                         mParam.addFlags(PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM);
                     }
                     setUiState();
