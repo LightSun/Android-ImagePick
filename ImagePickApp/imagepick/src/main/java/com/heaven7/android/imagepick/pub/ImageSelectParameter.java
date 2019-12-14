@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
-import java.util.ArrayList;
-
 /**
  * the image select parameter
  * @author heaven7

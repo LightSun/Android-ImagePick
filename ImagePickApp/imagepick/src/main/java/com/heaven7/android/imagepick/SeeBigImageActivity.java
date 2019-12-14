@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.heaven7.android.imagepick.page.BigImageAdapter;
+import com.heaven7.android.imagepick.page.GestureBigImageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
@@ -205,28 +206,10 @@ public class SeeBigImageActivity extends BaseActivity {
         return (mParam.getFlags() & flags) == flags;
     }
 
-    private class PageAdapter0 extends BigImageAdapter<IImageItem> {
-
-        Constructor mCons;
+    private class PageAdapter0 extends GestureBigImageAdapter<IImageItem> {
 
         public PageAdapter0(List<IImageItem> mDatas) {
-            super(false, mDatas);
-            mCons = mParam.isSupportGestureImage() ? Utils.getGestureImageViewConstructor() : null;
-        }
-
-        @Override
-        protected ImageView onCreateItemView(ItemViewContext context) {
-            if(mCons != null){
-                try {
-                    ImageView iv = (ImageView)mCons.newInstance(context.context);
-                    iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
-                    return iv;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return super.onCreateItemView(context);
+            super(false, mDatas, mParam.isSupportGestureImage());
         }
 
         @Override
