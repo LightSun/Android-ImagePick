@@ -88,6 +88,11 @@ public class SeeBigImageActivity extends BaseActivity {
         mTv_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if select none. just select current
+                if(mParam.getSelectCount() == 0){
+                    IImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
+                    ImagePickDelegateImpl.getDefault().dispatchSelectStateChanged(item, true);
+                }
                 setResult(RESULT_OK);
                 finish();
             }
@@ -191,7 +196,7 @@ public class SeeBigImageActivity extends BaseActivity {
         if (hasFlag(PickConstants.FLAG_SHOW_TOP_END_BUTTON)) {
             mTv_upload.setVisibility(View.VISIBLE);
             String text = mParam.getTopRightText() == null ? getString(R.string.lib_pick_upload) : mParam.getTopRightText();
-            if (hasFlag(PickConstants.FLAG_MULTI_SELECT)) {
+            if (hasFlag(PickConstants.FLAG_MULTI_SELECT) && mParam.getSelectCount() > 0) {
                 text += String.format(Locale.getDefault(), "(%d/%d)", mParam.getSelectCount(), mParam.getMaxSelectCount());
                 mTv_upload.setText(text);
             } else {

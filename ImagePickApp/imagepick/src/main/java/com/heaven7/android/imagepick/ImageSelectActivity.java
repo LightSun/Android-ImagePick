@@ -297,10 +297,14 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         return dm.widthPixels;
     }
     private void setSelectText() {
+        List<MediaResourceItem> selects = mSelector.getSelects();
+        mTv_upload.setEnabled(selects.size() > 0);
         //1 no need
         if(mParam.getMaxSelect() > 1){
-            List<MediaResourceItem> selects = mSelector.getSelects();
-            String text = getString(R.string.lib_pick_upload) + String.format("(%d/%d)", selects.size() , mParam.getMaxSelect());
+            String text = getString(R.string.lib_pick_upload);
+            if(selects.size() > 0){
+                text +=  String.format("(%d/%d)", selects.size() , mParam.getMaxSelect());
+            }
             mTv_upload.setText(text);
         }
     }
