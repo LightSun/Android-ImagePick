@@ -486,6 +486,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             .setMaxSelectCount(mParam.getMaxSelect())
                             .setTopRightText(getString(R.string.lib_pick_upload))
                             .setFlags(flags)
+                            .setSupportGestureImage(true)
                             .build();
                     ImagePickManager.get().getImagePickDelegate()
                             .startBrowseBigImages(ImageSelectActivity.this, param, items, selectItem);

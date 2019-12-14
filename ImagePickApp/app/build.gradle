@@ -47,4 +47,5 @@ dependencies {
     }
     api 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation("com.squareup.okhttp3:okhttp:3.9.1")
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 }
