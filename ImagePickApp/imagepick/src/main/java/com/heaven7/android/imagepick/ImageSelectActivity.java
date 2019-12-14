@@ -85,7 +85,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mSelector.setSingleMode(mParam.getMaxSelect() <= 1);
 
-        mMediaHelper = new MediaResourceHelper(this);
+        mMediaHelper = new MediaResourceHelper(this, mParam);
         int width = getWidth();
         mItemWidth = (width - mParam.getSpace() * (mParam.getSpanCount() - 1)) / mParam.getSpanCount();
         //x / y = mItemWidth / mItemHeight

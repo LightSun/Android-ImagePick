@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import static com.heaven7.android.imagepick.pub.PickConstants.FORMAT_RGB_565;
 
 /**
- * the image parameter
+ * the image parameter of output
  * @since 1.0.2
  */
 public class ImageParameter implements Parcelable {

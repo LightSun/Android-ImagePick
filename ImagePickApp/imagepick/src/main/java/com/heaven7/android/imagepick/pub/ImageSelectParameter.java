@@ -16,10 +16,7 @@ public class ImageSelectParameter implements Parcelable {
     private int mAspectY = 1;
     private int mMaxSelect = 1;
     private int mFlags = PickConstants.FLAG_IMAGE;
-
-    /** filter options */
-    private int mMaxImageSize;  //in bytes
-    private long mMaxVideoSize; //in bytes
+    private MediaOption mMediaOption = MediaOption.DEFAULT;
 
     private @DrawableRes int mDefaultDirIconId;
 
@@ -34,8 +31,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mAspectY = builder.mAspectY;
         this.mMaxSelect = builder.mMaxSelect;
         this.mFlags = builder.mFlags;
-        this.mMaxImageSize = builder.mMaxImageSize;
-        this.mMaxVideoSize = builder.mMaxVideoSize;
+        this.mMediaOption = builder.mMediaOption;
         this.mDefaultDirIconId = builder.mDefaultDirIconId;
         this.imageParameter = builder.imageParameter;
         this.cacheDir = builder.cacheDir;
@@ -65,12 +61,8 @@ public class ImageSelectParameter implements Parcelable {
         return this.mFlags;
     }
 
-    public int getMaxImageSize() {
-        return this.mMaxImageSize;
-    }
-
-    public long getMaxVideoSize() {
-        return this.mMaxVideoSize;
+    public MediaOption getMediaOption() {
+        return this.mMediaOption;
     }
 
     public int getDefaultDirIconId() {
@@ -92,12 +84,11 @@ public class ImageSelectParameter implements Parcelable {
         private int mAspectY = 1;
         private int mMaxSelect = 1;
         private int mFlags = PickConstants.FLAG_IMAGE;
-        /** filter options */
-        private int mMaxImageSize;  //in bytes
-        private long mMaxVideoSize; //in bytes
+        private MediaOption mMediaOption = MediaOption.DEFAULT;
         private @DrawableRes
         int mDefaultDirIconId;
         private ImageParameter imageParameter;
+        /** the cache dir of file */
         private String cacheDir;
 
         public Builder setSpanCount(int mSpanCount) {
@@ -130,13 +121,8 @@ public class ImageSelectParameter implements Parcelable {
             return this;
         }
 
-        public Builder setMaxImageSize(int mMaxImageSize) {
-            this.mMaxImageSize = mMaxImageSize;
-            return this;
-        }
-
-        public Builder setMaxVideoSize(long mMaxVideoSize) {
-            this.mMaxVideoSize = mMaxVideoSize;
+        public Builder setMediaOption(MediaOption mMediaOption) {
+            this.mMediaOption = mMediaOption;
             return this;
         }
 
@@ -173,8 +159,7 @@ public class ImageSelectParameter implements Parcelable {
         dest.writeInt(this.mAspectY);
         dest.writeInt(this.mMaxSelect);
         dest.writeInt(this.mFlags);
-        dest.writeInt(this.mMaxImageSize);
-        dest.writeLong(this.mMaxVideoSize);
+        dest.writeParcelable(this.mMediaOption, flags);
         dest.writeInt(this.mDefaultDirIconId);
         dest.writeParcelable(this.imageParameter, flags);
         dest.writeString(this.cacheDir);
@@ -187,8 +172,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mAspectY = in.readInt();
         this.mMaxSelect = in.readInt();
         this.mFlags = in.readInt();
-        this.mMaxImageSize = in.readInt();
-        this.mMaxVideoSize = in.readLong();
+        this.mMediaOption = in.readParcelable(MediaOption.class.getClassLoader());
         this.mDefaultDirIconId = in.readInt();
         this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.cacheDir = in.readString();

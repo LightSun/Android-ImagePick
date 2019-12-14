@@ -1,24 +1,19 @@
 package com.heaven7.android.imagepick;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.MediaOption;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.util2.WeakContextOwner;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MainWorker;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -28,43 +23,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by heaven7 on 2017/12/22.
  */
-public final class MediaResourceHelper{
-
-   // private static final SimpleDateFormat FORMATER = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-    private static final String[] IMAGE_MIMES = {"image/jpeg", "image/png", "image/jpg"};
-    private static final String[] VIDEO_MIMES = {"video/mp4"};
-  /*  private static final String[] VIDEO_MIMES = {"video/mp4", "video/3gp", "video/aiv", "video/rmvb",
-            "video/vob", "video/flv", "video/mkv", "video/mov", "video/mpg"};*/
+public final class MediaResourceHelper {
 
     public static final int FLAG_IMAGE = 0x0001;
     public static final int FLAG_VIDEO = 0x0002;
     public static final int FLAG_IMAGE_AND_VIDEO = FLAG_IMAGE | FLAG_VIDEO;
 
-    private final AtomicBoolean mDestroies = new AtomicBoolean();
     private final WeakContextOwner mOwner;
+    private final ImageSelectParameter mParam;
+    private final AtomicBoolean mDestroies = new AtomicBoolean();
     private ExecutorService mService;
 
-    public MediaResourceHelper(Context context) {
+    public MediaResourceHelper(Context context, ImageSelectParameter mParam) {
         this.mOwner = new WeakContextOwner(context);
+        this.mParam = mParam;
     }
+
     /**
-     * get the media resources. default filter the video of two seconds.
+     * get the media resources.
      *
      * @param flags    the flags, see {@linkplain #FLAG_IMAGE} and etc.
      * @param callback the callback
      */
     public void getMediaResource(final int flags, @NonNull final Callback callback) {
-        getMediaResource(flags, 2000, Long.MAX_VALUE, callback);
-    }
-    /**
-     * get the media resources.
-     *
-     * @param flags    the flags, see {@linkplain #FLAG_IMAGE} and etc.
-     * @param minDuration    the min duration in  mill-seconds, for filter video
-     * @param maxDuration    the max duration in  mill-seconds, for filter video
-     * @param callback the callback
-     */
-    public void getMediaResource(final int flags, final long minDuration, final long maxDuration, @NonNull final Callback callback) {
         if (flags <= 0) {
             throw new IllegalArgumentException();
         }
@@ -77,7 +58,7 @@ public final class MediaResourceHelper{
             public void run() {
                 final List<MediaResourceItem> photos;
                 if ((flags & FLAG_IMAGE) == FLAG_IMAGE) {
-                    photos = getAllLocalPhotos(getContext());
+                    photos = getAllLocalPhotos(getContext(), mParam.getMediaOption());
                 } else {
                     photos = new ArrayList<>();
                 }
@@ -86,7 +67,7 @@ public final class MediaResourceHelper{
                 }
                 final List<MediaResourceItem> videoes;
                 if ((flags & FLAG_VIDEO) == FLAG_VIDEO) {
-                    videoes = getAllLocalVideos(getContext(), minDuration, maxDuration);
+                    videoes = getAllLocalVideos(getContext(), mParam.getMediaOption());
                 } else {
                     videoes = new ArrayList<>();
                 }
@@ -104,8 +85,8 @@ public final class MediaResourceHelper{
         });
     }
 
-    public void cancel(){
-        if(mService != null){
+    public void cancel() {
+        if (mService != null) {
             mService.shutdownNow();
             mService = null;
         }
@@ -115,89 +96,8 @@ public final class MediaResourceHelper{
         return mOwner.getContext();
     }
 
-    //note FileProvider
-    private static Bitmap getVideoThumbnail(Context context, Uri uri) {
-        return getVideoThumbnail(context, uri, 0);
-    }
-    public static Bitmap getVideoThumbnail(Context context, Uri uri, long us) {
-        Bitmap b = null;
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(context, uri);
-            b = retriever.getFrameAtTime(us);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException e) {
-            }
-        }
-        return b;
-    }
-    public static List<AudioBean> getAllAudioInfos(Context context){
-        List<AudioBean> list = new ArrayList<>();
-        String[] projection = {
-                MediaStore.Audio.Media.DATA,      // path
-                MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Video.Media.MIME_TYPE,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-        };
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor cursor = context.getContentResolver().query(uri,
-                projection, null, null, null);
-        try {
-            while (cursor.moveToNext()) {
-                long album_id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-                String displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
-                String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-                String artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-                long duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-                //
-                AudioBean info = new AudioBean();
-                info.setAlbum_id(album_id);
-                info.setArtist(artist);
-                info.setPath(path);
-                info.setDisplayName(displayName);
-                info.setTitle(title);
-                info.setDuration(duration);
-                list.add(info);
-            }
-        } finally {
-            if(cursor != null){
-                cursor.close();
-            }
-        }
-        return list;
-    }
-    public static Bitmap getAlbumArt(Context context,long album_id) {
-        if(context == null){
-            return null;
-        }
-        Bitmap bm = null;
-        try {
-            final Uri sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-            Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
-            ParcelFileDescriptor pfd = context.getContentResolver()
-                    .openFileDescriptor(uri, "r");
-
-            if (pfd != null) {
-                FileDescriptor fd = pfd.getFileDescriptor();
-                bm = BitmapFactory.decodeFileDescriptor(fd);
-            }
-        } catch (Exception e) {
-        }
-        return bm;
-    }
-
-    private static List<MediaResourceItem> getAllLocalVideos(Context context, long minDuration, long maxDuration) {
+    private static List<MediaResourceItem> getAllLocalVideos(Context context, MediaOption mediaOption) {
+        List<String> videoMimes = mediaOption.getVideoMimes();
         String[] projection = {
                 MediaStore.Video.Media.DATA,
                 MediaStore.Video.Media.DISPLAY_NAME,
@@ -209,18 +109,10 @@ public final class MediaResourceHelper{
                 MediaStore.Video.Media.RESOLUTION,
                 MediaStore.Video.Thumbnails.DATA,
         };
-        String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=? or "
-                + MediaStore.Video.Media.MIME_TYPE + "=?";
+        String where = createMimeWhere(videoMimes);
         List<MediaResourceItem> list = new ArrayList<>();
         Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                projection, where, VIDEO_MIMES, MediaStore.Video.Media.DATE_ADDED + " DESC ");
+                projection, where, videoMimes.toArray(new String[videoMimes.size()]), MediaStore.Video.Media.DATE_ADDED + " DESC ");
         if (cursor == null) {
             return list;
         }
@@ -231,6 +123,9 @@ public final class MediaResourceHelper{
 
                 long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 大小
                 // if (size < 600 * 1024 * 1024) {//<600M
+                if(size == 0 || size > mediaOption.getMaxVideoSize()){
+                    continue;
+                }
 
                 String mime = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
                 int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
@@ -238,23 +133,23 @@ public final class MediaResourceHelper{
                 String thumb = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA));
                 String resolution = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION));
                 //for some mobile like xiaomi8 . width and height is zero
-                if((width == 0 || height == 0) && !TextUtils.isEmpty(resolution)){
+                if ((width == 0 || height == 0) && !TextUtils.isEmpty(resolution)) {
                     String[] strs = resolution.split("x");
                     width = Integer.parseInt(strs[0]);
                     height = Integer.parseInt(strs[1]);
                 }
 
                 //drop invalid resource
-                if(size == 0 || width == 0 || height == 0){
+                if (width == 0 || height == 0) {
                     continue;
                 }
-                long duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)); // 时长
-                if(duration == 0 || duration < minDuration || duration > maxDuration){  //< 2s
+                long duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                if (duration == 0 || duration < mediaOption.getVideoMinDuration() || duration > mediaOption.getVideoMaxDuration()) {
                     continue;
                 }
 
                 //file not exist
-                if(!new File(path).exists()){
+                if (!new File(path).exists()) {
                     continue;
                 }
                 MediaResourceItem materialBean = new MediaResourceItem();
@@ -284,8 +179,9 @@ public final class MediaResourceHelper{
     /**
      * get all images
      */
-    private static List<MediaResourceItem> getAllLocalPhotos(Context context) {
+    private static List<MediaResourceItem> getAllLocalPhotos(Context context, MediaOption mediaOption) {
         List<MediaResourceItem> list = new ArrayList<>();
+        List<String> imageMimes = mediaOption.getImageMimes();
         String[] projection = {
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.DISPLAY_NAME,
@@ -295,11 +191,9 @@ public final class MediaResourceHelper{
                 MediaStore.Images.Media.HEIGHT,
         };
         //all
-        String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
-                + MediaStore.Images.Media.MIME_TYPE + "=? or "
-                + MediaStore.Images.Media.MIME_TYPE + "=?";
+        String where = createMimeWhere(imageMimes);
         Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, where, IMAGE_MIMES,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, where, imageMimes.toArray(new String[imageMimes.size()]),
                 MediaStore.Images.Media.DATE_MODIFIED + " desc ");
         if (cursor == null) {
             return list;
@@ -308,15 +202,18 @@ public final class MediaResourceHelper{
             while (cursor.moveToNext()) {
                 MediaResourceItem materialBean = new MediaResourceItem();
 
+                long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
+                if(size == 0 || size > mediaOption.getMaxImageSize()){
+                    continue;
+                }
                 materialBean.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
                 byte[] data = cursor.getBlob(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)); // 大小
 
                 String mime = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
                 int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
                 int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
                 //drop invalid resource
-                if(size == 0 || width == 0 || height == 0){
+                if (width == 0 || height == 0) {
                     continue;
                 }
 
@@ -325,10 +222,10 @@ public final class MediaResourceHelper{
                 materialBean.setHeight(height);
 
                 String path = new String(data, 0, data.length - 1);
-               // Logger.d("MediaResourceHelper", "getAllLocalPhotos", "path = " + path);
+                // Logger.d("MediaResourceHelper", "getAllLocalPhotos", "path = " + path);
                 File file = new File(path);
                 //file not exist
-                if(!file.exists()){
+                if (!file.exists()) {
                     continue;
                 }
 
@@ -347,59 +244,28 @@ public final class MediaResourceHelper{
         return list;
     }
 
+    private static String createMimeWhere(List<String> mimes) {
+       /*  String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Images.Media.MIME_TYPE + "=?";*/
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, size = mimes.size() ; i < size ; i ++){
+            sb.append(MediaStore.MediaColumns.MIME_TYPE)
+                    .append("=?");
+            if(i != size - 1){
+                sb.append(" or ");
+            }
+        }
+        return sb.toString();
+    }
+
     public interface Callback {
+        /**
+         * called on scan image and video done.
+         *
+         * @param photoes the image items
+         * @param videoes the video items
+         */
         void onCallback(List<MediaResourceItem> photoes, List<MediaResourceItem> videoes);
     }
-    public static class AudioBean {
-        private String path;
-        private long album_id;
-        private String title;
-        private String displayName;
-        private long duration; //in msec
-        private String artist;
-
-        public String getArtist() {
-            return artist;
-        }
-        public void setArtist(String artist) {
-            this.artist = artist;
-        }
-
-        public String getPath() {
-            return path;
-        }
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public long getAlbum_id() {
-            return album_id;
-        }
-        public void setAlbum_id(long album_id) {
-            this.album_id = album_id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-        public void setDisplayName(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public long getDuration() {
-            return duration;
-        }
-        public void setDuration(long duration) {
-            this.duration = duration;
-        }
-
-    }
-
 }

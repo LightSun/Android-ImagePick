@@ -100,7 +100,7 @@ public class EntryActivity extends AppCompatActivity {
                                                     .setMaxHeight(1619)
                                                     .build())
                                             .setCacheDir(cacheDir)
-                                           // .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
+                                            .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
                                             .setMaxSelect(4)
                                     .build());
                         }
