@@ -23,13 +23,13 @@
             />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_big_image"
+    <com.heaven7.android.imagepick.page.HackyViewPager
+        android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scaleType="centerCrop"
-        />
+        >
+    </com.heaven7.android.imagepick.page.HackyViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -18,6 +20,7 @@ import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.SelectHelper;
 import com.heaven7.adapter.util.ViewHelper2;
+import com.heaven7.android.imagepick.page.GestureBigImageAdapter;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
 
@@ -29,8 +32,9 @@ import java.util.List;
 public class BrowseActivity extends BaseActivity {
 
     private RecyclerView mRv;
-    private ImageView mIv_big_image;
     private QuickRecycleViewAdapter<Item> mAdapter;
+    private ViewPager mVp;
+    private Adapter0 mPageAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -38,7 +42,7 @@ public class BrowseActivity extends BaseActivity {
     }
     @Override
     protected void init(Context context, Bundle savedInstanceState) {
-        mIv_big_image = findViewById(R.id.iv_big_image);
+        mVp = findViewById(R.id.vp);
         mRv = findViewById(R.id.rv);
         mRv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
@@ -53,18 +57,19 @@ public class BrowseActivity extends BaseActivity {
         mAdapter.getAdapterManager().replaceAllItems(items);
         if(items.size() > 0){
             mAdapter.getSelectHelper().select(0);
-            loadImage(this, items.get(0));
-        }else {
-            mIv_big_image.setImageBitmap(null);
         }
+        mPageAdapter.replaceItems(items);
     }
 
     private void setAdapter(Context context) {
+        final List<Item> items = createItems();
+        mVp.setAdapter(mPageAdapter = new Adapter0(items));
+
         final int margin = SystemConfig.dip2px(context, 10);
         final int round = SystemConfig.dip2px(context, 8);
         final int borderColor = Color.parseColor("#677DB8");
         final int border =  SystemConfig.dip2px(context, 1);
-        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(R.layout.lib_pick_item_image, createItems()) {
+        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(R.layout.lib_pick_item_image, items) {
             @Override
             protected void onBindData(final Context context, final int position, final Item item, int itemLayoutId, ViewHelper2 helper) {
                 View rootView = helper.getRootView();
@@ -89,19 +94,11 @@ public class BrowseActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         SelectHelper<Item> selectHelper = mAdapter.getSelectHelper();
-                        if(selectHelper.select(position)){
-                            loadImage(context, item);
-                        }
+                        selectHelper.select(getAdapterManager().getItems().indexOf(item));
                     }
                 });
             }
         });
-    }
-    private void loadImage(Context context, Item item) {
-        Glide.with(context)
-                .load(new File(item.file))
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(mIv_big_image);
     }
 
     @Keep
@@ -130,11 +127,11 @@ public class BrowseActivity extends BaseActivity {
                 mAdapter.getAdapterManager().removeItem(deleteItem);
                 ImagePickDelegateImpl.getDefault().removeImagePath(deleteItem.file);
                 //select and load item
-                loadImage(this, item);
+                mPageAdapter.removeItem(deleteItem);
                 helper.select(items.indexOf(item));
             }else {
                 mAdapter.getAdapterManager().clearItems();
-                mIv_big_image.setImageBitmap(null);
+                mPageAdapter.clearItems();
                 ImagePickDelegateImpl.getDefault().clearImages();
             }
         }
@@ -149,10 +146,37 @@ public class BrowseActivity extends BaseActivity {
         return list;
     }
 
+    private class Adapter0 extends GestureBigImageAdapter<Item>{
+
+        public Adapter0(List<Item> mDatas) {
+            super(false, mDatas, true);
+        }
+        @Override
+        protected void onBindItem(ImageView iv, int index, Item data) {
+            RequestManager rm = Glide.with(iv.getContext());
+            if (data.getFilePath() != null) {
+                rm
+                        .load(new File(data.getFilePath()))
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(iv);
+            }
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+    }
+
     private static class Item extends BaseSelector {
         String file;
         public Item(String file) {
             this.file = file;
+        }
+        public String getFilePath() {
+            return file;
         }
     }
 }

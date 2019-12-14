@@ -30,15 +30,35 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
             }
         };
     }
-
+    @Deprecated
     public List<T> getDatas(){
         return mDatas;
     }
+    @Deprecated
     public void addDatas(List<T> datas){
         mDatas.addAll(datas);
         notifyDataSetChanged();
     }
-
+    public List<T> getItems(){
+        return mDatas;
+    }
+    public void addItems(List<T> datas){
+        mDatas.addAll(datas);
+        notifyDataSetChanged();
+    }
+    public void replaceItems(List<T> datas){
+        mDatas.clear();
+        mDatas.addAll(datas);
+        notifyDataSetChanged();
+    }
+    public void clearItems(){
+        mDatas.clear();
+        notifyDataSetChanged();
+    }
+    public void removeItem(T item){
+        mDatas.remove(item);
+        notifyDataSetChanged();
+    }
     public void clearCacheViews(){
         mCacher.clear();
     }
