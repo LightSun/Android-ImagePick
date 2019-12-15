@@ -3,6 +3,7 @@ package com.heaven7.android.imagepick;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.v4.view.LibPick$_ViewPagerUtils;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.heaven7.android.imagepick.page.BigImageAdapter;
-import com.heaven7.android.imagepick.page.GestureBigImageAdapter;
+import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author heaven7
@@ -43,6 +44,9 @@ public class SeeBigImageActivity extends BaseActivity {
     private List<IImageItem> mItems;
     private IImageItem mLastSingleItem;
 
+    private MediaAdapter mMediaAdapter;
+    private final AtomicBoolean mPendingPlayed = new AtomicBoolean(false);
+
     @Override
     protected int getLayoutId() {
         return R.layout.lib_pick_ac_big_image;
@@ -59,11 +63,16 @@ public class SeeBigImageActivity extends BaseActivity {
         mVg_bottom = findViewById(R.id.vg_bottom);
         mIv_select = findViewById(R.id.iv_select);
         setListeners();
-
+        //setup data
         mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
-        mVp.setAdapter(new PageAdapter0(mItems));
+        //set media adapter
+        mMediaAdapter = new MediaAdapter(mItems);
+        mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
+        mVp.setAdapter(mMediaAdapter);
+
+        //set ui state
         setUiState();
     }
 
@@ -74,7 +83,20 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mMediaAdapter.onPause(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("onResume");
+        mMediaAdapter.onResume(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+        startPlay();
+    }
+    @Override
     protected void onDestroy() {
+        mMediaAdapter.onDestroy(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
         ImagePickDelegateImpl.getDefault().getImageItems().clear();
         super.onDestroy();
     }
@@ -113,19 +135,37 @@ public class SeeBigImageActivity extends BaseActivity {
             public void onPageScrolled(int i, float v, int i1) {
 
             }
-
             @Override
             public void onPageSelected(int i) {
+                System.out.println("onPageSelected");
                 setSelectOrder(i + 1);
+                startPlay();
             }
-
             @Override
             public void onPageScrollStateChanged(int i) {
+                System.out.println("onPageScrollStateChanged");
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
                     setSelectOrder(mVp.getCurrentItem() + 1);
+                    startPlay();
                 }
             }
         });
+    }
+    private void startPlay(){
+        final View currentView = LibPick$_ViewPagerUtils.getCurrentView(mVp);
+        if(currentView == null){
+            if(mPendingPlayed.compareAndSet(false, true)){
+                MainWorker.postDelay(20, new Runnable() {
+                    @Override
+                    public void run() {
+                        startPlay();
+                    }
+                });
+            }
+        }else {
+            mMediaAdapter.startPlay(getApplicationContext(), mVp.getCurrentItem(), currentView);
+            mPendingPlayed.compareAndSet(true, false);
+        }
     }
 
     private void setSelectState(boolean select) {
@@ -210,15 +250,13 @@ public class SeeBigImageActivity extends BaseActivity {
     private boolean hasFlag(int flags) {
         return (mParam.getFlags() & flags) == flags;
     }
+    private class MediaAdapter extends AbstractMediaPageAdapter{
 
-    private class PageAdapter0 extends GestureBigImageAdapter<IImageItem> {
-
-        public PageAdapter0(List<IImageItem> mDatas) {
-            super(false, mDatas, mParam.isSupportGestureImage());
+        public MediaAdapter(List<? extends IImageItem> mDatas) {
+            super(mDatas);
         }
-
         @Override
-        protected void onBindItem(ImageView iv, int index, IImageItem data) {
+        protected void onBindImageItem(ImageView iv, int index, IImageItem data) {
             RequestManager rm = Glide.with(iv.getContext());
             if (data.getFilePath() != null) {
                 rm

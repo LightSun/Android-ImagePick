@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentActivity;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
@@ -11,6 +12,7 @@ import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
 
 import java.util.ArrayList;
@@ -24,11 +26,13 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
  * the image pick manager. used for internal
  * @author heaven7
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     private static ImagePickDelegateImpl sInstance;
     private OnImageProcessListener mImageListener;
     private ExceptionHandler mHandler;
+    private VideoManageDelegate mVideoManager;
 
     private ImagePickDelegateImpl(){}
 
@@ -75,6 +79,15 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     @Override
     public void setExceptionHandler(ExceptionHandler handler) {
         this.mHandler = handler;
+    }
+
+    @Override
+    public void setVideoManageDelegate(VideoManageDelegate delegate) {
+        this.mVideoManager = delegate;
+    }
+    @Override
+    public VideoManageDelegate getVideoManageDelegate() {
+        return mVideoManager;
     }
     @Override
     public ExceptionHandler getExceptionHandler() {

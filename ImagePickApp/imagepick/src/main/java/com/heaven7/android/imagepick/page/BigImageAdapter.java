@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class BigImageAdapter<T> extends AbstractPagerAdapter<T, ImageView> {
 
-    public BigImageAdapter(boolean mCarouselAllTime, List<T> mDatas) {
+    public BigImageAdapter(boolean mCarouselAllTime, List<? extends T> mDatas) {
         super(mCarouselAllTime, mDatas);
     }
     @Override

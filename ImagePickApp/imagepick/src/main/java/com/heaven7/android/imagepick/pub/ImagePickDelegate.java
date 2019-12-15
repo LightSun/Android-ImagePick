@@ -11,6 +11,18 @@ import java.util.List;
 public interface ImagePickDelegate {
 
     /**
+     * set video manage delegate
+     * @param delegate the video manage delegate
+     * @since 1.0.5
+     */
+    void setVideoManageDelegate(VideoManageDelegate delegate);
+    /**
+     * get video manage delegate
+     * @return video manage delegate
+     * @since 1.0.5
+     */
+    VideoManageDelegate getVideoManageDelegate();
+    /**
      * void set exception handler
      * @param handler the exception handler
      */

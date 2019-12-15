@@ -40,7 +40,7 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.ac_entry);
         mComponent = new RetrofitRxComponent();
 
-        ImagePickDelegateImpl.getDefault().setOnImageProcessListener(new ImagePickDelegate.OnImageProcessListener() {
+        ImagePickManager.get().getImagePickDelegate().setOnImageProcessListener(new ImagePickDelegate.OnImageProcessListener() {
             @Override
             public void onProcessStart(Activity activity, int totalCount) {
 
@@ -58,6 +58,7 @@ public class EntryActivity extends AppCompatActivity {
                 return false;
             }
         });
+        ImagePickManager.get().getImagePickDelegate().setVideoManageDelegate(new VideoManager());
         test1();
     }
 

@@ -20,7 +20,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
     private final List<T> mDatas;
     private final Cacher<ItemView, ItemViewContext> mCacher;
 
-    public AbstractPagerAdapter(boolean mCarouselAllTime, List<T> mDatas) {
+    public AbstractPagerAdapter(boolean mCarouselAllTime, List<? extends T> mDatas) {
         this.mCarouselAllTime = mCarouselAllTime;
         this.mDatas = mDatas != null ? new ArrayList<T>(mDatas) : new ArrayList<T>();
         mCacher = new Cacher<ItemView, ItemViewContext>() {
@@ -51,6 +51,9 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
         mDatas.addAll(datas);
         notifyDataSetChanged();
     }
+    public T getItemAt(int index){
+        return mDatas.get(index);
+    }
     public void clearItems(){
         mDatas.clear();
         notifyDataSetChanged();
@@ -78,12 +81,11 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-       /* ImageView iv = new ImageView(container.getContext());
-        iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
         int index = getPositionActually(position);
-        ItemView itemView = mCacher.obtain(new ItemViewContext(container.getContext(), index));
+        T data = mDatas.get(index);
+        ItemView itemView = mCacher.obtain(new ItemViewContext(container.getContext(), index, data));
         container.addView(itemView);
-        onBindItem(itemView, index, mDatas.get(index));
+        onBindItem(itemView, index, data);
         return itemView;
     }
 
@@ -118,9 +120,11 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
     public static class ItemViewContext{
         public final Context context;
         public final int position;
-        public ItemViewContext(Context context, int position) {
+        public final Object data;
+        public ItemViewContext(Context context, int position, Object data) {
             this.context = context;
             this.position = position;
+            this.data = data;
         }
     }
 }
