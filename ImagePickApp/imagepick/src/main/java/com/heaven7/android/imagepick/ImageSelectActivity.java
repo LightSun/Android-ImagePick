@@ -34,6 +34,7 @@ import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.Logger;
+import com.heaven7.core.util.MD5Util;
 import com.heaven7.core.util.Toaster;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
@@ -168,23 +169,28 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                                 }
                             }
                             //compress io
-                            File file = new File(cacheDir, System.currentTimeMillis() + "." + extension);
-                            FileOutputStream fos = null;
-                            try {
-                                fos = new FileOutputStream(file);
-                                bitmap.compress(format, 100, fos);
-                                fos.flush();
-                                System.out.println(file.getAbsolutePath());
+                            File file = new File(cacheDir, MD5Util.encode(item.getFilePath()) + "." + extension);
+                            if(file.exists() && file.isFile()){
                                 map.put(item, file.getAbsolutePath());
                                 ImagePickDelegateImpl.getDefault().onImageProcessUpdate(ImageSelectActivity.this, i + 1, size);
-                            }catch (Exception e){
-                                doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, e);
-                                if(!doNext){
-                                    Toaster.show(getApplicationContext(), getString(R.string.lib_pick_process_image_failed));
-                                    return;
+                            }else {
+                                FileOutputStream fos = null;
+                                try {
+                                    fos = new FileOutputStream(file);
+                                    bitmap.compress(format, 100, fos);
+                                    fos.flush();
+                                    //System.out.println(file.getAbsolutePath());
+                                    map.put(item, file.getAbsolutePath());
+                                    ImagePickDelegateImpl.getDefault().onImageProcessUpdate(ImageSelectActivity.this, i + 1, size);
+                                }catch (Exception e){
+                                    doNext = ImagePickDelegateImpl.getDefault().onImageProcessException(ImageSelectActivity.this, i + 1, size, item, e);
+                                    if(!doNext){
+                                        Toaster.show(getApplicationContext(), getString(R.string.lib_pick_process_image_failed));
+                                        return;
+                                    }
+                                } finally {
+                                    IOUtils.closeQuietly(fos);
                                 }
-                            } finally {
-                                IOUtils.closeQuietly(fos);
                             }
                         }
                         //map to file path
