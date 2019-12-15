@@ -11,9 +11,6 @@ import com.heaven7.core.util.Logger;
 import java.lang.ref.WeakReference;
 
 /**
- * wait fix two problem:
- *    1, first not play
- *    2, may play multi video at same time.
  */
 public class VideoManager implements VideoManageDelegate {
 

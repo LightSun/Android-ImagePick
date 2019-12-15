@@ -143,8 +143,8 @@ public class SeeBigImageActivity extends BaseActivity {
             }
             @Override
             public void onPageScrollStateChanged(int i) {
-                System.out.println("onPageScrollStateChanged");
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
+                    System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE");
                     setSelectOrder(mVp.getCurrentItem() + 1);
                     startPlay();
                 }
