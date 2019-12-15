@@ -11,6 +11,7 @@ import com.heaven7.core.util.Logger;
 import java.lang.ref.WeakReference;
 
 /**
+ * TODO 滑动过去又回来，需要处理。
  */
 public class VideoManager implements VideoManageDelegate {
 

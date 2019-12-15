@@ -152,19 +152,23 @@ public class SeeBigImageActivity extends BaseActivity {
         });
     }
     private void startPlay(){
+        if(mPendingPlayed.compareAndSet(false, true)){
+            startPlay0();
+        }
+    }
+    private void startPlay0(){
         final View currentView = LibPick$_ViewPagerUtils.getCurrentView(mVp);
         if(currentView == null){
-            if(mPendingPlayed.compareAndSet(false, true)){
-                MainWorker.postDelay(20, new Runnable() {
-                    @Override
-                    public void run() {
-                        startPlay();
-                    }
-                });
-            }
+            MainWorker.postDelay(20, new Runnable() {
+                @Override
+                public void run() {
+                    startPlay0();
+                }
+            });
         }else {
-            mMediaAdapter.startPlay(getApplicationContext(), mVp.getCurrentItem(), currentView);
-            mPendingPlayed.compareAndSet(true, false);
+            if(mPendingPlayed.compareAndSet(true, false)){
+                mMediaAdapter.startPlay(getApplicationContext(), mVp.getCurrentItem(), currentView);
+            }
         }
     }
 
