@@ -30,6 +30,7 @@ public class VideoManager implements VideoManageDelegate {
 
     @Override
     public void setMediaData(Context context, View v, IImageItem data) {
+        Logger.d(TAG, "setMediaData");
         VideoView view = (VideoView) v;
         view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
     }
@@ -59,6 +60,7 @@ public class VideoManager implements VideoManageDelegate {
     public void startPlay(Context context, View v, IImageItem data) {
         Logger.d(TAG, "startPlay");
         VideoView view = (VideoView) v;
+        //view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
         pauseLast(view);
         mWeakView = new WeakReference<>(view);
         view.start();
