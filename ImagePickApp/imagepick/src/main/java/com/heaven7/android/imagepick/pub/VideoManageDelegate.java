@@ -13,9 +13,10 @@ public interface VideoManageDelegate {
     /**
      * indicate the view is video view or not
      * @param view the view
+     * @param data the media data
      * @return true if is video view.
      */
-    boolean isVideoView(View view);
+    boolean isVideoView(View view, IImageItem data);
 
     /**
      * called on create video video

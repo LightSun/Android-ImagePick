@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
+import com.heaven7.memory.util.Cacher;
 
 import java.util.List;
 
@@ -21,10 +22,17 @@ import internal.GestureImageUtils;
  */
 public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IImageItem, View> {
 
+    private final Cacher<View, ItemViewContext> mVideoViewCaher;
     private boolean supportGestureImage;
 
     public AbstractMediaPageAdapter(List<? extends IImageItem> mDatas) {
         super(false, mDatas);
+        mVideoViewCaher = new Cacher<View, ItemViewContext>() {
+            @Override
+            public View create(ItemViewContext context) {
+                return onCreateItemView(context);
+            }
+        };
     }
     public void setSupportGestureImage(boolean supportGestureImage) {
         this.supportGestureImage = supportGestureImage;
@@ -82,9 +90,10 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
 
     @Override
     public final void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        int index = getPositionActually(position);
         View view = (View) object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(videoM != null && videoM.isVideoView(view)){
+        if(videoM != null && videoM.isVideoView(view, getItemAt(index))){
             videoM.destroyVideo(container.getContext(), view);
         }
         super.destroyItem(container, position, object);
@@ -123,6 +132,25 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         }else {
             onBindImageItem((ImageView) iv, index, data);
         }
+    }
+
+    @Override
+    protected View obtainItemView(ItemViewContext p) {
+        IImageItem data = (IImageItem) p.data;
+        if(data.isVideo()){
+            return mVideoViewCaher.obtain(p);
+        }
+        return super.obtainItemView(p);
+    }
+
+    @Override
+    protected boolean shouldRecycle(int position, View view) {
+        VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
+        if(videoM != null && videoM.isVideoView(view, getItemAt(position))){
+            mVideoViewCaher.recycle(view);
+            return false;
+        }
+        return true;
     }
 
     /**

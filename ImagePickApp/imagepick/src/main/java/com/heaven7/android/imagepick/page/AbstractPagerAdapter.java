@@ -83,15 +83,20 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         int index = getPositionActually(position);
         T data = mDatas.get(index);
-        ItemView itemView = mCacher.obtain(new ItemViewContext(container.getContext(), index, data));
+
+        ItemView itemView = obtainItemView(new ItemViewContext(container.getContext(), index, data));
         container.addView(itemView);
         onBindItem(itemView, index, data);
         return itemView;
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View)object);
+        ItemView view = (ItemView)object;
+        container.removeView(view);
+        if(shouldRecycle(getPositionActually(position), view)){
+            mCacher.recycle(view);
+        }
     }
 
     protected int getPositionActually(int position){
@@ -99,6 +104,24 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
             return position % mDatas.size();
         }
         return position;
+    }
+
+    /**
+     * obtain item view
+     * @param p the parameter to obtain
+     * @return the item view.
+     */
+    protected ItemView obtainItemView(ItemViewContext p){
+        return mCacher.obtain(p);
+    }
+    /**
+     * called if you want to recycle view
+     * @param position the real position
+     * @param view the item view
+     * @return true if should recycle. default is true
+     */
+    protected boolean shouldRecycle(int position, View view){
+        return true;
     }
 
     /**

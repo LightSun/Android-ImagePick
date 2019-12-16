@@ -19,7 +19,7 @@ public class VideoManager implements VideoManageDelegate {
     private WeakReference<VideoView> mWeakView;
 
     @Override
-    public boolean isVideoView(View view) {
+    public boolean isVideoView(View view, IImageItem data) {
         return view instanceof VideoView;
     }
 
