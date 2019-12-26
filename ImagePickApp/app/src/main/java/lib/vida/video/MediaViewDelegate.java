@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.heaven7.android.savestate2.BundleStateWrapper;
-import com.heaven7.android.savestate2.SaveStateField;
+import com.heaven7.android.pick.app.R;
 
 import static lib.vida.video.MediaViewCons.TYPE_COVER;
 import static lib.vida.video.MediaViewCons.TYPE_COVER_PAUSE;
@@ -27,14 +26,12 @@ import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
  */
 /*public*/ abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
 
-    private final BundleStateWrapper mSaveState;
     private final P mParent;
     private V mVideoView;
     private AppCompatImageView mCoverView;
     private AppCompatImageView mPauseView;
     private ProxyView mProxyView;
 
-    @SaveStateField(value = "MediaViewDelegate:type")
     private int type;
     private Callback<P> mCallback;
     private TouchPositionProvider mProvider;
@@ -42,7 +39,6 @@ import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
 
     /*public*/ MediaViewDelegate(P parent) {
         this.mParent = parent;
-        this.mSaveState = BundleStateWrapper.of(this);
     }
 
     public void initViews(boolean addProxyView){
@@ -203,17 +199,18 @@ import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
 
     protected abstract V createVideoView(Context context);
 
-    public Parcelable onSaveInstanceState(Parcelable superState) {
-        return mSaveState.onSaveInstanceState(superState);
-    }
-    public Parcelable onRestoreInstanceState(Parcelable state) {
-        return mSaveState.onRestoreInstanceState(state);
-    }
-
     private static int[] getScreenXY(View view) {
         int[] cors = new int[2];
         view.getLocationOnScreen(cors);
         return cors;
+    }
+
+    public Parcelable onSaveInstanceState(Parcelable state) {
+        return state;
+    }
+
+    public Parcelable onRestoreInstanceState(Parcelable state) {
+        return state;
     }
 
     public interface Callback<T extends ViewGroup>{

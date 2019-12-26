@@ -88,8 +88,16 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         }
     }
 
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        MediaLog.instantiateItem(getPositionActually(position));
+        return super.instantiateItem(container, position);
+    }
+
     @Override
     public final void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        MediaLog.destroyItem(position);
         int index = getPositionActually(position);
         View view = (View) object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
@@ -101,6 +109,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
 
     @Override
     protected View onCreateItemView(ItemViewContext context) {
+        MediaLog.createItem(context.position);
         IImageItem data = (IImageItem) context.data;
         if(data.isVideo()){
             VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
@@ -123,6 +132,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
     }
     @Override
     protected final void onBindItem(View iv, int index, IImageItem data) {
+        MediaLog.onBindItem(index);
         if(data.isVideo()){
             VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(videoM == null){
@@ -136,6 +146,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
 
     @Override
     protected View obtainItemView(ItemViewContext p) {
+        MediaLog.obtainItem(p.position);
         IImageItem data = (IImageItem) p.data;
         if(data.isVideo()){
             return mVideoViewCaher.obtain(p);
@@ -145,6 +156,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
 
     @Override
     protected boolean shouldRecycle(int position, View view) {
+        MediaLog.recycleItem(position);
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
         if(videoM != null && videoM.isVideoView(view, getItemAt(position))){
             mVideoViewCaher.recycle(view);

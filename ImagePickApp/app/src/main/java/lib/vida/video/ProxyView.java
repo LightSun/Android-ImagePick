@@ -6,13 +6,11 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.vida.android.lib.common.video.SaveStateView;
-
 /**
  * a proxy view used to draw something.
  * Created by heaven7 on 2019/4/26.
  */
-public class ProxyView extends SaveStateView {
+public class ProxyView extends View {
 
     private Callback mCallback;
     private boolean mDraw;

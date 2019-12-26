@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 
+import com.heaven7.android.pick.app.BuildConfig;
+import com.heaven7.android.pick.app.R;
 import com.heaven7.core.util.Logger;
 
 import java.io.IOException;
@@ -132,19 +134,16 @@ public class TextureVideoView extends TextureView
 
     public TextureVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if (attrs == null) {
-            return;
+
+        if(attrs != null){
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView, 0, 0);
+            try {
+                int scaleType = a.getInt(R.styleable.TextureVideoView_scaleType, mScaleType);
+                mScaleType = scaleType;
+            }finally {
+                a.recycle();
+            }
         }
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView, 0, 0);
-        if (a == null) {
-            return;
-        }
-
-        int scaleType = a.getInt(R.styleable.TextureVideoView_scaleType, mScaleType);
-        a.recycle();
-        mScaleType = scaleType;
-
         if (!isInEditMode()) {
             mContext = getContext();
             mCurrentState = STATE_IDLE;
@@ -431,7 +430,6 @@ public class TextureVideoView extends TextureView
 
     public void stop() {
         mTargetState = STATE_PLAYBACK_COMPLETED;
-
         if (isInPlaybackState()) {
             mVideoHandler.obtainMessage(MSG_STOP).sendToTarget();
         }

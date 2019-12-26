@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -29,9 +28,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
-import com.heaven7.android.savestate2.BundleStateWrapper;
-import com.heaven7.android.savestate2.BundleSupportType;
-import com.heaven7.android.savestate2.SaveStateField;
+import com.heaven7.android.pick.app.R;
 
 import java.util.List;
 
@@ -47,14 +44,12 @@ public class PlayerView2 extends FrameLayout {
     private static final int SURFACE_TYPE_SURFACE_VIEW = 1;
     private static final int SURFACE_TYPE_TEXTURE_VIEW = 2;
 
-    private final BundleStateWrapper mSaveStateWrapper;
     private final AspectRatioFrameLayout contentFrame;
     private final View surfaceView;
     private final PlayerControlLayout controller2;
     private final PlayerView2.ComponentListener componentListener;
 
     private Player player;
-    @SaveStateField(value = "PlayerView2:textureViewRotation", flag = BundleSupportType.INT)
     private int textureViewRotation;
 
     public PlayerView2(Context context) {
@@ -67,7 +62,6 @@ public class PlayerView2 extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         if (isInEditMode()) {
-            mSaveStateWrapper = BundleStateWrapper.of(this);
             contentFrame = null;
             surfaceView = null;
             componentListener = null;
@@ -130,17 +124,6 @@ public class PlayerView2 extends FrameLayout {
         // Playback control view.
         controller2 = findViewById(R.id.pcl);
         controller2.setPauseMargin(pauseMarginTop, pauseMarginBottom);
-        mSaveStateWrapper = BundleStateWrapper.of(this, controller2);
-    }
-
-    @Nullable
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        return mSaveStateWrapper.onSaveInstanceState(super.onSaveInstanceState());
-    }
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(mSaveStateWrapper.onRestoreInstanceState(state));
     }
 
     /**
