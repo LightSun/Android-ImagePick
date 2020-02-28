@@ -2,7 +2,6 @@ package lib.vida.video;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.audio.AudioCapabilities;
@@ -13,6 +12,7 @@ import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
+import com.heaven7.java.base.anno.Nullable;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 

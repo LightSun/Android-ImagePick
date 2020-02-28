@@ -1,10 +1,11 @@
 package com.heaven7.android.imagepick.page;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.pub.IImageItem;

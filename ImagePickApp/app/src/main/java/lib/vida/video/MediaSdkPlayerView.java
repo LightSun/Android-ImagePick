@@ -7,16 +7,17 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.heaven7.android.pick.app.R;
 import com.heaven7.core.util.Logger;
+import com.heaven7.java.base.anno.Nullable;
 
 import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
 

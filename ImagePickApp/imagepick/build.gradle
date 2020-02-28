@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: '../common.gradle'
 apply plugin: 'com.github.dcendents.android-maven'
+apply from: '../androidx_compat.gradle'
+apply from: '../common.gradle'
 
 group='com.github.LightSun'
 
@@ -9,7 +10,7 @@ android {
     buildToolsVersion "28.0.3"
 
     defaultConfig {
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -30,8 +31,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.github.LightSun:cameraview:1.0.1-beta'
-    implementation "com.github.bumptech.glide:glide:3.7.0"
+    implementation ('com.github.LightSun:cameraview:1.0.1-beta'){
+        exclude group: 'com.android.support'
+    }
+    implementation ("com.github.bumptech.glide:glide:4.9.0")
+    annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
 
    /* implementation "com.jakewharton:butterknife:8.4.0"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"*/

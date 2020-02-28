@@ -4,15 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,18 +15,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.BaseRequestOptions;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.ImageParameter;
-import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
+import com.heaven7.java.base.anno.Nullable;
 import com.heaven7.java.base.util.IOUtils;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * camera fragment
  * @author heaven7
  */
-public class CameraFragment extends Fragment{
+public class CameraFragment extends Fragment {
 
     private static final String TAG = "CameraFragment";
     private CameraView mCameraView;
@@ -267,13 +267,13 @@ public class CameraFragment extends Fragment{
                  }
                  int round = SystemConfig.dip2px(context, 8);
                  setCameraEnabled(false);
-                 Glide.with(context)
+                 RequestBuilder rb = (RequestBuilder) Glide.with(context)
                          .load(new File(file))
-                         .bitmapTransform(new Transformation[]{new CenterCrop(context)
+                         .transform(new Transformation[]{new CenterCrop()
                                  , new BorderRoundTransformation(context, round, 0, 1, Color.TRANSPARENT)})
                          .dontAnimate()
-                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                         .into(mIv_image);
+                         .diskCacheStrategy(DiskCacheStrategy.ALL);
+                 rb.into(mIv_image);
              }
          });
     }

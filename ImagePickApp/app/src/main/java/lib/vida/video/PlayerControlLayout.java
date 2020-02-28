@@ -1,18 +1,20 @@
 package lib.vida.video;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.java.base.anno.Nullable;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -47,6 +49,7 @@ public class PlayerControlLayout extends FrameLayout {
         this(context, attrs, defStyleAttr, 0);
     }
 
+    @TargetApi(21)
     public PlayerControlLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 

@@ -24,24 +24,19 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'org.heaven7.core.view:common-view:1.2.3'*/
 
-    def support = '28.0.0'
-    implementation "com.android.support:appcompat-v7:${support}"
-    implementation "com.android.support:support-v4:${support}"
-    implementation "com.android.support:recyclerview-v7:${support}"
-
-    //implementation 'com.github.LightSun:android-Component:1.1.3'
-    implementation 'com.github.LightSun:SuperAdapter:2.0.6'
-    implementation('com.github.LightSun:util-v1:1.1.5') {
+    implementation 'com.github.LightSun:SuperAdapter:2.0.9-x'
+    implementation('com.github.LightSun:util-v1:1.1.7-beta-x') {
         exclude group: 'com.android.support'
         exclude group: 'com.heaven7.android.component'
     }
-    implementation('com.heaven7.android.util2:android-util2:1.2.0') {
+    implementation('com.github.LightSun:android-util2:1.2.0-x') {
         exclude group: "com.heaven7.core.adapter"
         exclude group: "com.heaven7.core.util"
         exclude group: 'com.heaven7.android.component'
     }
     implementation 'com.heaven7.java.visitor:Visitor:1.3.5'
-    implementation 'com.heaven7.core.util:memory:1.0.5'
     implementation 'com.heaven7.java.base:Java-base:1.2.0'
-    //implementation "com.github.bumptech.glide:glide:3.7.0"
+    implementation ('com.heaven7.core.util:memory:1.0.5'){
+        exclude group: 'com.android.support'
+    }
 }

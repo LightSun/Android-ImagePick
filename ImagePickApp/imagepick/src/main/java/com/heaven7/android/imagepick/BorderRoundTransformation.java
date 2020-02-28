@@ -15,6 +15,9 @@ import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 /**
  * from internet
  */
@@ -47,7 +50,7 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
     }
 
     @Override
-    public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+    public Resource<Bitmap> transform(Context context,Resource<Bitmap> resource, int outWidth, int outHeight) {
         Bitmap source = resource.get();
 
         int width = source.getWidth();
@@ -99,8 +102,13 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
 
     }
 
-
     @Override
+    public void updateDiskCacheKey(MessageDigest md) {
+        //must
+        md.update(getId().getBytes(StandardCharsets.UTF_8));
+    }
+
+    //@Override
     public String getId() {
         //这里一定要是设置一个独一无二的ID，要不然重用会导致第二次调用不起效果，最好加上相应的变量参数，保证唯一性
         return "RoundedTransformation(radius=" + mRadius + ", margin=" + mMargin + ", mBorderWidth"

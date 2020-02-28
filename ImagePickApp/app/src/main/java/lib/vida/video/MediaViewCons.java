@@ -1,6 +1,6 @@
 package lib.vida.video;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 /**
  * Created by heaven7 on 2018/11/9 0009.

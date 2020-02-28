@@ -37,7 +37,7 @@
         android:orientation="vertical"
         android:paddingTop="24dp"
         >
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             >
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
             android:id="@+id/tv_delete"

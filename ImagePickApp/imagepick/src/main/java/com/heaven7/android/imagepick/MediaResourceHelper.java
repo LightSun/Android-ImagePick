@@ -3,7 +3,6 @@ package com.heaven7.android.imagepick;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
@@ -45,7 +44,7 @@ public final class MediaResourceHelper {
      * @param flags    the flags, see {@linkplain #FLAG_IMAGE} and etc.
      * @param callback the callback
      */
-    public void getMediaResource(final int flags, @NonNull final Callback callback) {
+    public void getMediaResource(final int flags, final Callback callback) {
         if (flags <= 0) {
             throw new IllegalArgumentException();
         }

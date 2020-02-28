@@ -4,11 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Keep;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Keep;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -38,6 +38,7 @@ import com.heaven7.core.util.MD5Util;
 import com.heaven7.core.util.Toaster;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
+import com.heaven7.java.base.anno.Nullable;
 import com.heaven7.java.base.util.FileUtils;
 import com.heaven7.java.base.util.IOUtils;
 import com.heaven7.java.base.util.TextUtils;
@@ -417,9 +418,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     public void onGotView(ImageView view, ViewHelper vp) {
                         Glide.with(view.getContext())
                                 .load(new File(item.getItems().get(0).getFilePath()))
-                                .asBitmap()
                                 .centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
                                 .into(view);
                     }
                 });
@@ -458,9 +458,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                         public void onGotView(ImageView view, ViewHelper viewHelper) {
                             Glide.with(context)
                                     .load(new File(item.getFilePath()))
-                                    .asBitmap()
                                     .centerCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                                     .into(view);
                         }
                     }).setOnClickListener(R.id.iv_select_state, new View.OnClickListener() {

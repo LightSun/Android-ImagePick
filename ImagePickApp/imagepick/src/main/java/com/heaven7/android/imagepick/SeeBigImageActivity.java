@@ -2,13 +2,14 @@ package com.heaven7.android.imagepick;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Keep;
-import android.support.v4.view.LibPick$_ViewPagerUtils;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Keep;
+import androidx.viewpager.widget.LibPick$_ViewPagerUtils;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -265,8 +266,7 @@ public class SeeBigImageActivity extends BaseActivity {
             if (data.getFilePath() != null) {
                 rm
                         .load(new File(data.getFilePath()))
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(iv);
             } else {
                 rm

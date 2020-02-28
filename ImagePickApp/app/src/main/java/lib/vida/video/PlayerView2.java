@@ -7,8 +7,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -29,6 +29,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.java.base.anno.Nullable;
 
 import java.util.List;
 

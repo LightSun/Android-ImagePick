@@ -2,8 +2,10 @@ package com.heaven7.android.imagepick;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.heaven7.adapter.util.DefaultItemAnimator;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
@@ -23,7 +25,7 @@ import java.util.List;
         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(true);
     }*/
     public static void closeDefaultAnimator(RecyclerView mRv) {
-        mRv.setItemAnimator(new com.heaven7.android.imagepick.DefaultItemAnimator());
+        mRv.setItemAnimator(new DefaultItemAnimator());
     }
 
     public static ArrayList<String> getFilePaths(List<MediaResourceItem> items) {

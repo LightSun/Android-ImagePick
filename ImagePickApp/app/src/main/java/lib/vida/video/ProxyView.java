@@ -1,10 +1,12 @@
 package lib.vida.video;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.heaven7.java.base.anno.Nullable;
 
 /**
  * a proxy view used to draw something.
@@ -27,6 +29,7 @@ public class ProxyView extends View {
         this(context, attrs, defStyleAttr, 0);
     }
 
+    @TargetApi(21)
     public ProxyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

@@ -1,8 +1,9 @@
 package common.utils;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.StringDef;
 import android.text.TextUtils;
+
+import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

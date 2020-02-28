@@ -1,7 +1,8 @@
-package android.support.v4.view;
+package androidx.viewpager.widget;
 
-import android.support.annotation.RestrictTo;
 import android.view.View;
+
+import androidx.annotation.RestrictTo;
 
 /**
  * for access ViewPager.LayoutParams.position. we should use same package.

@@ -3,15 +3,17 @@ package com.heaven7.android.imagepick;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Keep;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.Keep;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -82,13 +84,13 @@ public class BrowseActivity extends BaseActivity {
                     public void onGotView(ImageView imageView, ViewHelper viewHelper) {
                         int bc = item.isSelected() ? borderColor : Color.TRANSPARENT;
                         BorderRoundTransformation borderTrans = new BorderRoundTransformation(context, round, 0, border, bc);
-                        Glide.with(context)
+                        RequestBuilder rb = (RequestBuilder) Glide.with(context)
                                 .load(new File(item.file))
-                                .bitmapTransform(new Transformation[]{new CenterCrop(context)
+                                .transform(new Transformation[]{new CenterCrop()
                                         , borderTrans})
                                 .dontAnimate()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(imageView);
+                                .diskCacheStrategy(DiskCacheStrategy.ALL);
+                        rb.into(imageView);
                     }
                 }).setRootOnClickListener(new View.OnClickListener() {
                     @Override
@@ -157,8 +159,7 @@ public class BrowseActivity extends BaseActivity {
             if (data.getFilePath() != null) {
                 rm
                         .load(new File(data.getFilePath()))
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(iv);
             }
             iv.setOnClickListener(new View.OnClickListener() {

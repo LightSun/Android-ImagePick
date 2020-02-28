@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.heaven7.android.pick.app.R;
 

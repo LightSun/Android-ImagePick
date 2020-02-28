@@ -5,13 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-import com.heaven7.android.imagepick.ImagePickDelegateImpl;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
@@ -21,6 +20,7 @@ import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
+import com.heaven7.java.base.anno.Nullable;
 
 import java.util.ArrayList;
 

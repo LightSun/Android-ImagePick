@@ -1,8 +1,9 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
-import android.support.annotation.RestrictTo;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.RestrictTo;
+import androidx.fragment.app.FragmentActivity;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.CameraParameter;
