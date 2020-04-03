@@ -18,6 +18,7 @@ import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
 import com.heaven7.java.base.anno.Nullable;
@@ -40,6 +41,7 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.ac_entry);
         mComponent = new RetrofitRxComponent();
 
+        ImagePickManager.get().getImagePickDelegate().setImageLoadDelegate(new ImageLoadImpl());
         ImagePickManager.get().getImagePickDelegate().setOnImageProcessListener(new ImagePickDelegate.OnImageProcessListener() {
             @Override
             public void onProcessStart(Activity activity, int totalCount) {

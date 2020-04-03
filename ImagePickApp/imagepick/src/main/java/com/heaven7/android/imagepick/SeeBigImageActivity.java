@@ -11,9 +11,6 @@ import androidx.annotation.Keep;
 import androidx.viewpager.widget.LibPick$_ViewPagerUtils;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
@@ -262,18 +259,8 @@ public class SeeBigImageActivity extends BaseActivity {
         }
         @Override
         protected void onBindImageItem(ImageView iv, int index, IImageItem data) {
-            RequestManager rm = Glide.with(iv.getContext());
-            if (data.getFilePath() != null) {
-                rm
-                        .load(new File(data.getFilePath()))
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(iv);
-            } else {
-                rm
-                        .load(data.getUrl())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(iv);
-            }
+
+            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

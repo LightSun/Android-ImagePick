@@ -1,8 +1,10 @@
-package com.heaven7.android.imagepick;
+package com.heaven7.android.imagepick.utils;
 
 import android.app.Activity;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 
 /**
  * the optimise scroll listener which help load image smoothly.

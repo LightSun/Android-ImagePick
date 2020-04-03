@@ -10,6 +10,9 @@ import java.util.List;
  */
 public interface ImagePickDelegate {
 
+    void setImageLoadDelegate(ImageLoadDelegate delegate);
+
+    ImageLoadDelegate getImageLoadDelegate();
     /**
      * set video manage delegate
      * @param delegate the video manage delegate

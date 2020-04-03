@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick;
+package com.heaven7.android.pick.app.impl;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -30,17 +30,17 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
      * 0b0000表示不加圆形边框
      */
     private BitmapPool mBitmapPool;
-    private int mRadius; //圆角半径
+    private float mRadius; //圆角半径
     private int mMargin; //边距
 
-    private int mBorderWidth;//边框宽度
+    private float mBorderWidth;//边框宽度
     private int mBorderColor;//边框颜色
     private int mCornerPos; //圆角位置
 
-    public BorderRoundTransformation(Context context, int radius, int margin, int mBorderWidth, int mBorderColor){
+    public BorderRoundTransformation(Context context, float radius, int margin, float mBorderWidth, int mBorderColor){
         this(context, radius, margin, mBorderWidth, mBorderColor, 0b1111);
     }
-    public BorderRoundTransformation(Context context, int radius, int margin, int mBorderWidth, int mBorderColor, int position) {
+    public BorderRoundTransformation(Context context, float radius, int margin, float mBorderWidth, int mBorderColor, int position) {
         mBitmapPool = Glide.get(context).getBitmapPool();
         mRadius = radius;
         mMargin = margin;
@@ -57,9 +57,9 @@ public class BorderRoundTransformation implements Transformation<Bitmap> {
         int height = source.getHeight();
 
         Bitmap bitmap = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
-        if (bitmap == null) {
+        /*if (bitmap == null) {
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        }
+        }*/
 
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();

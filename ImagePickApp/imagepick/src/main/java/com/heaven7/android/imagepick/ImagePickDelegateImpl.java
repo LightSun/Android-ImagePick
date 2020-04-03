@@ -9,6 +9,7 @@ import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.CameraParameter;
 import com.heaven7.android.imagepick.pub.ExceptionHandler;
 import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
@@ -34,6 +35,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     private OnImageProcessListener mImageListener;
     private ExceptionHandler mHandler;
     private VideoManageDelegate mVideoManager;
+    private ImageLoadDelegate mImageLoadDelegate;
 
     private ImagePickDelegateImpl(){}
 
@@ -47,6 +49,16 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
         return sInstance;
     }
+
+    @Override
+    public void setImageLoadDelegate(ImageLoadDelegate delegate) {
+        mImageLoadDelegate = delegate;
+    }
+    @Override
+    public ImageLoadDelegate getImageLoadDelegate() {
+        return mImageLoadDelegate;
+    }
+
     public List<String> getImages(){
         return mImages;
     }

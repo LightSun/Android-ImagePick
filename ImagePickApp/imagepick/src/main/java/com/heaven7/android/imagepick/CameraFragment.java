@@ -19,16 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.request.BaseRequestOptions;
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.pub.CameraParameter;
+import com.heaven7.android.imagepick.pub.ImageItem;
+import com.heaven7.android.imagepick.pub.ImageOptions;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.core.util.DimenUtil;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
@@ -265,15 +262,16 @@ public class CameraFragment extends Fragment {
                  if(context == null){
                      return;
                  }
-                 int round = SystemConfig.dip2px(context, 8);
+                 int round = DimenUtil.dip2px(context, 8);
                  setCameraEnabled(false);
-                 RequestBuilder rb = (RequestBuilder) Glide.with(context)
-                         .load(new File(file))
-                         .transform(new Transformation[]{new CenterCrop()
-                                 , new BorderRoundTransformation(context, round, 0, 1, Color.TRANSPARENT)})
-                         .dontAnimate()
-                         .diskCacheStrategy(DiskCacheStrategy.ALL);
-                 rb.into(mIv_image);
+
+                 ImageOptions options = new ImageOptions.Builder()
+                         .setRound(round)
+                         .setBorder(1)
+                         .setBorderColor(Color.TRANSPARENT)
+                         .setCacheFlags(ImageOptions.FLAG_DATA | ImageOptions.FLAG_RESOURCE)
+                         .build();
+                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(mIv_image, ImageItem.of(file), options);
              }
          });
     }

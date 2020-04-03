@@ -13,6 +13,12 @@ public class ImageItem implements Parcelable, IImageItem {
     private String url;
     private boolean video;
 
+    public static ImageItem of(String filePath) {
+        ImageItem imageItem = new ImageItem();
+        imageItem.setFilePath(filePath);
+        return imageItem;
+    }
+
     public void setSelected(boolean selected) {
         this.selected = selected;
     }

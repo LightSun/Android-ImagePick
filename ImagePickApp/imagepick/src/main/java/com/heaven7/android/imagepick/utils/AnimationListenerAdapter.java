@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick;
+package com.heaven7.android.imagepick.utils;
 
 import android.view.animation.Animation;
 

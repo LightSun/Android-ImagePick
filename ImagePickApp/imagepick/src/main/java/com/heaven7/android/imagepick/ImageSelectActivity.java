@@ -18,20 +18,20 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.RecyclerViewUtils;
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.pub.ImageItem;
 import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MD5Util;
@@ -291,7 +291,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         GridLayoutManager layoutManager = RecyclerViewUtils.createGridLayoutManager(adapter, this, mParam.getSpanCount());
         mRv_content.setLayoutManager(layoutManager);
         mRv_content.setAdapter(adapter);
-        mRv_content.addOnScrollListener(new OptimiseScrollListenerImpl());
+        mRv_content.addOnScrollListener(new OptimiseScrollListenerImpl(this));
 
         mRv_dir.setLayoutManager(new LinearLayoutManager(this));
         mRv_dir.setAdapter(new DirAdapter(null));
@@ -416,11 +416,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 helper.performViewGetter(R.id.iv_icon, new Getters.ImageViewGetter() {
                     @Override
                     public void onGotView(ImageView view, ViewHelper vp) {
-                        Glide.with(view.getContext())
-                                .load(new File(item.getItems().get(0).getFilePath()))
-                                .centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                                .into(view);
+                        ImageItem it = ImageItem.of(item.getItems().get(0).getFilePath());
+                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                     }
                 });
             }
@@ -456,11 +453,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     .performViewGetter(R.id.iv, new Getters.ImageViewGetter() {
                         @Override
                         public void onGotView(ImageView view, ViewHelper viewHelper) {
-                            Glide.with(context)
-                                    .load(new File(item.getFilePath()))
-                                    .centerCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                                    .into(view);
+                            ImageItem it = ImageItem.of(item.getFilePath());
+                            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                         }
                     }).setOnClickListener(R.id.iv_select_state, new View.OnClickListener() {
                 @Override

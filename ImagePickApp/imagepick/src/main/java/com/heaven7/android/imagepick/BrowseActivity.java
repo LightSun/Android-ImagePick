@@ -12,21 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.SelectHelper;
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.android.imagepick.page.GestureBigImageAdapter;
+import com.heaven7.android.imagepick.pub.ImageItem;
+import com.heaven7.android.imagepick.pub.ImageOptions;
+import com.heaven7.core.util.DimenUtil;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +29,7 @@ import java.util.List;
 public class BrowseActivity extends BaseActivity {
 
     private RecyclerView mRv;
-    private QuickRecycleViewAdapter<Item> mAdapter;
+    private QuickRecycleViewAdapter<ImageItem> mAdapter;
     private ViewPager mVp;
     private Adapter0 mPageAdapter;
 
@@ -55,7 +50,7 @@ public class BrowseActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        List<Item> items = createItems();
+        List<ImageItem> items = createItems();
         mAdapter.getAdapterManager().replaceAllItems(items);
         if(items.size() > 0){
             mAdapter.getSelectHelper().select(0);
@@ -64,16 +59,16 @@ public class BrowseActivity extends BaseActivity {
     }
 
     private void setAdapter(Context context) {
-        final List<Item> items = createItems();
+        final List<ImageItem> items = createItems();
         mVp.setAdapter(mPageAdapter = new Adapter0(items));
 
-        final int margin = SystemConfig.dip2px(context, 10);
-        final int round = SystemConfig.dip2px(context, 8);
+        final int margin = DimenUtil.dip2px(context, 10);
+        final int round = DimenUtil.dip2px(context, 8);
         final int borderColor = Color.parseColor("#677DB8");
-        final int border =  SystemConfig.dip2px(context, 1);
-        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(R.layout.lib_pick_item_image, items) {
+        final int border =  DimenUtil.dip2px(context, 1);
+        mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<ImageItem>(R.layout.lib_pick_item_image, items) {
             @Override
-            protected void onBindData(final Context context, final int position, final Item item, int itemLayoutId, ViewHelper2 helper) {
+            protected void onBindData(final Context context, final int position, final ImageItem item, int itemLayoutId, ViewHelper2 helper) {
                 View rootView = helper.getRootView();
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) rootView.getLayoutParams();
                 mlp.setMarginStart(position != 0 ? margin : 0);
@@ -83,19 +78,18 @@ public class BrowseActivity extends BaseActivity {
                     @Override
                     public void onGotView(ImageView imageView, ViewHelper viewHelper) {
                         int bc = item.isSelected() ? borderColor : Color.TRANSPARENT;
-                        BorderRoundTransformation borderTrans = new BorderRoundTransformation(context, round, 0, border, bc);
-                        RequestBuilder rb = (RequestBuilder) Glide.with(context)
-                                .load(new File(item.file))
-                                .transform(new Transformation[]{new CenterCrop()
-                                        , borderTrans})
-                                .dontAnimate()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL);
-                        rb.into(imageView);
+
+                        ImageOptions options = new ImageOptions.Builder()
+                                .setRound(round)
+                                .setBorder(border)
+                                .setBorderColor(bc)
+                                .build();
+                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(imageView, item, options);
                     }
                 }).setRootOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SelectHelper<Item> selectHelper = mAdapter.getSelectHelper();
+                        SelectHelper<ImageItem> selectHelper = mAdapter.getSelectHelper();
                         selectHelper.select(getAdapterManager().getItems().indexOf(item));
                     }
                 });
@@ -109,7 +103,7 @@ public class BrowseActivity extends BaseActivity {
     }
     @Keep
     public void onClickDelete(View view){
-        SelectHelper<Item> helper = mAdapter.getSelectHelper();
+        SelectHelper<ImageItem> helper = mAdapter.getSelectHelper();
         int[] poss = helper.getSelectPosition();
         if(poss != null && poss.length > 0){
             int posToDelete = poss[0];
@@ -121,13 +115,13 @@ public class BrowseActivity extends BaseActivity {
             }
             helper.clearSelectedPosition();
             //load
-            List<Item> items = mAdapter.getAdapterManager().getItems();
+            List<ImageItem> items = mAdapter.getAdapterManager().getItems();
             if(items.size() >= 2){
                 //remove item
-                Item deleteItem = items.get(posToDelete);
-                Item item = items.get(showPos);
+                ImageItem deleteItem = items.get(posToDelete);
+                ImageItem item = items.get(showPos);
                 mAdapter.getAdapterManager().removeItem(deleteItem);
-                ImagePickDelegateImpl.getDefault().removeImagePath(deleteItem.file);
+                ImagePickDelegateImpl.getDefault().removeImagePath(deleteItem.getFilePath());
                 //select and load item
                 mPageAdapter.removeItem(deleteItem);
                 helper.select(items.indexOf(item));
@@ -139,45 +133,29 @@ public class BrowseActivity extends BaseActivity {
         }
     }
 
-    private static List<Item> createItems() {
-        List<Item> list = new ArrayList<>();
+    private static List<ImageItem> createItems() {
+        List<ImageItem> list = new ArrayList<>();
         List<String> images = ImagePickDelegateImpl.getDefault().getImages();
         for (String file : images){
-            list.add(new Item(file));
+            list.add(new ImageItem.Builder().setFilePath(file).build());
         }
         return list;
     }
 
-    private class Adapter0 extends GestureBigImageAdapter<Item>{
+    private class Adapter0 extends GestureBigImageAdapter<ImageItem>{
 
-        public Adapter0(List<Item> mDatas) {
+        public Adapter0(List<ImageItem> mDatas) {
             super(false, mDatas, true);
         }
         @Override
-        protected void onBindItem(ImageView iv, int index, Item data) {
-            RequestManager rm = Glide.with(iv.getContext());
-            if (data.getFilePath() != null) {
-                rm
-                        .load(new File(data.getFilePath()))
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(iv);
-            }
+        protected void onBindItem(ImageView iv, int index, ImageItem data) {
+            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                 }
             });
-        }
-    }
-
-    private static class Item extends BaseSelector {
-        String file;
-        public Item(String file) {
-            this.file = file;
-        }
-        public String getFilePath() {
-            return file;
         }
     }
 }

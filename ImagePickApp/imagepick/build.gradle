@@ -34,8 +34,10 @@ dependencies {
     implementation ('com.github.LightSun:cameraview:1.0.1-beta'){
         exclude group: 'com.android.support'
     }
-    implementation ("com.github.bumptech.glide:glide:4.9.0")
-    annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
+    implementation('com.github.LightSun:util-v1:1.1.7-x') {
+        exclude group: 'com.android.support'
+        exclude group: 'com.heaven7.android.component'
+    }
 
    /* implementation "com.jakewharton:butterknife:8.4.0"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"*/
