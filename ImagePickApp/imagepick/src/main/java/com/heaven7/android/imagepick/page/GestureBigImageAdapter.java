@@ -22,7 +22,7 @@ public abstract class GestureBigImageAdapter<T> extends BigImageAdapter<T>{
     @Override
     protected ImageView onCreateItemView(ItemViewContext context) {
         if(supportGesture){
-            ImageView view = GestureImageUtils.createGestureImageView(context.context);
+            ImageView view = GestureImageUtils.createGestureImageView(context.getContext());
             if(view != null){
                 return view;
             }

@@ -15,10 +15,9 @@ import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.core.util.MainWorker;
+import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.core.util.Toaster;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +42,6 @@ public class SeeBigImageActivity extends BaseActivity {
     private IImageItem mLastSingleItem;
 
     private MediaAdapter mMediaAdapter;
-    private final AtomicBoolean mPendingPlayed = new AtomicBoolean(false);
 
     @Override
     protected int getLayoutId() {
@@ -88,14 +86,18 @@ public class SeeBigImageActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("onResume");
         mMediaAdapter.onResume(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
-        startPlay();
     }
     @Override
     protected void onDestroy() {
+        //release media
         mMediaAdapter.onDestroy(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
         ImagePickDelegateImpl.getDefault().getImageItems().clear();
+        //remove listener
+        ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
+        if(l != null){
+            mVp.removeOnPageChangeListener(l);
+        }
         super.onDestroy();
     }
 
@@ -137,36 +139,18 @@ public class SeeBigImageActivity extends BaseActivity {
             public void onPageSelected(int i) {
                 System.out.println("onPageSelected");
                 setSelectOrder(i + 1);
-                startPlay();
             }
             @Override
             public void onPageScrollStateChanged(int i) {
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
                     System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE");
                     setSelectOrder(mVp.getCurrentItem() + 1);
-                    startPlay();
                 }
             }
         });
-    }
-    private void startPlay(){
-        if(mPendingPlayed.compareAndSet(false, true)){
-            startPlay0();
-        }
-    }
-    private void startPlay0(){
-        final View currentView = LibPick$_ViewPagerUtils.getCurrentView(mVp);
-        if(currentView == null){
-            MainWorker.postDelay(20, new Runnable() {
-                @Override
-                public void run() {
-                    startPlay0();
-                }
-            });
-        }else {
-            if(mPendingPlayed.compareAndSet(true, false)){
-                mMediaAdapter.startPlay(getApplicationContext(), mVp.getCurrentItem(), currentView);
-            }
+        ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
+        if(l != null){
+            mVp.addOnPageChangeListener(l);
         }
     }
 
@@ -215,6 +199,11 @@ public class SeeBigImageActivity extends BaseActivity {
 
         boolean isSelect = mItems.get(mParam.getCurrentOrder() - 1).isSelected();
         setImageBySelectState(isSelect);
+
+        VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
+        if(vmd != null){
+            vmd.setCurrentPosition(order);
+        }
     }
 
     private void setUiState() {
@@ -230,8 +219,9 @@ public class SeeBigImageActivity extends BaseActivity {
         }
         setSelectedText();
         //handle position
-        mVp.getAdapter().notifyDataSetChanged();
-        mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
+        if(mVp.getCurrentItem() != mParam.getCurrentOrder() - 1){
+            mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
+        }
     }
 
     private void setSelectedText() {

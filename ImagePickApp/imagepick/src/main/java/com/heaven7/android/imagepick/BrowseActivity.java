@@ -69,7 +69,7 @@ public class BrowseActivity extends BaseActivity {
         mRv.setAdapter(mAdapter = new QuickRecycleViewAdapter<ImageItem>(R.layout.lib_pick_item_image, items) {
             @Override
             protected void onBindData(final Context context, final int position, final ImageItem item, int itemLayoutId, ViewHelper2 helper) {
-                View rootView = helper.getRootView();
+                final View rootView = helper.getRootView();
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) rootView.getLayoutParams();
                 mlp.setMarginStart(position != 0 ? margin : 0);
                 rootView.setLayoutParams(mlp);
@@ -83,6 +83,8 @@ public class BrowseActivity extends BaseActivity {
                                 .setRound(round)
                                 .setBorder(border)
                                 .setBorderColor(bc)
+                                .setTargetWidth(rootView.getWidth())
+                                .setTargetHeight(rootView.getHeight())
                                 .build();
                         ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(imageView, item, options);
                     }

@@ -76,19 +76,16 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         }
     }
 
-    public void startPlay(Context context, int pos, View view){
-        if(view == null){
-            return;
-        }
-        IImageItem item = getItemAt(pos);
-        if(item.isVideo()){
-            VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-            if(vm != null){
-                vm.startPlay(context, view, item);
-            }
+    @Override
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        int index = getPositionActually(position);
+        IImageItem data = getItemAt(index);
+        View view = (View)object;
+        VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
+        if(videoM != null && videoM.isVideoView(view, data)){
+            videoM.setPrimaryItem(view, data);
         }
     }
-
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -117,17 +114,17 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
             if(videoM == null){
                 throw new IllegalStateException("for video item. you must assign the VideoManageDelegate!");
             }
-            return videoM.createVideoView(context.context, data);
+            return videoM.createVideoView(context.getContext(), context.parent, data);
         }
         //if enable gesture image.
         if(supportGestureImage){
-            ImageView imageView = GestureImageUtils.createGestureImageView(context.context);
+            ImageView imageView = GestureImageUtils.createGestureImageView(context.getContext());
             if(imageView != null){
                 return imageView;
             }
         }
         // if is image and not use gesture.
-        ImageView iv = new ImageView(context.context);
+        ImageView iv = new ImageView(context.getContext());
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return iv;
     }

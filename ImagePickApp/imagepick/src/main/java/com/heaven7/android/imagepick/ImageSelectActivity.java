@@ -416,7 +416,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                 helper.performViewGetter(R.id.iv_icon, new Getters.ImageViewGetter() {
                     @Override
                     public void onGotView(ImageView view, ViewHelper vp) {
-                        ImageItem it = ImageItem.of(item.getItems().get(0).getFilePath());
+                        MediaResourceItem mr = item.getItems().get(0);
+                        ImageItem it = ImageItem.of(mr.getFilePath(), mr.isImage());
                         ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                     }
                 });
@@ -453,7 +454,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     .performViewGetter(R.id.iv, new Getters.ImageViewGetter() {
                         @Override
                         public void onGotView(ImageView view, ViewHelper viewHelper) {
-                            ImageItem it = ImageItem.of(item.getFilePath());
+                            ImageItem it = ImageItem.of(item.getFilePath(), item.isImage());
                             ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                         }
                     }).setOnClickListener(R.id.iv_select_state, new View.OnClickListener() {

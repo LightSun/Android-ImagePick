@@ -85,7 +85,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
         int index = getPositionActually(position);
         T data = mDatas.get(index);
 
-        ItemView itemView = obtainItemView(new ItemViewContext(container.getContext(), index, data));
+        ItemView itemView = obtainItemView(new ItemViewContext(container, index, data));
         container.addView(itemView);
         onBindItem(itemView, index, data);
         return itemView;
@@ -142,13 +142,16 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
 
 
     public static class ItemViewContext{
-        public final Context context;
+        public final ViewGroup parent;
         public final int position;
         public final Object data;
-        public ItemViewContext(Context context, int position, Object data) {
-            this.context = context;
+        public ItemViewContext(ViewGroup parent, int position, Object data) {
+            this.parent = parent;
             this.position = position;
             this.data = data;
+        }
+        public Context getContext(){
+            return parent.getContext();
         }
     }
 }

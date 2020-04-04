@@ -11,6 +11,7 @@
         android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         >
     </com.heaven7.android.imagepick.page.HackyViewPager>
     <RelativeLayout

@@ -262,6 +262,7 @@ public class CameraFragment extends Fragment {
                  if(context == null){
                      return;
                  }
+                 ViewGroup.LayoutParams lp = mIv_image.getLayoutParams();
                  int round = DimenUtil.dip2px(context, 8);
                  setCameraEnabled(false);
 
@@ -269,9 +270,11 @@ public class CameraFragment extends Fragment {
                          .setRound(round)
                          .setBorder(1)
                          .setBorderColor(Color.TRANSPARENT)
-                         .setCacheFlags(ImageOptions.FLAG_DATA | ImageOptions.FLAG_RESOURCE)
+                         .setCacheFlags(ImageOptions.CACHE_FLAG_DATA | ImageOptions.CACHE_FLAG_RESOURCE)
+                         .setTargetWidth(lp.width)
+                         .setTargetHeight(lp.height)
                          .build();
-                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(mIv_image, ImageItem.of(file), options);
+                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(mIv_image, ImageItem.of(file, false), options);
              }
          });
     }

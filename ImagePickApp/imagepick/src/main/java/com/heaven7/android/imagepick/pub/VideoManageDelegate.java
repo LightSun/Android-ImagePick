@@ -2,6 +2,7 @@ package com.heaven7.android.imagepick.pub;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * the video manage delegate
@@ -20,15 +21,17 @@ public interface VideoManageDelegate {
 
     /**
      * called on create video video
+     *
      * @param context the context
+     * @param parent the parent
      * @param data the media item
      * @return the view of video
      */
-    View createVideoView(Context context, IImageItem data);
+    View createVideoView(Context context, ViewGroup parent, IImageItem data);
 
     /**
-     * called on set media data to video view.
-     * @param v the video view which is create by {@linkplain #createVideoView(Context, IImageItem)}
+     * called on set media data to video view by onBindItem.
+     * @param v the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param context the context
      * @param data the media data
      */
@@ -56,10 +59,17 @@ public interface VideoManageDelegate {
     void destroyVideo(Context context, View v);
 
     /**
-     * called on start play video.
-     * @param v the video view which is create by {@linkplain #createVideoView(Context, IImageItem)}
-     * @param context the context
+     * called on set primary item, this is often used to start play video.
+     * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param data the media data
+     * @since 1.0.5
      */
-    void startPlay(Context context, View v, IImageItem data);
+    void setPrimaryItem(View view, IImageItem data);
+
+    /**
+     * same as {@linkplain androidx.viewpager.widget.ViewPager#setCurrentItem(int)}.
+     * @param position the position
+     * @since 1.0.5
+     */
+    void setCurrentPosition(int position);
 }

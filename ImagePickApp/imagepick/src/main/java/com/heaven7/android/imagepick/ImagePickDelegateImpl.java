@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.CameraParameter;
@@ -36,6 +37,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     private ExceptionHandler mHandler;
     private VideoManageDelegate mVideoManager;
     private ImageLoadDelegate mImageLoadDelegate;
+    private ViewPager.OnPageChangeListener mPageListener;
 
     private ImagePickDelegateImpl(){}
 
@@ -49,7 +51,14 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
         return sInstance;
     }
-
+    @Override
+    public void setOnPageChangeListener(ViewPager.OnPageChangeListener l) {
+        mPageListener = l;
+    }
+    @Override
+    public ViewPager.OnPageChangeListener getOnPageChangeListener() {
+        return mPageListener;
+    }
     @Override
     public void setImageLoadDelegate(ImageLoadDelegate delegate) {
         mImageLoadDelegate = delegate;

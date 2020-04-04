@@ -58,6 +58,7 @@ public class TextureVideoView extends TextureView
     private static final int MSG_STOP   = 0x0006;
     private static final int MSG_STOP_WITHOUT_CALLBACK = 0x0007;
     private static final int MSG_SEEK  = 0x0008;
+    private static final int MSG_RESUME  = 0x0005;
 
     private Uri mUri;
     private Context mContext;
@@ -72,7 +73,7 @@ public class TextureVideoView extends TextureView
     private boolean mSoundMute;
     private boolean mHasAudio;
 
-    private int mScaleType = ScaleManager.ScaleType_NONE;
+    private int mScaleType = ScaleManager.ScaleType_CENTER;
     private int mStartPosition;
 
     private static final HandlerThread sThread = new HandlerThread("VideoPlayThread");
@@ -138,8 +139,8 @@ public class TextureVideoView extends TextureView
         if(attrs != null){
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView, 0, 0);
             try {
-                int scaleType = a.getInt(R.styleable.TextureVideoView_scaleType, mScaleType);
-                mScaleType = scaleType;
+                final int scaleType = a.getInt(R.styleable.TextureVideoView_scaleType, mScaleType);
+                setScaleType(scaleType);
             }finally {
                 a.recycle();
             }
@@ -267,6 +268,16 @@ public class TextureVideoView extends TextureView
                     callbackPause();
                     if (SHOW_LOGS) Log.i(TAG, ">> handleMessage MSG_PAUSE");
                     break;
+
+                case MSG_RESUME:
+                {
+                    if (SHOW_LOGS) Log.i(TAG, "<< handleMessage MSG_RESUME");
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.start();
+                    }
+                    mCurrentState = STATE_PLAYING;
+                    if (SHOW_LOGS) Log.i(TAG, ">> handleMessage MSG_RESUME");
+                }break;
 
                 case MSG_STOP:
                     if (SHOW_LOGS) Log.i(TAG, "<< handleMessage MSG_STOP");
@@ -424,7 +435,7 @@ public class TextureVideoView extends TextureView
         mTargetState = STATE_PLAYING;
 
         if (!isPlaying()) {
-            mVideoHandler.obtainMessage(MSG_START).sendToTarget();
+            mVideoHandler.obtainMessage(MSG_RESUME).sendToTarget();
         }
     }
 

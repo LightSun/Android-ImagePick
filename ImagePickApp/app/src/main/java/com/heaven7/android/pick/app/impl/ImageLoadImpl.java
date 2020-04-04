@@ -2,6 +2,7 @@ package com.heaven7.android.pick.app.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -10,51 +11,78 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.BaseRequestOptions;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImageOptions;
+import com.heaven7.android.pick.app.FileProviderHelper;
+import com.heaven7.android.pick.app.image.FrameInfo;
 
 import java.io.File;
+
+import lib.vida.video.ScaleManager;
 
 public class ImageLoadImpl implements ImageLoadDelegate {
 
     @Override
     public void loadImage(ImageView iv, IImageItem item, ImageOptions options) {
         Context context = iv.getContext();
+        FrameInfo info = getFrameInfo(iv.getContext(), item, options);
         if (options != null) {
             //TODO may round or border is invalid
             if(options.getBorder() > 0 && options.getRound() > 0){
                 BorderRoundTransformation borderTrans = new BorderRoundTransformation(context, options.getRound(),
                         0, options.getBorder(), options.getBorderColor());
-                RequestBuilder rb = (RequestBuilder) Glide.with(context)
-                        .load(new File(item.getFilePath()))
+                RequestBuilder rb = (RequestBuilder) getRequestBuilder(context, info)
                         .transform(new Transformation[]{new CenterCrop()
                                 , borderTrans})
                         .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL);
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 rb.into(iv);
             }else {
-                RequestBuilder rb = (RequestBuilder) Glide.with(context)
-                        .load(new File(item.getFilePath()))
+                RequestBuilder rb = (RequestBuilder) getRequestBuilder(context, info)
                         .transform(new Transformation[]{new CenterCrop()})
                         .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL);
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 rb.into(iv);
             }
         } else {
-            RequestManager rm = Glide.with(iv.getContext());
-            if (item.getFilePath() != null) {
-                rm
-                        .load(new File(item.getFilePath()))
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(iv);
-            } else {
-                rm
-                        .load(item.getUrl())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(iv);
-            }
+            RequestBuilder rb = (RequestBuilder) getRequestBuilder(context, info)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+            rb.into(iv);
         }
+    }
+    private RequestBuilder getRequestBuilder(Context context,FrameInfo info){
+        if(info.isFromVideo() && info.isLocal()){
+            //local video
+            return  Glide.with(context).load(info);
+        }
+        return Glide.with(context).load(info.getUri());
+    }
+
+    private FrameInfo getFrameInfo(Context context,IImageItem item, ImageOptions options) {
+        FrameInfo info = FrameInfo.obtain();
+        info.setScaleType(ScaleManager.ScaleType_CENTER_CROP);
+        if(item.getUrl() != null){
+            info.setUri(Uri.parse(item.getUrl()));
+            info.setIsLocal(false);
+            //todo latter support
+        }else {
+            info.setUri(FileProviderHelper.getUriForFile(context, item.getFilePath()));
+            info.setIsLocal(true);
+        }
+        info.setFromVideo(item.isVideo());
+        if(item.isVideo()){
+            info.setTimeMsec(0);
+        }
+        if(options != null){
+            info.setWidth(options.getTargetWidth());
+            info.setHeight(options.getTargetHeight());
+        }
+        info.setMaxWidth(800);
+        info.setMaxHeight(800);
+        return info;
     }
 
     @Override

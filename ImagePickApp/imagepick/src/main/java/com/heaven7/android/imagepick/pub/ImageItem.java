@@ -13,9 +13,10 @@ public class ImageItem implements Parcelable, IImageItem {
     private String url;
     private boolean video;
 
-    public static ImageItem of(String filePath) {
+    public static ImageItem of(String filePath, boolean image) {
         ImageItem imageItem = new ImageItem();
         imageItem.setFilePath(filePath);
+        imageItem.setVideo(!image);
         return imageItem;
     }
 
@@ -29,6 +30,10 @@ public class ImageItem implements Parcelable, IImageItem {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 
     public ImageItem() {

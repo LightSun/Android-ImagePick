@@ -7,7 +7,7 @@ import android.graphics.Matrix;
  *
  * @author heaven7
  */
-public class ScaleManager {
+public final class ScaleManager {
 
     private static final int PivotPoint_LEFT_TOP = 1;
     private static final int PivotPoint_LEFT_CENTER = 2;
@@ -48,6 +48,9 @@ public class ScaleManager {
     public static final int ScaleType_START_INSIDE = 23;
     public static final int ScaleType_CENTER_INSIDE = 24;
     public static final int ScaleType_END_INSIDE = 25;
+
+    public static final int ScaleType_MATCH_WIDTH = 26;
+    public static final int ScaleType_MATCH_HEIGHT = 27;
 
     /**
      * the dest size

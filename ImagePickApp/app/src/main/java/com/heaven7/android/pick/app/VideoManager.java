@@ -1,7 +1,12 @@
 package com.heaven7.android.pick.app;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
@@ -13,10 +18,12 @@ import lib.vida.video.TextureVideoView;
 
 /**
  */
-public class VideoManager implements VideoManageDelegate {
+public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView> mWeakView;
+    private int mCurrentItem;
+    private boolean mDirty;
 
     @Override
     public boolean isVideoView(View view, IImageItem data) {
@@ -24,13 +31,25 @@ public class VideoManager implements VideoManageDelegate {
     }
 
     @Override
-    public View createVideoView(Context context, IImageItem data) {
-        return new TextureVideoView(context);
+    public View createVideoView(Context context, ViewGroup parent, IImageItem data) {
+        TextureVideoView videoView = (TextureVideoView) LayoutInflater.from(context)
+                .inflate(R.layout.item_texture_video, parent, false);
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(videoView.isPlaying()){
+                    videoView.pause();
+                }else if(videoView.isPaused()){
+                    videoView.resume();
+                }
+            }
+        });
+        return videoView;
     }
 
     @Override
     public void setMediaData(Context context, View v, IImageItem data) {
-        Logger.d(TAG, "setMediaData: " + data.getFilePath());
+        // Logger.d(TAG, "setMediaData: " + data.getFilePath());
         TextureVideoView view = (TextureVideoView) v;
         view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
     }
@@ -54,13 +73,35 @@ public class VideoManager implements VideoManageDelegate {
         Logger.d(TAG, "destroyVideo");
         TextureVideoView view = (TextureVideoView) videoView;
         view.stop();
+        mDirty = true;
     }
 
     @Override
-    public void startPlay(Context context, View v, IImageItem data) {
-        Logger.d(TAG, "startPlay: " + data.getFilePath());
+    public void setCurrentPosition(int position) {
+        if(mCurrentItem != position){
+            mCurrentItem = position;
+            mDirty = true;
+        }
+    }
+    @Override
+    public void setPrimaryItem(View v, IImageItem data) {
+        //TODO bug: 多次切换， 退出再进来会有bug.
+        Logger.d(TAG, "setPrimaryItem: " + data.getFilePath());
+        if(!isVideoView(v, data)){
+            Logger.d(TAG, "not video view.");
+            return;
+        }
+        /*
+         * 1, 首次进入时，这个会调用2次
+         * 2, 点击pager item 时也会调用
+         */
+        if( !mDirty ){
+            Logger.d(TAG, "mDirty = false.");
+            return;
+        }
+        mDirty = false;
         TextureVideoView view = (TextureVideoView) v;
-        //view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
+       // view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
         pauseLast(view);
         mWeakView = new WeakReference<>(view);
         view.start();
@@ -72,6 +113,46 @@ public class VideoManager implements VideoManageDelegate {
             if(view != null && view != next){
                 view.stop();
             }
+        }
+    }
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    private class MediaPlayerCallback0 extends TextureVideoView.MediaPlayerCallbackAdapter {
+
+        @Override
+        public void onPrepared(MediaPlayer mp, int startPos) {
+
+        }
+        @Override
+        public void onStopped(MediaPlayer mp) {
+
+        }
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+
+        }
+        @Override
+        public void onBufferingUpdate(MediaPlayer mp, int percent) {
+
+        }
+        @Override
+        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+
+        }
+        @Override
+        public void onPaused(MediaPlayer mp) {
+
         }
     }
 }

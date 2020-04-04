@@ -12,7 +12,7 @@ import java.io.File;
  * Created by heaven7 on 2017/12/22.
  */
 
-public class FileProviderHelper {
+public final class FileProviderHelper {
 
     public static Uri getUriForFile(Context context, String file) {
         return getUriForFile(context, new File(file));

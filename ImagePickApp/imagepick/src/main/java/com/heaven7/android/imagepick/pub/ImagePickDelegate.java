@@ -2,6 +2,8 @@ package com.heaven7.android.imagepick.pub;
 
 import android.app.Activity;
 
+import androidx.viewpager.widget.ViewPager;
+
 import java.util.List;
 
 /**
@@ -10,8 +12,27 @@ import java.util.List;
  */
 public interface ImagePickDelegate {
 
+    /**
+     * set OnPageChangeListener
+     * @param l OnPageChangeListener
+     * @since 1.0.5
+     */
+    void setOnPageChangeListener(ViewPager.OnPageChangeListener l);
+    /**
+     * get OnPageChangeListener
+     * @since 1.0.5
+     */
+    ViewPager.OnPageChangeListener getOnPageChangeListener();
+    /**
+     * set video manage delegate
+     * @param delegate the image delegate
+     * @since 1.0.5
+     */
     void setImageLoadDelegate(ImageLoadDelegate delegate);
-
+    /**
+     * get image delegate
+     * @since 1.0.5
+     */
     ImageLoadDelegate getImageLoadDelegate();
     /**
      * set video manage delegate
