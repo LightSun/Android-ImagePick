@@ -61,10 +61,11 @@ public interface VideoManageDelegate {
     /**
      * called on set primary item, this is often used to start play video.
      * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
+     * @param actualPosition
      * @param data the media data
      * @since 1.0.5
      */
-    void setPrimaryItem(View view, IImageItem data);
+    void setPrimaryItem(View view, int actualPosition, IImageItem data);
 
     /**
      * same as {@linkplain androidx.viewpager.widget.ViewPager#setCurrentItem(int)}.

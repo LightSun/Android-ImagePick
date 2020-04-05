@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
@@ -17,6 +18,7 @@ import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
+import com.heaven7.core.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
+    private static final String TAG = "ImagePickImpl";
     private static ImagePickDelegateImpl sInstance;
     private OnImageProcessListener mImageListener;
     private ExceptionHandler mHandler;
@@ -82,9 +85,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         //System.out.println("removeImagePath left: " + mImages);
     }
     public List<IImageItem> getImageItems() {
+        Logger.d(TAG, "getImageItems", "out size = " + mItems.size());
         return mItems;
     }
     public void setImageItems(List<? extends IImageItem> mItems) {
+        Logger.d(TAG, "setImageItems", "in size = " + mItems.size());
         this.mItems = new ArrayList<>(mItems);
     }
     public void clearImages() {

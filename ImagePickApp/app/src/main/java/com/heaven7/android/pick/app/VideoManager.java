@@ -22,8 +22,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView> mWeakView;
-    private int mCurrentItem;
-    private boolean mDirty;
+    private int mCurrentItem = -1;
 
     @Override
     public boolean isVideoView(View view, IImageItem data) {
@@ -71,20 +70,20 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void destroyVideo(Context context, View videoView) {
         Logger.d(TAG, "destroyVideo");
+        reset();
         TextureVideoView view = (TextureVideoView) videoView;
         view.stop();
-        mDirty = true;
     }
 
     @Override
     public void setCurrentPosition(int position) {
         if(mCurrentItem != position){
             mCurrentItem = position;
-            mDirty = true;
+            Logger.d(TAG, "setCurrentPosition", "currentPos = " + mCurrentItem + " ,pos = " + position);
         }
     }
     @Override
-    public void setPrimaryItem(View v, IImageItem data) {
+    public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
         //TODO bug: 多次切换， 退出再进来会有bug.
         Logger.d(TAG, "setPrimaryItem: " + data.getFilePath());
         if(!isVideoView(v, data)){
@@ -95,11 +94,12 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
          * 1, 首次进入时，这个会调用2次
          * 2, 点击pager item 时也会调用
          */
-        if( !mDirty ){
-            Logger.d(TAG, "mDirty = false.");
+        if(mCurrentItem == actualPosition){
+            Logger.d(TAG, "setPrimaryItem", "mCurrentItem == actualPosition.");
             return;
         }
-        mDirty = false;
+        mCurrentItem = actualPosition;
+
         TextureVideoView view = (TextureVideoView) v;
        // view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
         pauseLast(view);
@@ -126,6 +126,9 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+    private void reset(){
+        mCurrentItem = -1;
     }
 
     private class MediaPlayerCallback0 extends TextureVideoView.MediaPlayerCallbackAdapter {

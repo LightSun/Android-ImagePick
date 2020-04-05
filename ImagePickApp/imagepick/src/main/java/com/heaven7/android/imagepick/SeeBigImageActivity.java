@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
+import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.Toaster;
 
 import java.util.List;
@@ -37,6 +39,7 @@ public class SeeBigImageActivity extends BaseActivity {
     ViewGroup mVg_top;
     ViewGroup mVg_bottom;
 
+    private static final String TAG = "SeeBigImageActivity";
     private BigImageSelectParameter mParam;
     private List<IImageItem> mItems;
     private IImageItem mLastSingleItem;
@@ -46,6 +49,12 @@ public class SeeBigImageActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.lib_pick_ac_big_image;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Logger.d(TAG, "onCreate", "" + hashCode());
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -63,6 +72,7 @@ public class SeeBigImageActivity extends BaseActivity {
         mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
+       // Logger.d(TAG, "init_"+hashCode(), "mItems.size = " + mItems.size());
         //set media adapter
         mMediaAdapter = new MediaAdapter(mItems);
         mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
@@ -73,9 +83,18 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+       // Logger.d(TAG, "onNewIntent", "" + hashCode());
+        setIntent(intent);
+        init(this, null);
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
+       // Logger.d(TAG, "onRestoreInstanceState_" + hashCode(), "mItems.size = " + mItems.size());
     }
 
     @Override
@@ -92,13 +111,19 @@ public class SeeBigImageActivity extends BaseActivity {
     protected void onDestroy() {
         //release media
         mMediaAdapter.onDestroy(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
-        ImagePickDelegateImpl.getDefault().getImageItems().clear();
         //remove listener
         ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
         if(l != null){
             mVp.removeOnPageChangeListener(l);
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        ImagePickDelegateImpl.getDefault().getImageItems().clear();
+       // Logger.d(TAG, "onDestroy_"+hashCode(),"clear image items.");
+        super.finish();
     }
 
     @Keep

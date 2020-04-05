@@ -233,6 +233,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             List<MediaResourceItem> items = mSelector.getSelects();
             publishResult(items);

@@ -48,10 +48,6 @@ public final class ScaleManager {
     public static final int ScaleType_START_INSIDE = 23;
     public static final int ScaleType_CENTER_INSIDE = 24;
     public static final int ScaleType_END_INSIDE = 25;
-
-    public static final int ScaleType_MATCH_WIDTH = 26;
-    public static final int ScaleType_MATCH_HEIGHT = 27;
-
     /**
      * the dest size
      */

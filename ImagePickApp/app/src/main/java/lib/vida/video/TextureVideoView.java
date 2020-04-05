@@ -445,6 +445,12 @@ public class TextureVideoView extends TextureView
             mVideoHandler.obtainMessage(MSG_STOP).sendToTarget();
         }
     }
+    public void release(){
+        mTargetState = STATE_PLAYBACK_COMPLETED;
+        if (isInPlaybackState()) {
+            mVideoHandler.obtainMessage(MSG_STOP_WITHOUT_CALLBACK).sendToTarget();
+        }
+    }
 
     public boolean isPlaying() {
         return isInPlaybackState() && mMediaPlayer.isPlaying();

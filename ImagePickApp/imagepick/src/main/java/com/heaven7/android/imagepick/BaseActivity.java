@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.heaven7.core.util.Logger;
 import com.heaven7.java.base.anno.Nullable;
 
 

@@ -83,7 +83,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         View view = (View)object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
         if(videoM != null && videoM.isVideoView(view, data)){
-            videoM.setPrimaryItem(view, data);
+            videoM.setPrimaryItem(view, index, data);
         }
     }
     @NonNull
