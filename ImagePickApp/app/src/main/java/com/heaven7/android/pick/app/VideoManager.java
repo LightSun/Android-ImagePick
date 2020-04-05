@@ -78,13 +78,14 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void setCurrentPosition(int position) {
         if(mCurrentItem != position){
-            mCurrentItem = position;
             Logger.d(TAG, "setCurrentPosition", "currentPos = " + mCurrentItem + " ,pos = " + position);
+            mCurrentItem = position;
         }
     }
     @Override
     public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
         Logger.d(TAG, "setPrimaryItem: " + data.getFilePath());
+        Logger.d(TAG, "actualPosition: " + actualPosition);
         if(!isVideoView(v, data)){
             Logger.d(TAG, "not video view.");
             return;

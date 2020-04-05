@@ -128,13 +128,13 @@ public class SeeBigImageActivity extends BaseActivity {
             @Override
             public void onPageSelected(int i) {
                 System.out.println("onPageSelected");
-                setSelectOrder(i + 1);
+                setSelectOrder(i + 1, false);
             }
             @Override
             public void onPageScrollStateChanged(int i) {
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
                     System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE");
-                    setSelectOrder(mVp.getCurrentItem() + 1);
+                    setSelectOrder(mVp.getCurrentItem() + 1, false);
                 }
             }
         });
@@ -177,7 +177,10 @@ public class SeeBigImageActivity extends BaseActivity {
         mDelegate.setSelectState(select);
     }
 
-    private void setSelectOrder(int order) {
+    private void setSelectOrder(int order, boolean force) {
+        if(!force && mParam.getCurrentOrder() == order){
+            return;
+        }
         mParam.setCurrentOrder(order);
         mDelegate.setSelectOrder();
        // mTv_indexes.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
@@ -192,7 +195,7 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     private void setUiState() {
-        setSelectOrder(mParam.getCurrentOrder());
+        setSelectOrder(mParam.getCurrentOrder(), true);
 
         mDelegate.setUiState();
         setSelectedText();
