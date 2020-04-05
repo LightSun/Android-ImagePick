@@ -162,12 +162,10 @@ public abstract class SeeBigImageDelegate {
     public abstract static class ViewBinder{
 
         private final SeeBigImageDelegate mDelegate;
-        private final ViewGroup parent;
         private final View mView;
 
         public ViewBinder(SeeBigImageDelegate delegate,ViewGroup parent) {
             this.mDelegate = delegate;
-            this.parent = parent;
             this.mView = onCreateView(parent);
         }
         public Resources getResource(){
@@ -183,7 +181,7 @@ public abstract class SeeBigImageDelegate {
             return mDelegate.getSelectParams();
         }
         public ViewGroup getViewParent() {
-            return parent;
+            return mDelegate.getViewParent();
         }
         public View getView(){
             return mView;

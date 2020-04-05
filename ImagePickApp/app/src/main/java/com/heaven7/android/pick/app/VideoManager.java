@@ -70,7 +70,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void destroyVideo(Context context, View videoView) {
         Logger.d(TAG, "destroyVideo");
-        reset();
+        mCurrentItem = -1;
         TextureVideoView view = (TextureVideoView) videoView;
         view.stop();
     }
@@ -127,10 +127,6 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     public void onPageScrollStateChanged(int state) {
 
     }
-    private void reset(){
-        mCurrentItem = -1;
-    }
-
     private class MediaPlayerCallback0 extends TextureVideoView.MediaPlayerCallbackAdapter {
 
         @Override
