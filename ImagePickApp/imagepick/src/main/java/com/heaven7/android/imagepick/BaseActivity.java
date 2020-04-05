@@ -17,11 +17,6 @@ import com.heaven7.java.base.anno.Nullable;
         setContentView(getLayoutId());
        // ButterKnife.bind(this);
         init(this, savedInstanceState);
-
-       /* View top = findViewById(R.id.vg_content);
-        if(top != null){
-            fixActionBarHeight(top);
-        }*/
     }
 
     protected abstract int getLayoutId();

@@ -8,6 +8,7 @@ public interface PickConstants {
     String KEY_PARAMS           = "params";
     String KEY_SINGLE_ITEM       = "single_item";//only for single select
     String KEY_SAVE_DIR          = "save_dir";
+    String KEY_DELEGATE          = "delegate";
 
     /** the flags for see-big-image */
     int FLAG_SHOW_TOP             = 0x0001;

@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
 public interface ImagePickDelegate {
 
     /**
-     * set OnPageChangeListener
+     * set OnPageChangeListener which is used for {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}
      * @param l OnPageChangeListener
      * @since 1.0.5
      */
@@ -101,7 +103,7 @@ public interface ImagePickDelegate {
      */
     void startBrowseImages(Activity context, ImageSelectParameter param);
     /**
-     * start browse big images
+     * start browse big images/videos with a default delegate of {@linkplain SeeBigImageDelegate}.
      * @param context the context
      * @param param the parameter of ui
      * @param allItems the items to browse
@@ -109,7 +111,17 @@ public interface ImagePickDelegate {
      */
     void startBrowseBigImages(Activity context, BigImageSelectParameter param, List<? extends IImageItem> allItems, IImageItem single);
 
-
+    /**
+     * start browse big images/videos by target delegate and select params.
+     * @param context the context
+     * @param param the parameter of ui
+     * @param clazz the class of {@linkplain SeeBigImageDelegate}
+     * @param allItems the items to browse
+     * @param single the single selected item.can be null for multi-select it must be null.
+     * @since 1.0.5
+     */
+    void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz,
+                              List<? extends IImageItem> allItems, IImageItem single);
     /**
      * the dialog delegate used to helpful handle image.
      * @since 1.0.3

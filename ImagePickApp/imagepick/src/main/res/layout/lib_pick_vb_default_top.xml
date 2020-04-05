@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/lib_pick_common_top_height"
+    android:layout_gravity="top"
+    android:background="@color/lib_pick_c_bg_half_transparent"
+    android:paddingStart="6dp"
+    android:paddingEnd="16dp">
+
+    <ImageButton
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:onClick="onClickBack"
+        android:padding="10dp"
+        android:src="@drawable/lib_pick_ic_back" />
+
+    <TextView
+        android:id="@+id/tv_indexes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/iv_back"
+        android:text="4/10"
+        android:textColor="@android:color/white"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/tv_upload"
+        style="@style/lib_pik_tv_common"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingStart="15dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="8dp"
+        android:text="@string/lib_pick_upload" />
+
+</RelativeLayout>

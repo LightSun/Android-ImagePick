@@ -17,6 +17,8 @@ import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.DefaultSeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
 import com.heaven7.core.util.Logger;
 
@@ -177,12 +179,19 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     @Override
     public void startBrowseBigImages(Activity context, BigImageSelectParameter param, List<? extends IImageItem> allItems, IImageItem single) {
+        startBrowseBigImages(context, param, DefaultSeeBigImageDelegate.class, allItems, single);
+    }
+
+    @Override
+    public void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz,
+                                     List<? extends IImageItem> allItems, IImageItem single) {
         if(param == null || allItems == null){
             throw new IllegalArgumentException();
         }
         setImageItems(allItems);
         new LauncherIntent.Builder()
                 .setClass(context, SeeBigImageActivity.class)
+                .putExtra(PickConstants.KEY_DELEGATE, clazz.getName())
                 .putExtra(PickConstants.KEY_PARAMS, param)
                 .putExtra(PickConstants.KEY_SINGLE_ITEM, single)
                 .build()

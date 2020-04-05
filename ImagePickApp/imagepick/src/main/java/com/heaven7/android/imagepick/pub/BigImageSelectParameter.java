@@ -19,6 +19,10 @@ public class BigImageSelectParameter implements Parcelable {
     // implementation 'com.github.chrisbanes:PhotoView:latest.release.here'
     private boolean mSupportGestureImage;
 
+    public boolean hasFlag(int flag){
+        return (getFlags() & flag) == flag;
+    }
+
     public void addFlags(int flags) {
         this.mFlags |= flags;
     }

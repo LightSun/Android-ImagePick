@@ -4,11 +4,14 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.RestrictTo;
+
 import java.lang.reflect.Constructor;
 
 /**
  * the gesture image utils.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class GestureImageUtils {
 
     private static final Constructor<?> sCons;

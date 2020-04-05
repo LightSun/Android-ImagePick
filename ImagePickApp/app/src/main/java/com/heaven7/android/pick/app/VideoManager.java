@@ -84,7 +84,6 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     }
     @Override
     public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
-        //TODO bug: 多次切换， 退出再进来会有bug.
         Logger.d(TAG, "setPrimaryItem: " + data.getFilePath());
         if(!isVideoView(v, data)){
             Logger.d(TAG, "not video view.");
