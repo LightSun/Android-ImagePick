@@ -32,6 +32,7 @@ import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
+import com.heaven7.android.imagepick.utils.OptimiseScrollListenerImpl;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MD5Util;
