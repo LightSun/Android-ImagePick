@@ -249,6 +249,8 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                     dd.onProcessEnd(next);
                 }
             });
+        }else {
+            activity.runOnUiThread(next);
         }
     }
     /*public*/ void onImageProcessUpdate(final Activity activity, final int update, final int total) {
