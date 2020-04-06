@@ -1,7 +1,6 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.RestrictTo;

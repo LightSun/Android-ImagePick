@@ -43,7 +43,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(pos);
+        IImageItem item = getItemAt(getPositionActually(pos));
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
@@ -55,7 +55,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(pos);
+        IImageItem item = getItemAt(getPositionActually(pos));
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
@@ -67,7 +67,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(pos);
+        IImageItem item = getItemAt(getPositionActually(pos));
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){

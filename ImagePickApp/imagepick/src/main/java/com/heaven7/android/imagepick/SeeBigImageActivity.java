@@ -253,5 +253,9 @@ public class SeeBigImageActivity extends BaseActivity {
                 setSelectState(true);
             }
         }
+        @Override
+        public View getCurrentView() {
+            return LibPick$_ViewPagerUtils.getCurrentView(mVp);
+        }
     }
 }
