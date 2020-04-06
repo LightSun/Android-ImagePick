@@ -16,8 +16,6 @@ import com.heaven7.android.imagepick.pub.ImageOptions;
 import com.heaven7.android.pick.app.FileProviderHelper;
 import com.heaven7.android.pick.app.image.FrameInfo;
 
-import java.io.File;
-
 import lib.vida.video.ScaleManager;
 
 public class ImageLoadImpl implements ImageLoadDelegate {
@@ -32,8 +30,9 @@ public class ImageLoadImpl implements ImageLoadDelegate {
                 BorderRoundTransformation borderTrans = new BorderRoundTransformation(context, options.getRound(),
                         0, options.getBorder(), options.getBorderColor());
                 RequestBuilder rb = (RequestBuilder) getRequestBuilder(context, info)
-                        .transform(new Transformation[]{new CenterCrop()
-                                , borderTrans})
+                        .transform(new Transformation[]{
+                                new CenterCrop(),
+                                borderTrans})
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 rb.into(iv);

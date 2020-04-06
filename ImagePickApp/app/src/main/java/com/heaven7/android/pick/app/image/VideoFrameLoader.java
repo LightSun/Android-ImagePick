@@ -23,8 +23,6 @@ import com.heaven7.android.pick.app.utils.CommonUtils;
 import com.heaven7.core.util.Logger;
 import com.heaven7.java.base.util.IOUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -114,12 +112,16 @@ import static lib.vida.video.ScaleManager.ofSize;
                 return null;
             }
             Logger.d(TAG, "loadData", "" + info);
-            File file = new File(context.getCacheDir(), "" + info.getKey().hashCode());
+            File file = new File(context.getCacheDir() + "/glide_vf", "" + info.getKey().hashCode());
             if(file.exists()){
                 if(file.isFile()){
                     return new FileInputStream(file);
                 }else {
                     file.delete();
+                }
+            }else {
+                if(!file.getParentFile().exists()){
+                    file.getParentFile().mkdirs();
                 }
             }
 
