@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -57,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import internal.LibUtils;
+
 /**
  * the image select activity. used for select image and videos.
  * @author heaven7
@@ -88,8 +88,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mSelector.setSingleMode(mParam.getMaxSelect() <= 1);
 
-        mMediaHelper = new MediaResourceHelper(this, mParam);
-        int width = getWidth();
+        mMediaHelper = new MediaResourceHelper(this, mParam.getMediaOption());
+        int width = LibUtils.getWidth(context);
         mItemWidth = (width - mParam.getSpace() * (mParam.getSpanCount() - 1)) / mParam.getSpanCount();
         //x / y = mItemWidth / mItemHeight
         mItemHeight = mParam.getAspectY() * mItemWidth / mParam.getAspectX();
@@ -299,12 +299,6 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mRv_dir.setAdapter(new DirAdapter(null));
     }
 
-    private int getWidth() {
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        return dm.widthPixels;
-    }
     private void setSelectText() {
         List<MediaResourceItem> selects = mSelector.getSelects();
         mTv_upload.setEnabled(selects.size() > 0);

@@ -18,6 +18,7 @@ import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.SeeImageParameter;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
@@ -108,6 +109,25 @@ public class EntryActivity extends AppCompatActivity {
                                             .setFlags(PickConstants.FLAG_IMAGE_AND_VIDEO)
                                             .setMaxSelect(4)
                                     .build());
+                        }
+                    }
+                    @Override
+                    public boolean handlePermissionHadRefused(String s, int i, Runnable runnable) {
+                        return false;
+                    }
+                });
+
+    }
+    public void onClickSeeImage(View view){
+        mHelper.startRequestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new int[]{1}, new PermissionHelper.ICallback() {
+                    @Override
+                    public void onRequestPermissionResult(String s, int i, boolean b) {
+                        if (b) {
+                            SeeImageParameter parameter = new SeeImageParameter.Builder()
+                                    .setPauseIconRes(R.drawable.ic_video_pause)
+                                    .build();
+                            ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this, parameter);
                         }
                     }
                     @Override

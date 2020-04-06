@@ -4,11 +4,12 @@ import com.heaven7.android.imagepick.MediaResourceHelper;
 
 public interface PickConstants {
 
-    String KEY_RESULT          = "result";
-    String KEY_PARAMS           = "params";
+    String KEY_RESULT            = "result";
+    String KEY_PARAMS            = "params";
     String KEY_SINGLE_ITEM       = "single_item";//only for single select
     String KEY_SAVE_DIR          = "save_dir";
     String KEY_DELEGATE          = "delegate";
+    String KEY_EXTRA             = "extra";
 
     /** the flags for see-big-image */
     int FLAG_SHOW_TOP             = 0x0001;
@@ -31,6 +32,8 @@ public interface PickConstants {
     int REQ_CAMERA  = 999;
     /** the request code indicate browse the big images. */
     int REQ_BROWSE_BIG_IMAGE  = 997;
+    /** browse image . used for {@linkplain com.heaven7.android.imagepick.SeeImageActivity}*/
+    int REQ_BROWSE_IMAGE      = 996;
 
 
     // from codes

@@ -139,7 +139,7 @@ public class BrowseActivity extends BaseActivity {
         List<ImageItem> list = new ArrayList<>();
         List<String> images = ImagePickDelegateImpl.getDefault().getImages();
         for (String file : images){
-            list.add(new ImageItem.Builder().setFilePath(file).build());
+            list.add(ImageItem.of(file, true));
         }
         return list;
     }

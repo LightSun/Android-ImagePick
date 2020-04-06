@@ -2,6 +2,7 @@ package com.heaven7.android.imagepick;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
@@ -16,9 +17,12 @@ import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.DefaultSeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.DefaultSeeImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
 import com.heaven7.core.util.Logger;
 
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_BROWSE_BIG_IMAGE;
+import static com.heaven7.android.imagepick.pub.PickConstants.REQ_BROWSE_IMAGE;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 
@@ -164,6 +169,24 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                 .build()
                 .startActivityForResult(REQ_CAMERA);
     }
+    @Override
+    public void startBrowseImages2(Activity context, Class<? extends SeeImageDelegate> clazz, SeeImageParameter parameter, Bundle extra){
+        if(extra == null) {
+            extra = new Bundle();
+        }
+        new LauncherIntent.Builder()
+                .setClass(context, SeeImageActivity.class)
+                .putExtra(PickConstants.KEY_PARAMS, parameter)
+                .putExtra(PickConstants.KEY_DELEGATE, clazz.getName())
+                .putExtras(extra)
+                .build()
+                .startActivityForResult(REQ_BROWSE_IMAGE);
+    }
+
+    @Override
+    public void startBrowseImages2(Activity context, SeeImageParameter parameter) {
+        startBrowseImages2(context, DefaultSeeImageDelegate.class, parameter, null);
+    }
 
     @Override
     public void startBrowseImages(Activity activity, ImageSelectParameter param) {
@@ -179,23 +202,25 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     @Override
     public void startBrowseBigImages(Activity context, BigImageSelectParameter param, List<? extends IImageItem> allItems, IImageItem single) {
-        startBrowseBigImages(context, param, DefaultSeeBigImageDelegate.class, allItems, single);
+        startBrowseBigImages(context, param, DefaultSeeBigImageDelegate.class, null,allItems, single);
     }
 
     @Override
-    public void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz,
+    public void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz, Bundle extra,
                                      List<? extends IImageItem> allItems, IImageItem single) {
         if(param == null || allItems == null){
             throw new IllegalArgumentException();
         }
         setImageItems(allItems);
-        new LauncherIntent.Builder()
+        LauncherIntent.Builder builder = new LauncherIntent.Builder()
                 .setClass(context, SeeBigImageActivity.class)
                 .putExtra(PickConstants.KEY_DELEGATE, clazz.getName())
                 .putExtra(PickConstants.KEY_PARAMS, param)
-                .putExtra(PickConstants.KEY_SINGLE_ITEM, single)
-                .build()
-                .startActivityForResult(REQ_BROWSE_BIG_IMAGE);
+                .putExtra(PickConstants.KEY_SINGLE_ITEM, single);
+        if(extra != null){
+            builder.putExtras(extra);
+        }
+        builder.build().startActivityForResult(REQ_BROWSE_BIG_IMAGE);
     }
 
     /*public*/ void onImageProcessStart(final Activity activity, final int count) {

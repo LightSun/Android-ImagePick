@@ -18,9 +18,9 @@ import java.util.Locale;
 
 /*public*/ class DefaultTopBinder extends SeeBigImageDelegate.ViewBinder {
 
-    private ImageView mIv_back;
-    private TextView mTv_indexes;
-    private TextView mTv_upload;
+    protected ImageView mIv_back;
+    protected TextView mTv_title;
+    protected TextView mTv_upload;
 
     public DefaultTopBinder(SeeBigImageDelegate delegate, ViewGroup parent) {
         super(delegate, parent);
@@ -34,7 +34,7 @@ import java.util.Locale;
     @Override
     public void onBind() {
         mIv_back = getView().findViewById(R.id.iv_back);
-        mTv_indexes = getView().findViewById(R.id.tv_indexes);
+        mTv_title = getView().findViewById(R.id.tv_indexes);
         mTv_upload = getView().findViewById(R.id.tv_upload);
 
         mIv_back.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +48,7 @@ import java.util.Locale;
             public void onClick(View v) {
                 //if select none. just select current
                 SeeBigImageDelegate.Provider provider = getProvider();
-                BigImageSelectParameter mParam = provider.getSelectParams();
+                BigImageSelectParameter mParam = provider.getParameter();
                 if(mParam.getSelectCount() == 0){
                     IImageItem item = provider.getImageItem(mParam.getCurrentOrder() - 1);
                     //IImageItem item = mItems.get(mParam.getCurrentOrder() - 1);
@@ -63,7 +63,7 @@ import java.util.Locale;
 
     @Override
     public void setSelectedText() {
-        BigImageSelectParameter mParam = getProvider().getSelectParams();
+        BigImageSelectParameter mParam = getProvider().getParameter();
         if (hasFlag(PickConstants.FLAG_SHOW_TOP_END_BUTTON)) {
             mTv_upload.setVisibility(View.VISIBLE);
             String text = mParam.getTopRightText() == null ? getResource().getString(R.string.lib_pick_upload) : mParam.getTopRightText();
@@ -80,8 +80,8 @@ import java.util.Locale;
 
     @Override
     public void setSelectOrder() {
-        BigImageSelectParameter mParam = getProvider().getSelectParams();
-        mTv_indexes.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
+        BigImageSelectParameter mParam = getProvider().getParameter();
+        mTv_title.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
     }
 
     @Override
@@ -90,7 +90,7 @@ import java.util.Locale;
     }
 
     private boolean hasFlag(int flag){
-        BigImageSelectParameter params = getProvider().getSelectParams();
+        BigImageSelectParameter params = getProvider().getParameter();
         return (params.getFlags() & flag) == flag;
     }
 }

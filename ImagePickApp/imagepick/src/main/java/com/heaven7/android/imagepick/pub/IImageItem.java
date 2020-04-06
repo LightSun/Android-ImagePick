@@ -14,4 +14,8 @@ public interface IImageItem extends ISelectable, Parcelable {
     String getFilePath();
 
     boolean isVideo();
+
+    void setExtra(Parcelable extra);
+
+    Parcelable getExtra();
 }

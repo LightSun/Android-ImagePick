@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.heaven7.adapter.BaseSelector;
+import com.heaven7.android.imagepick.MediaResourceHelper;
 
 /**
  * media resource item.
@@ -22,6 +23,16 @@ public class MediaResourceItem extends BaseSelector implements Parcelable, IImag
 
     private float ratio; //height / width in album
     private long duration;
+    private Parcelable extra;
+
+    @Override
+    public Parcelable getExtra() {
+        return extra;
+    }
+    @Override
+    public void setExtra(Parcelable extra) {
+        this.extra = extra;
+    }
 
     public float getImageRatio() {
         return ratio;
@@ -102,7 +113,6 @@ public class MediaResourceItem extends BaseSelector implements Parcelable, IImag
     public String getUrl() {
         return null;
     }
-
     @Override
     public String getFilePath() {
         return filePath;
@@ -155,6 +165,7 @@ public class MediaResourceItem extends BaseSelector implements Parcelable, IImag
         thumbPath = in.readString();
         ratio = in.readFloat();
         duration = in.readLong();
+        extra = in.readParcelable(MediaResourceItem.class.getClassLoader());
     }
 
     public static final Creator<MediaResourceItem> CREATOR = new Creator<MediaResourceItem>() {
@@ -187,6 +198,7 @@ public class MediaResourceItem extends BaseSelector implements Parcelable, IImag
         dest.writeString(thumbPath);
         dest.writeFloat(ratio);
         dest.writeLong(duration);
+        dest.writeParcelable(extra, flags);
     }
 
     @Override

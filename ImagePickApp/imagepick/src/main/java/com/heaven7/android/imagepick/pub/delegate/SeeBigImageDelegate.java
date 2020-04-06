@@ -38,8 +38,8 @@ public abstract class SeeBigImageDelegate {
     public Provider getProvider() {
         return mProvider;
     }
-    public BigImageSelectParameter getSelectParams(){
-        return getProvider().getSelectParams();
+    public BigImageSelectParameter getParameter(){
+        return getProvider().getParameter();
     }
     public ViewBinder getTopBinder(){
         return mTopBinder != UNSET ? (ViewBinder) mTopBinder : null;
@@ -126,16 +126,16 @@ public abstract class SeeBigImageDelegate {
     public void setUiState() {
         ViewBinder topBinder = getTopBinder();
         if(topBinder != null){
-            boolean visible = getSelectParams().hasFlag(PickConstants.FLAG_SHOW_TOP);
+            boolean visible = getParameter().hasFlag(PickConstants.FLAG_SHOW_TOP);
             topBinder.getView().setVisibility(visible ? View.VISIBLE : View.GONE );
         }
 
         ViewBinder bottomBinder = getBottomBinder();
         if(bottomBinder != null){
-            boolean visible = getSelectParams().hasFlag(PickConstants.FLAG_SHOW_BOTTOM);
+            boolean visible = getParameter().hasFlag(PickConstants.FLAG_SHOW_BOTTOM);
             bottomBinder.getView().setVisibility(visible ? View.VISIBLE : View.GONE );
             //show bottom end or not.
-            visible = getSelectParams().hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON);
+            visible = getParameter().hasFlag(PickConstants.FLAG_SHOW_BOTTOM_END_BUTTON);
             bottomBinder.setBottomEndVisible(visible);
         }
     }
@@ -147,7 +147,7 @@ public abstract class SeeBigImageDelegate {
      * @param data the image data.
      */
     public void onClickPageImageView(View v, int index, IImageItem data) {
-        BigImageSelectParameter mParam = getSelectParams();
+        BigImageSelectParameter mParam = getParameter();
         if (mParam.hasFlag(PickConstants.FLAG_SHOW_TOP) || mParam.hasFlag(PickConstants.FLAG_SHOW_BOTTOM)) {
             mParam.deleteFlags(PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM);
         } else {
@@ -178,7 +178,7 @@ public abstract class SeeBigImageDelegate {
             return mDelegate.getProvider();
         }
         public BigImageSelectParameter getSelectParams(){
-            return mDelegate.getSelectParams();
+            return mDelegate.getParameter();
         }
         public ViewGroup getViewParent() {
             return mDelegate.getViewParent();
@@ -218,7 +218,7 @@ public abstract class SeeBigImageDelegate {
 
     public interface Provider{
         AppCompatActivity getActivity();
-        BigImageSelectParameter getSelectParams();
+        BigImageSelectParameter getParameter();
         IImageItem getImageItem(int index);
         void onClickSelect(View v);
     }

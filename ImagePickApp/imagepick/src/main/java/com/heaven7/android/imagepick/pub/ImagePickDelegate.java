@@ -1,10 +1,12 @@
 package com.heaven7.android.imagepick.pub;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 
 import java.util.List;
 
@@ -97,11 +99,28 @@ public interface ImagePickDelegate {
     void startCamera(Activity context, CameraParameter parameter);
 
     /**
-     * start browse images
+     * start browse images. used by {@linkplain com.heaven7.android.imagepick.ImageSelectActivity}.
      * @param context the context
      * @param param the image select parameter
      */
     void startBrowseImages(Activity context, ImageSelectParameter param);
+
+    /**
+     *  start browse/see images. used by {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
+     * @param context the activity
+     * @param parameter the parameter
+     */
+    void startBrowseImages2(Activity context, SeeImageParameter parameter);
+
+    /**
+     *  start browse/see images. used by {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
+     * @param context the activity
+     * @param clazz the delegate class
+     * @param parameter the parameter
+     * @param extra the extras
+     */
+    void startBrowseImages2(Activity context, Class<? extends SeeImageDelegate> clazz, SeeImageParameter parameter, Bundle extra);
+
     /**
      * start browse big images/videos with a default delegate of {@linkplain SeeBigImageDelegate}.
      * @param context the context
@@ -116,11 +135,12 @@ public interface ImagePickDelegate {
      * @param context the context
      * @param param the parameter of ui
      * @param clazz the class of {@linkplain SeeBigImageDelegate}
+     * @param extra the extra ot intent
      * @param allItems the items to browse
      * @param single the single selected item.can be null for multi-select it must be null.
      * @since 1.0.5
      */
-    void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz,
+    void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz, Bundle extra,
                               List<? extends IImageItem> allItems, IImageItem single);
     /**
      * the dialog delegate used to helpful handle image.

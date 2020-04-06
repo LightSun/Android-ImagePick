@@ -43,6 +43,7 @@
         <activity android:name="com.heaven7.android.imagepick.CameraActivity"/>
         <activity android:name="com.heaven7.android.imagepick.BrowseActivity"/>
         <activity android:name="com.heaven7.android.imagepick.ImageSelectActivity"/>
+        <activity android:name="com.heaven7.android.imagepick.SeeImageActivity"/>
         <activity android:name="com.heaven7.android.imagepick.SeeBigImageActivity"
             android:launchMode="singleTop"
             />

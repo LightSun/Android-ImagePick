@@ -25,6 +25,9 @@ import com.heaven7.java.base.util.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -111,6 +114,15 @@ import static lib.vida.video.ScaleManager.ofSize;
                 return null;
             }
             Logger.d(TAG, "loadData", "" + info);
+            File file = new File(context.getCacheDir(), "" + info.getKey().hashCode());
+            if(file.exists()){
+                if(file.isFile()){
+                    return new FileInputStream(file);
+                }else {
+                    file.delete();
+                }
+            }
+
             long startTime = SystemClock.elapsedRealtime();
             Bitmap bitmap;
             if (info.isFromVideo()) {
@@ -176,10 +188,15 @@ import static lib.vida.video.ScaleManager.ofSize;
                 return null;
             }
             bitmap.setHasAlpha(true);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+            }finally {
+                IOUtils.closeQuietly(out);
+            }
             Logger.d(TAG, "loadData", "load cost time = " + (SystemClock.elapsedRealtime() - startTime));
-            return new ByteArrayInputStream(baos.toByteArray());
+            return new FileInputStream(file);
 
 
             /*

@@ -1,7 +1,10 @@
 package com.heaven7.android.imagepick;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +37,13 @@ import java.util.List;
             paths.add(item.getFilePath());
         }
         return paths;
+    }
+
+    public static int getWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 
     public static ImageParser createImageParser(ImageParameter ip, boolean checkExif) {

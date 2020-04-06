@@ -29,13 +29,13 @@ public final class MediaResourceHelper {
     public static final int FLAG_IMAGE_AND_VIDEO = FLAG_IMAGE | FLAG_VIDEO;
 
     private final WeakContextOwner mOwner;
-    private final ImageSelectParameter mParam;
+    private final MediaOption mOptions;
     private final AtomicBoolean mDestroies = new AtomicBoolean();
     private ExecutorService mService;
 
-    public MediaResourceHelper(Context context, ImageSelectParameter mParam) {
+    public MediaResourceHelper(Context context, MediaOption option) {
         this.mOwner = new WeakContextOwner(context);
-        this.mParam = mParam;
+        this.mOptions = option;
     }
 
     /**
@@ -57,7 +57,7 @@ public final class MediaResourceHelper {
             public void run() {
                 final List<MediaResourceItem> photos;
                 if ((flags & FLAG_IMAGE) == FLAG_IMAGE) {
-                    photos = getAllLocalPhotos(getContext(), mParam.getMediaOption());
+                    photos = getAllLocalPhotos(getContext(), mOptions);
                 } else {
                     photos = new ArrayList<>();
                 }
@@ -66,7 +66,7 @@ public final class MediaResourceHelper {
                 }
                 final List<MediaResourceItem> videoes;
                 if ((flags & FLAG_VIDEO) == FLAG_VIDEO) {
-                    videoes = getAllLocalVideos(getContext(), mParam.getMediaOption());
+                    videoes = getAllLocalVideos(getContext(), mOptions);
                 } else {
                     videoes = new ArrayList<>();
                 }

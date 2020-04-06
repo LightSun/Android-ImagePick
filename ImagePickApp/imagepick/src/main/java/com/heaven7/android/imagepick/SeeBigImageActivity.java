@@ -183,7 +183,7 @@ public class SeeBigImageActivity extends BaseActivity {
         }
         mParam.setCurrentOrder(order);
         mDelegate.setSelectOrder();
-       // mTv_indexes.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
+       // mTv_title.setText(mParam.getCurrentOrder() + "/" + mParam.getTotalCount());
 
         boolean isSelect = mItems.get(mParam.getCurrentOrder() - 1).isSelected();
         setImageBySelectState(isSelect);
@@ -237,7 +237,7 @@ public class SeeBigImageActivity extends BaseActivity {
             return SeeBigImageActivity.this;
         }
         @Override
-        public BigImageSelectParameter getSelectParams() {
+        public BigImageSelectParameter getParameter() {
             return mParam;
         }
         @Override
