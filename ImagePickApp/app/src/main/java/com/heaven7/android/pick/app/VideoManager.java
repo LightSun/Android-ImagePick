@@ -2,6 +2,7 @@ package com.heaven7.android.pick.app;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.PowerManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,26 +14,33 @@ import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.core.util.Logger;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Semaphore;
 
-import lib.vida.video.TextureVideoView;
+import lib.vida.video.TextureVideoView2;
 
 /**
  */
 public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "VideoManager";
-    private WeakReference<TextureVideoView> mWeakView;
+    private WeakReference<TextureVideoView2> mWeakView;
     private int mCurrentItem = -1;
+
+    private final MediaCallback0 mCallback;
+
+    public VideoManager(Context context) {
+        this.mCallback = new MediaCallback0(context);
+    }
 
     @Override
     public boolean isVideoView(View view, IImageItem data) {
-        return view instanceof TextureVideoView;
+        return view instanceof TextureVideoView2;
     }
 
     @Override
     public View createVideoView(Context context, ViewGroup parent, IImageItem data) {
-        TextureVideoView videoView = (TextureVideoView) LayoutInflater.from(context)
-                .inflate(R.layout.item_texture_video, parent, false);
+        TextureVideoView2 videoView = (TextureVideoView2) LayoutInflater.from(context)
+                .inflate(R.layout.item_texture_video2, parent, false);
         videoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,27 +51,28 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                 }
             }
         });
+        videoView.setCallback(mCallback);
         return videoView;
     }
 
     @Override
     public void setMediaData(Context context, View v, IImageItem data) {
         // Logger.d(TAG, "setMediaData: " + data.getFilePath());
-        TextureVideoView view = (TextureVideoView) v;
+        TextureVideoView2 view = (TextureVideoView2) v;
         view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
     }
 
     @Override
     public void pauseVideo(Context context, View videoView) {
         Logger.d(TAG, "pauseVideo");
-        TextureVideoView view = (TextureVideoView) videoView;
+        TextureVideoView2 view = (TextureVideoView2) videoView;
         view.pause();
     }
 
     @Override
     public void resumeVideo(Context context, View videoView) {
         Logger.d(TAG, "resumeVideo");
-        TextureVideoView view = (TextureVideoView) videoView;
+        TextureVideoView2 view = (TextureVideoView2) videoView;
         view.resume();
     }
 
@@ -71,8 +80,18 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     public void destroyVideo(Context context, View videoView) {
         Logger.d(TAG, "destroyVideo");
         mCurrentItem = -1;
-        TextureVideoView view = (TextureVideoView) videoView;
+        TextureVideoView2 view = (TextureVideoView2) videoView;
         view.stop();
+    }
+
+    @Override
+    public void releaseVideo(Context context, View videoView) {
+        Logger.d(TAG, "releaseVideo");
+        mCurrentItem = -1;
+        TextureVideoView2 view = (TextureVideoView2) videoView;
+        view.cancel();
+        view.release();
+        mCallback.release();
     }
 
     @Override
@@ -100,16 +119,16 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         }
         mCurrentItem = actualPosition;
 
-        TextureVideoView view = (TextureVideoView) v;
+        TextureVideoView2 view = (TextureVideoView2) v;
        // view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
         pauseLast(view);
         mWeakView = new WeakReference<>(view);
         view.start();
     }
 
-    private void pauseLast(TextureVideoView next){
+    private void pauseLast(TextureVideoView2 next){
         if(mWeakView != null){
-            TextureVideoView view = mWeakView.get();
+            TextureVideoView2 view = mWeakView.get();
             if(view != null && view != next){
                 view.stop();
             }
@@ -127,31 +146,54 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     public void onPageScrollStateChanged(int state) {
 
     }
-    private class MediaPlayerCallback0 extends TextureVideoView.MediaPlayerCallbackAdapter {
+
+    private class MediaCallback0 extends TextureVideoView2.Callback{
+
+        private final PowerManager mPM;
+        private PowerManager.WakeLock mWakeLock;
+
+        public MediaCallback0(Context context) {
+            this.mPM = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        }
 
         @Override
-        public void onPrepared(MediaPlayer mp, int startPos) {
+        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
 
         }
-        @Override
-        public void onStopped(MediaPlayer mp) {
 
-        }
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-
-        }
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
 
         }
         @Override
-        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+        public boolean onInfo(MediaPlayer mp, int what, int extra) {
+            return false;
+        }
+
+        @Override
+        public void onPlayComplete(MediaPlayer mediaPlayer, String s) {
 
         }
         @Override
-        public void onPaused(MediaPlayer mp) {
+        public void onMediaStateChanged(MediaPlayer mediaPlayer, byte b) {
 
+        }
+        @Override
+        public void onPrePrepare(MediaPlayer mp, String filename) {
+        }
+
+        @Override
+        public void onPrepareComplete(MediaPlayer mp, String filename) {
+            if(mWakeLock == null){
+                mWakeLock = mPM.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+                        | PowerManager.ON_AFTER_RELEASE, MediaCallback0.class.getName());
+                mWakeLock.acquire();
+            }
+        }
+        public void release(){
+            if(mWakeLock != null){
+                mWakeLock.release();
+            }
         }
     }
 }

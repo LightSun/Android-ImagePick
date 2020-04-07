@@ -58,6 +58,8 @@ public interface VideoManageDelegate {
      */
     void destroyVideo(Context context, View v);
 
+    void releaseVideo(Context context, View view);
+
     /**
      * called on set primary item, this is often used to start play video.
      * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
@@ -73,4 +75,5 @@ public interface VideoManageDelegate {
      * @since 1.0.5
      */
     void setCurrentPosition(int position);
+
 }
