@@ -157,11 +157,6 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         }
 
         @Override
-        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-
-        }
-
-        @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
 
         }
@@ -193,6 +188,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         public void release(){
             if(mWakeLock != null){
                 mWakeLock.release();
+                mWakeLock = null;
             }
         }
     }
