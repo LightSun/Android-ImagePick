@@ -157,7 +157,7 @@ public class TextureVideoView2 extends TextureView
                     public void run() {
                         MediaPlayer player = mMedia.getMediaPlayer();
                         if(player != null){
-                            player.seekTo(positionMesc);
+                            player.seekTo(mStartPos);
                         }
                         __log("seekTo", "STATE_PLAYING end...<<<");
                     }
