@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -157,6 +158,17 @@ public abstract class SeeBigImageDelegate {
     }
 
     /**
+     * called on bind image item to view
+     * @param iv the image view
+     * @param index the real index of view pager
+     * @param data the data
+     * @return true if bind success.
+     */
+    public boolean bindImageItem(ImageView iv, int index, IImageItem data) {
+        return false;
+    }
+
+    /**
      * the view binder of {@linkplain SeeBigImageDelegate}.
      */
     public abstract static class ViewBinder{
@@ -222,5 +234,6 @@ public abstract class SeeBigImageDelegate {
         IImageItem getImageItem(int index);
         void onClickSelect(View v);
         View getCurrentView();
+        int getCurrentPosition();
     }
 }

@@ -100,7 +100,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
         }
     }
 
-    protected int getPositionActually(int position){
+    public int getPositionActually(int position){
         if(mCarouselAllTime && mDatas.size()  > 0){
             return position % mDatas.size();
         }

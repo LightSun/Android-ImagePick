@@ -554,7 +554,6 @@ public class TextureVideoView2 extends TextureView
     }
 
     public abstract static class Callback extends MediaHelper.MediaCallback {
-        public abstract void onVideoSizeChanged(MediaPlayer mp, int width, int height);
 
         public abstract void onBufferingUpdate(MediaPlayer mp, int percent);
 

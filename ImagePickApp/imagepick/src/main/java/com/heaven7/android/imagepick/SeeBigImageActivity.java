@@ -219,14 +219,15 @@ public class SeeBigImageActivity extends BaseActivity {
         }
         @Override
         protected void onBindImageItem(ImageView iv, final int index, final IImageItem data) {
-
-            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mDelegate.onClickPageImageView(v, index, data);
-                }
-            });
+            if(!mDelegate.bindImageItem(iv, index, data)){
+                ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDelegate.onClickPageImageView(v, index, data);
+                    }
+                });
+            }
         }
     }
 
@@ -256,6 +257,9 @@ public class SeeBigImageActivity extends BaseActivity {
         @Override
         public View getCurrentView() {
             return LibPick$_ViewPagerUtils.getCurrentView(mVp);
+        }
+        public int getCurrentPosition(){
+            return mMediaAdapter.getPositionActually(mVp.getCurrentItem());
         }
     }
 }
