@@ -8,13 +8,12 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.heaven7.android.imagepick.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.internal.GestureImageUtils;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.memory.util.Cacher;
 
 import java.util.List;
-
-import com.heaven7.android.imagepick.internal.GestureImageUtils;
 
 /**
  * the media page adapter .which support image and video
@@ -43,11 +42,12 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(getPositionActually(pos));
+        int realPos = getPositionActually(pos);
+        IImageItem item = getItemAt(realPos);
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.pauseVideo(context, view);
+                vm.pauseVideo(context, realPos, view);
             }
         }
     }
@@ -55,11 +55,12 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(getPositionActually(pos));
+        int position = getPositionActually(pos);
+        IImageItem item = getItemAt(position);
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.resumeVideo(context, view);
+                vm.resumeVideo(context, position, view);
             }
         }
     }
@@ -67,11 +68,12 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(view == null){
             return;
         }
-        IImageItem item = getItemAt(getPositionActually(pos));
+        int position = getPositionActually(pos);
+        IImageItem item = getItemAt(position);
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.releaseVideo(context, view);
+                vm.releaseVideo(context, position, view);
             }
         }
     }
@@ -100,7 +102,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         View view = (View) object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
         if(videoM != null && getItemAt(index).isVideo()){
-            videoM.destroyVideo(container.getContext(), view);
+            videoM.destroyVideo(container.getContext(), position, view);
         }
         super.destroyItem(container, position, object);
     }
@@ -136,7 +138,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
             if(videoM == null){
                 throw new IllegalStateException("for video item. you must assign the VideoManageDelegate!");
             }
-            videoM.setMediaData(iv.getContext(), iv, data);
+            videoM.setMediaData(iv.getContext(), iv, index, data);
         }else {
             onBindImageItem((ImageView) iv, index, data);
         }

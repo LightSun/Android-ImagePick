@@ -12,17 +12,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.LibPick$_ViewPagerUtils;
 import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.Toaster;
 
 import java.util.List;
-
-import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * @author heaven7
@@ -94,8 +94,10 @@ public class SeeBigImageActivity extends BaseActivity {
         super.onResume();
         mMediaAdapter.onResume(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
     }
+
     @Override
     protected void onDestroy() {
+        Logger.d("SeeBigImage", "onDestroy");
         //release media
         mMediaAdapter.onDestroy(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
         //remove listener

@@ -11,7 +11,7 @@ import java.lang.reflect.Constructor;
 /**
  * the gesture image utils.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class GestureImageUtils {
 
     private static final Constructor<?> sCons;

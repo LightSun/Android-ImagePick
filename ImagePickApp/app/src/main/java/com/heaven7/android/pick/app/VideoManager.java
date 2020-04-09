@@ -14,7 +14,6 @@ import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.core.util.Logger;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Semaphore;
 
 import lib.vida.video.TextureVideoView2;
 
@@ -50,28 +49,28 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     }
 
     @Override
-    public void setMediaData(Context context, View v, IImageItem data) {
+    public void setMediaData(Context context, View v, int index, IImageItem data) {
         // Logger.d(TAG, "setMediaData: " + data.getFilePath());
         TextureVideoView2 view = (TextureVideoView2) v;
         view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
     }
 
     @Override
-    public void pauseVideo(Context context, View videoView) {
+    public void pauseVideo(Context context, int realPos, View videoView) {
         Logger.d(TAG, "pauseVideo");
         TextureVideoView2 view = (TextureVideoView2) videoView;
         view.pause();
     }
 
     @Override
-    public void resumeVideo(Context context, View videoView) {
+    public void resumeVideo(Context context, int position, View videoView) {
         Logger.d(TAG, "resumeVideo");
         TextureVideoView2 view = (TextureVideoView2) videoView;
         view.resume();
     }
 
     @Override
-    public void destroyVideo(Context context, View videoView) {
+    public void destroyVideo(Context context, int position, View videoView) {
         Logger.d(TAG, "destroyVideo");
         mCurrentItem = -1;
         TextureVideoView2 view = (TextureVideoView2) videoView;
@@ -79,7 +78,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     }
 
     @Override
-    public void releaseVideo(Context context, View videoView) {
+    public void releaseVideo(Context context, int position, View videoView) {
         Logger.d(TAG, "releaseVideo");
         mCurrentItem = -1;
         TextureVideoView2 view = (TextureVideoView2) videoView;

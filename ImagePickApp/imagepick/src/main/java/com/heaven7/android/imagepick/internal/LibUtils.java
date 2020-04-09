@@ -12,7 +12,7 @@ import androidx.annotation.RestrictTo;
  * @author heaven7
  * @since 1.0.5
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class LibUtils {
 
     @SuppressWarnings("unchecked")

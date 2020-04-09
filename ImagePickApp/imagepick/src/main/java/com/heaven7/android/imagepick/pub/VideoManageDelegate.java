@@ -23,39 +23,44 @@ public interface VideoManageDelegate {
 
     /**
      * called on set media data to video view by onBindItem.
-     * @param v the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param context the context
+     * @param v the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
+     * @param position the position
      * @param data the media data
      */
-    void setMediaData(Context context, View v, IImageItem data);
+    void setMediaData(Context context, View v, int position, IImageItem data);
 
     /**
      * called on pause video
      * @param context the context
+     * @param pos the position
      * @param v the video view
      */
-    void pauseVideo(Context context, View v);
+    void pauseVideo(Context context, int pos, View v);
 
     /**
      * called on resume video
      * @param context the context
+     * @param position the position
      * @param v the video view
      */
-    void resumeVideo(Context context, View v);
+    void resumeVideo(Context context, int position, View v);
 
     /**
      * called on destroy video
      * @param context the context
-     *  @param v the video view
+     *  @param position the position
+     * @param v the video view
      */
-    void destroyVideo(Context context, View v);
+    void destroyVideo(Context context, int position, View v);
 
     /**
      * called on activity destroy
      * @param context the context
+     * @param position the position
      * @param view the view
      */
-    void releaseVideo(Context context, View view);
+    void releaseVideo(Context context, int position, View view);
 
     /**
      * called on set primary item, this is often used to start play video.

@@ -234,16 +234,15 @@ public class TextureVideoView2 extends TextureView
         }
     }
     public void release(){
+        //__log("release", "current state is " + MediaHelper.getStateString(mMedia.getMediaState()));
         removeStartTask();
         switch (mMedia.getMediaState()){
-            case MediaHelper.STATE_NOT_START:
-            case MediaHelper.STATE_RELEASE:
-                return;
-
             case MediaHelper.STATE_BUFFERING:
                 __log("release", "STATE_BUFFERING.");
                 mMedia.setShouldPlayWhenPrepared(false);
 
+            case MediaHelper.STATE_NOT_START:
+            case MediaHelper.STATE_RELEASE:
             case MediaHelper.STATE_PAUSED:
             case MediaHelper.STATE_PLAYING:
                 __log("release", "STATE_PLAYING start...>>>");
@@ -274,6 +273,9 @@ public class TextureVideoView2 extends TextureView
                 mWorkHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if(mCancelled.get()){
+                            return;
+                        }
                         mMedia.pause();
                         lossAudioFocus();
                         __log("pause", "STATE_PLAYING end...<<<");
@@ -333,10 +335,10 @@ public class TextureVideoView2 extends TextureView
     }
     private void lossAudioFocus(){
       //  mAudioM.abandonAudioFocus(onAudioFocusChangeListener);
-       // mAudioMDelegate.lossAudioFocus();
+        mAudioMDelegate.lossAudioFocus();
     }
     public void requestAudioFocus(){
-       // mAudioMDelegate.requestAudioFocus();
+        mAudioMDelegate.requestAudioFocus();
        /* mAudioM.requestAudioFocus(
                 onAudioFocusChangeListener,
                 AudioManager.STREAM_MUSIC,
@@ -387,7 +389,6 @@ public class TextureVideoView2 extends TextureView
     @Override
     protected void onDetachedFromWindow() {
         __log("onDetachedFromWindow", "");
-        //cancel();
         releaseSurfaceIfNeed();
         super.onDetachedFromWindow();
     }
@@ -420,6 +421,8 @@ public class TextureVideoView2 extends TextureView
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        __log("onSurfaceTextureDestroyed", "");
+        release();
         releaseSurfaceIfNeed();
         return true;
     }
