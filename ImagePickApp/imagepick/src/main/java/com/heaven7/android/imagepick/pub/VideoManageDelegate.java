@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick.pub;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.view.ViewGroup;
 public interface VideoManageDelegate {
 
     /**
-     * called on create video video
+     * called on create the video view. you can bind click event here.
      *
      * @param context the context
      * @param parent the parent
@@ -23,59 +24,60 @@ public interface VideoManageDelegate {
 
     /**
      * called on set media data to video view by onBindItem.
-     * @param context the context
      * @param v the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param position the position
      * @param data the media data
      */
-    void setMediaData(Context context, View v, int position, IImageItem data);
-
-    /**
-     * called on pause video
-     * @param context the context
-     * @param pos the position
-     * @param v the video view
-     */
-    void pauseVideo(Context context, int pos, View v);
-
-    /**
-     * called on resume video
-     * @param context the context
-     * @param position the position
-     * @param v the video view
-     */
-    void resumeVideo(Context context, int position, View v);
-
+    void onBindItem(View v, int position, IImageItem data);
     /**
      * called on destroy video
-     * @param context the context
-     *  @param position the position
-     * @param v the video view
+     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
+     * @param position the position
+     * @param data the media item
      */
-    void destroyVideo(Context context, int position, View v);
+    void onDestroyItem(View v, int position, IImageItem data);
 
     /**
-     * called on activity destroy
-     * @param context the context
+     * called on pause video. this is call on {@linkplain Activity#onPause()}.
+     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param position the position
-     * @param view the view
+     * @param data the media item
      */
-    void releaseVideo(Context context, int position, View view);
+    void pauseVideo(View v, int position, IImageItem data);
+
+    /**
+     * called on resume video. this is call on {@linkplain Activity#onResume()}.
+     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
+     * @param position the position
+     * @param data the media item
+     */
+    void resumeVideo(View v, int position, IImageItem data);
+
+    /**
+     * called on activity destroy. this is call on {@linkplain Activity#onDestroy()}.
+     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
+     * @param position the position
+     * @param data the media item
+     */
+    void releaseVideo(View v, int position, IImageItem data);
 
     /**
      * called on set primary item, this is often used to start play video.
      * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param actualPosition the real position of view pager
+     * @param position the real position
      * @param data the media data
-     * @since 1.0.5
      */
-    void setPrimaryItem(View view, int actualPosition, IImageItem data);
+    void setPrimaryItem(View view, int position, IImageItem data);
 
     /**
-     * same as {@linkplain androidx.viewpager.widget.ViewPager#setCurrentItem(int)}.
-     * @param position the position
-     * @since 1.0.5
+     * called on attach---onCreate
+     * @param activity the activity
      */
-    void setCurrentPosition(int position);
+    void onAttach(Activity activity);
 
+    /**
+     * called on detach---onDestroy
+     * @param activity the activity
+     */
+    void onDetach(Activity activity);
 }

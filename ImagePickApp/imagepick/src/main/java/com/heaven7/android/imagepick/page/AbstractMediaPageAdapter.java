@@ -38,7 +38,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         this.supportGestureImage = supportGestureImage;
     }
 
-    public void onPause(Context context, int pos, View view){
+    public void onPause(int pos, View view){
         if(view == null){
             return;
         }
@@ -47,11 +47,11 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.pauseVideo(context, realPos, view);
+                vm.pauseVideo(view, realPos, item);
             }
         }
     }
-    public void onResume(Context context, int pos, View view){
+    public void onResume(int pos, View view){
         if(view == null){
             return;
         }
@@ -60,11 +60,11 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.resumeVideo(context, position, view);
+                vm.resumeVideo(view, position, item);
             }
         }
     }
-    public void onDestroy(Context context, int pos, View view){
+    public void onDestroy(int pos, View view){
         if(view == null){
             return;
         }
@@ -73,7 +73,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         if(item.isVideo()){
             VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
             if(vm != null){
-                vm.releaseVideo(context, position, view);
+                vm.releaseVideo(view, position, item);
             }
         }
     }
@@ -100,9 +100,10 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         MediaLog.destroyItem(position);
         int index = getPositionActually(position);
         View view = (View) object;
+        IImageItem item = getItemAt(index);
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(videoM != null && getItemAt(index).isVideo()){
-            videoM.destroyVideo(container.getContext(), position, view);
+        if(videoM != null && item.isVideo()){
+            videoM.onDestroyItem(view, position, item);
         }
         super.destroyItem(container, position, object);
     }
@@ -138,7 +139,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
             if(videoM == null){
                 throw new IllegalStateException("for video item. you must assign the VideoManageDelegate!");
             }
-            videoM.setMediaData(iv.getContext(), iv, index, data);
+            videoM.onBindItem(iv, index, data);
         }else {
             onBindImageItem((ImageView) iv, index, data);
         }

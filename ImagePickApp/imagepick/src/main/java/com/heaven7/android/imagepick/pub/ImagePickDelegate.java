@@ -164,8 +164,9 @@ public interface ImagePickDelegate {
         /**
          * called on processing end
          * @param next the task used to do next. this is helpful for animate dialog
+         * @return true if processed. false otherwise. for false means the next not run.
          */
-        void onProcessEnd(Runnable next);
+        boolean onProcessEnd(Runnable next);
         /**
          * called on image process image exception
          * @param activity the activity

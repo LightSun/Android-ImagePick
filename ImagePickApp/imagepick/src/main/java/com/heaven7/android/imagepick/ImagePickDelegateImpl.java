@@ -245,7 +245,9 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    dd.onProcessEnd(next);
+                    if(!dd.onProcessEnd(next)){
+                        next.run();
+                    }
                 }
             });
         }else {

@@ -53,15 +53,15 @@ public class EntryActivity extends AppCompatActivity {
 
             }
             @Override
-            public void onProcessEnd(Runnable next) {
-                next.run();
+            public boolean onProcessEnd(Runnable next) {
+                return false;
             }
             @Override
             public boolean onProcessException(Activity activity, int order, int size, MediaResourceItem item, Exception e) {
                 return false;
             }
         });
-        VideoManager2 vm = new VideoManager2(getApplicationContext());
+        VideoManager vm = new VideoManager(getApplicationContext());
         ImagePickManager.get().getImagePickDelegate().setVideoManageDelegate(vm);
         ImagePickManager.get().getImagePickDelegate().setOnPageChangeListener(vm);
         test1();

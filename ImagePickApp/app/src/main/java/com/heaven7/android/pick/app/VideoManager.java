@@ -1,5 +1,6 @@
 package com.heaven7.android.pick.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
@@ -12,6 +13,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.core.util.Logger;
+import com.heaven7.core.util.MainWorker;
+import com.heaven7.java.base.util.SparseArrayDelegate;
+import com.heaven7.java.base.util.SparseFactory;
 
 import java.lang.ref.WeakReference;
 
@@ -23,9 +27,9 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView2> mWeakView;
-    private int mCurrentItem = -1;
 
     private final MediaCallback0 mCallback;
+    private final SparseArrayDelegate<TextureVideoView2> mMap = SparseFactory.newSparseArray(10);
 
     public VideoManager(Context context) {
         this.mCallback = new MediaCallback0(context);
@@ -49,78 +53,86 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     }
 
     @Override
-    public void setMediaData(Context context, View v, int index, IImageItem data) {
+    public void onBindItem(View v, int index, IImageItem data) {
         // Logger.d(TAG, "setMediaData: " + data.getFilePath());
         TextureVideoView2 view = (TextureVideoView2) v;
-        view.setVideoURI(FileProviderHelper.getUriForFile(context, data.getFilePath()));
+        view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
+        view.setTag(index);
+        mMap.put(index, view);
     }
 
     @Override
-    public void pauseVideo(Context context, int realPos, View videoView) {
+    public void pauseVideo(View v, int position, IImageItem data) {
         Logger.d(TAG, "pauseVideo");
-        TextureVideoView2 view = (TextureVideoView2) videoView;
+        TextureVideoView2 view = (TextureVideoView2) v;
         view.pause();
     }
 
     @Override
-    public void resumeVideo(Context context, int position, View videoView) {
+    public void resumeVideo(View v, int position, IImageItem data) {
         Logger.d(TAG, "resumeVideo");
-        TextureVideoView2 view = (TextureVideoView2) videoView;
+        TextureVideoView2 view = (TextureVideoView2) v;
         view.resume();
     }
 
     @Override
-    public void destroyVideo(Context context, int position, View videoView) {
+    public void onDestroyItem(View v, int position, IImageItem data) {
         Logger.d(TAG, "destroyVideo");
-        mCurrentItem = -1;
-        TextureVideoView2 view = (TextureVideoView2) videoView;
+        TextureVideoView2 view = (TextureVideoView2) v;
         view.stop();
+        mMap.remove(position);
     }
 
     @Override
-    public void releaseVideo(Context context, int position, View videoView) {
+    public void releaseVideo(View v, int position, IImageItem data) {
         Logger.d(TAG, "releaseVideo");
-        mCurrentItem = -1;
-        TextureVideoView2 view = (TextureVideoView2) videoView;
-        view.cancel();
-        view.release();
+        release((TextureVideoView2) v);
+    }
+
+    @Override
+    public void onDetach(Activity activity) {
+        mMap.clear();
         mCallback.release();
     }
 
     @Override
-    public void setCurrentPosition(int position) {
-        if(mCurrentItem != position){
-            Logger.d(TAG, "setCurrentPosition", "currentPos = " + mCurrentItem + " ,pos = " + position);
-            mCurrentItem = position;
+    public void onAttach(Activity activity) {
+
+    }
+
+    @Override
+    public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
+        Logger.d(TAG, "setPrimaryItem","pos: " + actualPosition + " ,path = " + data.getFilePath());
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+       /* if(positionOffset > 0.5f){
+            position++;
+        }*/
+    }
+    @Override
+    public void onPageSelected(int position) {
+        Logger.d(TAG, "onPageSelected", "position = " + position);
+        TextureVideoView2 view = mMap.get(position);
+        if(view == null){
+            //first time, not prepared.
+            MainWorker.postDelay(200, new Runnable() {
+                @Override
+                public void run() {
+                    onPageSelected(position);
+                }
+            });
+        }else {
+            pauseLast(view);
+            mWeakView = new WeakReference<>(view);
+            view.start();
         }
     }
     @Override
-    public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
-        Logger.d(TAG, "setPrimaryItem: " + data.getFilePath());
-        Logger.d(TAG, "actualPosition: " + actualPosition);
-        if(!data.isVideo()){
-            //Logger.d(TAG, "not video view.");
-            return;
-        }
-        TextureVideoView2 view = (TextureVideoView2) v;
-        view.requestAudioFocus();
-        /*
-         * 1, 首次进入时，这个会调用2次
-         * 2, 点击pager item 时也会调用
-         */
-        if(mCurrentItem == actualPosition){
-            Logger.d(TAG, "setPrimaryItem", "mCurrentItem == actualPosition.");
-            return;
-        }
-        mCurrentItem = actualPosition;
-
-       // view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
-        pauseLast(view);
-        mWeakView = new WeakReference<>(view);
-        view.setTag(actualPosition);
-        view.start();
+    public void onPageScrollStateChanged(int state) {
+        //mScrollState = state;
     }
-
     private void pauseLast(TextureVideoView2 next){
         if(mWeakView != null){
             TextureVideoView2 view = mWeakView.get();
@@ -131,17 +143,12 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
             }
         }
     }
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
+    private void release(TextureVideoView2 view){
+        if(view != null){
+            view.cancel();
+            view.release();
+        }
     }
 
     private class MediaCallback0 extends TextureVideoView2.Callback{

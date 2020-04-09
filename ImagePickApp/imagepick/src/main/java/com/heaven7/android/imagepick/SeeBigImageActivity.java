@@ -65,6 +65,11 @@ public class SeeBigImageActivity extends BaseActivity {
         mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
         mVp.setAdapter(mMediaAdapter);
 
+        //
+        VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
+        if(vmd != null){
+            vmd.onAttach(this);
+        }
         //set ui state
         setUiState();
     }
@@ -87,19 +92,24 @@ public class SeeBigImageActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaAdapter.onPause(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+        mMediaAdapter.onPause(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
     }
     @Override
     protected void onResume() {
         super.onResume();
-        mMediaAdapter.onResume(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+        mMediaAdapter.onResume( mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
     }
 
     @Override
     protected void onDestroy() {
         Logger.d("SeeBigImage", "onDestroy");
         //release media
-        mMediaAdapter.onDestroy(this, mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+        mMediaAdapter.onDestroy(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
+        //on detach
+        VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
+        if(vmd != null){
+            vmd.onDetach(this);
+        }
         //remove listener
         ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
         if(l != null){
@@ -189,11 +199,6 @@ public class SeeBigImageActivity extends BaseActivity {
 
         boolean isSelect = mItems.get(mParam.getCurrentOrder() - 1).isSelected();
         setImageBySelectState(isSelect);
-
-        VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(vmd != null){
-            vmd.setCurrentPosition(order);
-        }
     }
 
     private void setUiState() {
