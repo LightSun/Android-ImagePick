@@ -1,16 +1,12 @@
-package com.heaven7.android.pick.app.image;
+package com.heaven7.android.video.load;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.heaven7.java.visitor.PredicateVisitor;
-import com.heaven7.java.visitor.collection.VisitServices;
+import com.heaven7.android.video.ScaleManager;
 import com.heaven7.memory.util.Cacher;
 
-import java.util.Arrays;
 import java.util.Objects;
-
-import lib.vida.video.ScaleManager;
 
 /**
  * request frame info , may from local/net uri, may from image or video
@@ -109,9 +105,6 @@ public class FrameInfo {
     }
 
     public String getKey() {
-        if(uri == null){
-            System.out.println("inUse = " + inUse);
-        }
         return uri.toString() + "&"
                 + "_st=" + scaleType
                 + (fromVideo ? "_ft=" + frameTime : "")
@@ -121,18 +114,6 @@ public class FrameInfo {
                 + "_maxw=" + maxWidth
                 + "_maxh=" + maxHeight;
     }
-
-    public static String getFrameTime(String key){
-        String[] strs = key.split("_");
-        String main = VisitServices.from(Arrays.asList(strs)).query(new PredicateVisitor<String>() {
-            @Override
-            public Boolean visit(String s, Object param) {
-                return s.startsWith("ft=");
-            }
-        });
-        return main.substring(3);
-    }
-
     @Override
     public String toString() {
         return "FrameInfo{" +

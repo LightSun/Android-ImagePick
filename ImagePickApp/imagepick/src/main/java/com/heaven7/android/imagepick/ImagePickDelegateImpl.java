@@ -23,7 +23,6 @@ import com.heaven7.android.imagepick.pub.delegate.DefaultSeeImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
-import com.heaven7.core.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,18 +83,16 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         if(!mImages.contains(file)){
             mImages.add(file);
         }
-        //System.out.println("addImagePath left: " + mImages);
     }
     public void removeImagePath(String file){
         mImages.remove(file);
-        //System.out.println("removeImagePath left: " + mImages);
     }
     public List<IImageItem> getImageItems() {
-        Logger.d(TAG, "getImageItems", "out size = " + mItems.size());
+       // Logger.d(TAG, "getImageItems", "out size = " + mItems.size());
         return mItems;
     }
     public void setImageItems(List<? extends IImageItem> mItems) {
-        Logger.d(TAG, "setImageItems", "in size = " + mItems.size());
+        //Logger.d(TAG, "setImageItems", "in size = " + mItems.size());
         this.mItems = new ArrayList<>(mItems);
     }
     public void clearImages() {

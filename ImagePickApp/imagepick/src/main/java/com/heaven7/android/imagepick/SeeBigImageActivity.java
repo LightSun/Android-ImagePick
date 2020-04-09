@@ -32,7 +32,7 @@ public class SeeBigImageActivity extends BaseActivity {
     ViewPager mVp;
     ViewGroup mVg_root;
 
-   // private static final String TAG = "SeeBigImageActivity";
+    private static final String TAG = "SeeBigImageActivity";
     private BigImageSelectParameter mParam;
     private SeeBigImageDelegate mDelegate;
 
@@ -92,6 +92,7 @@ public class SeeBigImageActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Logger.d(TAG,"onPause");
         mMediaAdapter.onPause(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
     }
     @Override
@@ -102,7 +103,7 @@ public class SeeBigImageActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        Logger.d("SeeBigImage", "onDestroy");
+        Logger.d(TAG, "onDestroy");
         //release media
         mMediaAdapter.onDestroy(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
         //on detach
@@ -139,13 +140,13 @@ public class SeeBigImageActivity extends BaseActivity {
             }
             @Override
             public void onPageSelected(int i) {
-                System.out.println("onPageSelected");
+                System.out.println("onPageSelected i = " + i);
                 setSelectOrder(i + 1, false);
             }
             @Override
             public void onPageScrollStateChanged(int i) {
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
-                    System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE");
+                    System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE. i = " + i);
                     setSelectOrder(mVp.getCurrentItem() + 1, false);
                 }
             }
@@ -207,8 +208,13 @@ public class SeeBigImageActivity extends BaseActivity {
         mDelegate.setUiState();
         setSelectedText();
         //handle position
-        if(mVp.getCurrentItem() != mParam.getCurrentOrder() - 1){
-            mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
+        mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
+        //the first time. video not play .we need called it
+        if(mParam.getCurrentOrder() == 1){
+            ViewPager.OnPageChangeListener listener = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
+            if(listener != null){
+                listener.onPageSelected(0);
+            }
         }
     }
 

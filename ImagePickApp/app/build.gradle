@@ -31,8 +31,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor "com.github.bumptech.glide:compiler:4.11.0"
 
-    //implementation project(":imagepick")
+    implementation project(":media")
     implementation project(":imagepick")
+
     implementation "com.jakewharton:butterknife:8.4.0"
     annotationProcessor  "com.jakewharton:butterknife-compiler:8.4.0"
 

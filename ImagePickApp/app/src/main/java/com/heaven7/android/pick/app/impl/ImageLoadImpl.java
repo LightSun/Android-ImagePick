@@ -14,9 +14,8 @@ import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImageOptions;
 import com.heaven7.android.pick.app.FileProviderHelper;
-import com.heaven7.android.pick.app.image.FrameInfo;
-
-import lib.vida.video.ScaleManager;
+import com.heaven7.android.video.ScaleManager;
+import com.heaven7.android.video.load.FrameInfo;
 
 public class ImageLoadImpl implements ImageLoadDelegate {
 

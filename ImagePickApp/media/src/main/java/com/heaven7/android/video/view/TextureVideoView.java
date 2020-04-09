@@ -1,4 +1,4 @@
-package lib.vida.video;
+package com.heaven7.android.video.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,8 +17,10 @@ import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
 
-import com.heaven7.android.pick.app.R;
 import com.heaven7.android.util2.MediaHelper;
+import com.heaven7.android.video.AudioManageCompat;
+import com.heaven7.android.video.R;
+import com.heaven7.android.video.ScaleManager;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.WeakHandler;
 import com.heaven7.java.base.util.Throwables;
@@ -28,17 +30,13 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TextureVideoView2 extends TextureView
+
+public class TextureVideoView extends TextureView
         implements TextureView.SurfaceTextureListener{
 
     private final String TAG = "TextureVideoView_"+hashCode();
     private static final int MSG_NONE = 0;
     private static final int MSG_START   = 0x0001;
-/*    private static final int MSG_PAUSE   = 0x0002;
-    private static final int MSG_RESUME  = 0x0003;
-    private static final int MSG_STOP    = 0x0004;
-    private static final int MSG_RELEASE = 0x0005;
-    private static final int MSG_SEEK    = 0x0006;*/
 
     private final InternalCallback mInternalCallback = new InternalCallback();
     private final MediaHelper0 mMedia = new MediaHelper0(mInternalCallback);
@@ -46,7 +44,7 @@ public class TextureVideoView2 extends TextureView
     private Handler mWorkHandler;
     private Callback mCallback;
 
-    private AudioManagerCompat.Delegate mAudioMDelegate;
+    private final AudioManageCompat.Delegate mAudioMDelegate;
 
     private final AtomicBoolean mCancelled = new AtomicBoolean(false);
     private final AtomicReference<Runnable> mStartTask = new AtomicReference<>();
@@ -54,38 +52,40 @@ public class TextureVideoView2 extends TextureView
     private Surface mSurface;
     private volatile int mPendingMessage = MSG_NONE;
     private int mStartPos;
-
+    //attr value
     private int mScaleType = ScaleManager.ScaleType_FIT_CENTER;
     private boolean mDebug;
 
     private static final HandlerThread sThread = new HandlerThread("VideoPlayThread");
+    private static final int[] sAttrs = {
+           R.attr.h7_lib_media_scaleType,
+           R.attr.h7_lib_media_debug,
+    };
 
     static {
         sThread.start();
     }
 
-    public TextureVideoView2(Context context) {
+    public TextureVideoView(Context context) {
         this(context, null);
     }
 
-    public TextureVideoView2(Context context, AttributeSet attrs) {
+    public TextureVideoView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TextureVideoView2(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TextureVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         AudioManager mAudioM = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        mAudioMDelegate = AudioManagerCompat.create(mAudioM, new MediaPlayer0());
+        mAudioMDelegate = AudioManageCompat.create(mAudioM, new MediaPlayer0());
 
-        if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView2, 0, 0);
-            try {
-                mDebug = a.getBoolean(R.styleable.TextureVideoView2_debug, false);
-                final int scaleType = a.getInt(R.styleable.TextureVideoView2_scaleType2, mScaleType);
-                setScaleType(scaleType);
-            } finally {
-                a.recycle();
-            }
+        TypedArray a = context.obtainStyledAttributes(attrs, sAttrs, 0, 0);
+        try {
+            final int scaleType = a.getInt(0, mScaleType);
+            setScaleType(scaleType);
+            mDebug = a.getBoolean(1, false);
+        } finally {
+            a.recycle();
         }
         mMedia.setMediaCallback(mInternalCallback);
         if (!isInEditMode()) {
@@ -93,6 +93,9 @@ public class TextureVideoView2 extends TextureView
             mWorkHandler = new InternalHandler(this);
             setSurfaceTextureListener(this);
         }
+    }
+    public void setDebug(boolean debug){
+        this.mDebug = debug;
     }
 
     public void setCallback(Callback callback) {
@@ -194,16 +197,23 @@ public class TextureVideoView2 extends TextureView
                     break;
 
                 case MediaHelper.STATE_RELEASE:
+                    __log("start", "STATE_RELEASE");
+                    break;
                 case MediaHelper.STATE_PAUSED:
+                    __log("start", "STATE_PAUSED. ignore ? ");
+                    break;
                 case MediaHelper.STATE_BUFFERING:
+                    __log("start", "STATE_BUFFERING");
                     break;
                 case MediaHelper.STATE_PLAYING:
-                    Logger.w(TAG, "called start()  but is in playing state. ignore this operation.");
+                    Logger.w(TAG, "called start()  but is in playing state. ignore this operation. pos = " + getTag());
                     break;
+                default:
+                    Logger.w(TAG, "wrong state = "+ mMedia.getMediaState() +". pos = " + getTag());
             }
         }else{
             mPendingMessage = MSG_START;
-            Logger.w(TAG, "start", "add Start to pending messages. start failed.");
+            Logger.w(TAG, "start", "add Start to pending messages. start failed. pos = " + getTag());
         }
     }
     public void stop(){
@@ -334,15 +344,10 @@ public class TextureVideoView2 extends TextureView
         }
     }
     private void lossAudioFocus(){
-      //  mAudioM.abandonAudioFocus(onAudioFocusChangeListener);
-        mAudioMDelegate.lossAudioFocus();
+       // mAudioMDelegate.lossAudioFocus();
     }
     public void requestAudioFocus(){
-        mAudioMDelegate.requestAudioFocus();
-       /* mAudioM.requestAudioFocus(
-                onAudioFocusChangeListener,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);*/
+       // mAudioMDelegate.requestAudioFocus();
     }
 
     private void removeStartTask(){
@@ -422,7 +427,7 @@ public class TextureVideoView2 extends TextureView
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         __log("onSurfaceTextureDestroyed", "");
-        release();
+       // release();
         releaseSurfaceIfNeed();
         return true;
     }
@@ -578,7 +583,7 @@ public class TextureVideoView2 extends TextureView
         }
     }
 
-    private class MediaPlayer0 implements AudioManagerCompat.IMediaPlayer{
+    private class MediaPlayer0 implements AudioManageCompat.IMediaPlayer{
 
         @Override
         public MediaPlayer getMediaPlayer() {
@@ -594,11 +599,11 @@ public class TextureVideoView2 extends TextureView
         }
         @Override
         public void pause() {
-            TextureVideoView2.this.pause();
+            TextureVideoView.this.pause();
         }
         @Override
         public void stop() {
-            TextureVideoView2.this.stop();
+            TextureVideoView.this.stop();
         }
         @Override
         public void resumeIfNeed() {
@@ -608,15 +613,15 @@ public class TextureVideoView2 extends TextureView
         }
     }
 
-    private static class InternalHandler extends WeakHandler<TextureVideoView2>{
+    private static class InternalHandler extends WeakHandler<TextureVideoView>{
 
-        public InternalHandler(TextureVideoView2 view) {
+        public InternalHandler(TextureVideoView view) {
             super(sThread.getLooper(), view);
         }
     }
-    private static class MainHandler extends WeakHandler<TextureVideoView2>{
+    private static class MainHandler extends WeakHandler<TextureVideoView>{
 
-        public MainHandler(TextureVideoView2 view) {
+        public MainHandler(TextureVideoView view) {
             super(Looper.getMainLooper(), view);
         }
     }

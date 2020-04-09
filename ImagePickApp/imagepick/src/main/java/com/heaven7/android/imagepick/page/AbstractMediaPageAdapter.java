@@ -1,6 +1,5 @@
 package com.heaven7.android.imagepick.page;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<lib.vida.video.TextureVideoView2
+<com.heaven7.android.video.view.MediaPlayerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:scaleType2="fitCenter"
-    app:debug="true"
+    app:media_mpv_pause_icon="@drawable/ic_video_pause"
     >
 
-</lib.vida.video.TextureVideoView2>
+</com.heaven7.android.video.view.MediaPlayerView>

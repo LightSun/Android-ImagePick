@@ -58,7 +58,7 @@ public final class ScaleManager {
     private final Size mVideoSize;
 
     //viewSize is the dest size
-    ScaleManager(Size viewSize, Size videoSize) {
+    public ScaleManager(Size viewSize, Size videoSize) {
         mViewSize = viewSize;
         mVideoSize = videoSize;
     }
@@ -71,7 +71,7 @@ public final class ScaleManager {
         return new ScaleManager(viewSize, videoSize).getScaleMatrix(scaleType);
     }
 
-    Matrix getScaleMatrix(int scaleType) {
+    public Matrix getScaleMatrix(int scaleType) {
         switch (scaleType) {
             case ScaleType_NONE:
                 return getNoScale();

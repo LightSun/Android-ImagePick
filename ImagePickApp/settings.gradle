@@ -1,2 +1,2 @@
 include ':app', ':imagepick'
-include ':video'
+include ':media'

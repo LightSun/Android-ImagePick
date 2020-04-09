@@ -9,8 +9,8 @@ import android.os.Build;
 
 import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
 
-//AudioManager 互斥
-/*public*/ final class AudioManagerCompat {
+//AudioManager mutex
+public final class AudioManageCompat {
 
     public interface IMediaPlayer{
         MediaPlayer getMediaPlayer();

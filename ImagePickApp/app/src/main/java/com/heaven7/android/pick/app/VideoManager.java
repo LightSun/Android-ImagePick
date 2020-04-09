@@ -12,81 +12,97 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
+import com.heaven7.android.video.MediaViewCons;
+import com.heaven7.android.video.view.MediaPlayerView;
+import com.heaven7.android.video.view.TextureVideoView;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.java.base.util.SparseArrayDelegate;
 import com.heaven7.java.base.util.SparseFactory;
 
 import java.lang.ref.WeakReference;
-
-import lib.vida.video.TextureVideoView2;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  */
 public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "VideoManager";
-    private WeakReference<TextureVideoView2> mWeakView;
+    private WeakReference<TextureVideoView> mWeakView;
 
     private final MediaCallback0 mCallback;
-    private final SparseArrayDelegate<TextureVideoView2> mMap = SparseFactory.newSparseArray(10);
+    private final SparseArrayDelegate<TextureVideoView> mMap = SparseFactory.newSparseArray(10);
+    private Task mTask;
 
     public VideoManager(Context context) {
         this.mCallback = new MediaCallback0(context);
     }
+    private TextureVideoView getTextureVideoView(View view){
+        MediaPlayerView playerView = (MediaPlayerView) view;
+        return (TextureVideoView) playerView.getVideoView();
+    }
     @Override
     public View createVideoView(Context context, ViewGroup parent, IImageItem data) {
-        TextureVideoView2 videoView = (TextureVideoView2) LayoutInflater.from(context)
+        MediaPlayerView playerView = (MediaPlayerView) LayoutInflater.from(context)
                 .inflate(R.layout.item_texture_video2, parent, false);
-        videoView.setOnClickListener(new View.OnClickListener() {
+        final TextureVideoView videoView = getTextureVideoView(playerView);
+        videoView.setCallback(mCallback);
+        playerView.getDelegate().setCallback(new MediaPlayerView.Callback() {
             @Override
-            public void onClick(View v) {
-                if(videoView.isPlaying()){
-                    videoView.pause();
-                }else if(videoView.isPaused()){
-                    videoView.resume();
-                }
+            public void pauseVideo(MediaPlayerView mpv) {
+                videoView.pause();
+            }
+            @Override
+            public void resumeVideo(MediaPlayerView mpv) {
+                videoView.resume();
+            }
+            @Override
+            public void onClickCover(MediaPlayerView mpv) {
+                //not need current
             }
         });
-        videoView.setCallback(mCallback);
-        return videoView;
+        return playerView;
     }
 
     @Override
-    public void onBindItem(View v, int index, IImageItem data) {
-        // Logger.d(TAG, "setMediaData: " + data.getFilePath());
-        TextureVideoView2 view = (TextureVideoView2) v;
+    public void onBindItem(View v, int position, IImageItem data) {
+        Logger.d(TAG, "onBindItem", "position = " + position);
+        TextureVideoView view = getTextureVideoView(v);
         view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
-        view.setTag(index);
-        mMap.put(index, view);
+        view.setTag(position);
+        mMap.put(position, view);
     }
 
     @Override
     public void pauseVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "pauseVideo");
-        TextureVideoView2 view = (TextureVideoView2) v;
-        view.pause();
+        Logger.d(TAG, "pauseVideo", "position = " + position);
+        MediaPlayerView playerView = (MediaPlayerView) v;
+        playerView.performClickType();
     }
 
     @Override
     public void resumeVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "resumeVideo");
-        TextureVideoView2 view = (TextureVideoView2) v;
-        view.resume();
+        Logger.d(TAG, "resumeVideo", "position = " + position);
+        MediaPlayerView playerView = (MediaPlayerView) v;
+        playerView.performClickType();
     }
 
     @Override
     public void onDestroyItem(View v, int position, IImageItem data) {
-        Logger.d(TAG, "destroyVideo");
-        TextureVideoView2 view = (TextureVideoView2) v;
+        Logger.d(TAG, "destroyVideo", "position = " + position);
+        MediaPlayerView playerView = (MediaPlayerView) v;
+        TextureVideoView view = getTextureVideoView(v);
         view.stop();
+        playerView.showContent(MediaViewCons.TYPE_VIDEO);
         mMap.remove(position);
     }
 
     @Override
     public void releaseVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "releaseVideo");
-        release((TextureVideoView2) v);
+        Logger.d(TAG, "releaseVideo", "position = " + position);
+        MediaPlayerView playerView = (MediaPlayerView) v;
+        release(getTextureVideoView(v));
+        playerView.showContent(MediaViewCons.TYPE_VIDEO);
     }
 
     @Override
@@ -107,51 +123,82 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-       /* if(positionOffset > 0.5f){
+        //  Logger.d(TAG, "onPageScrolled", "position = " + position);
+        if(positionOffset > 0.5f){
             position++;
-        }*/
+        }
+        //onPageSelected(position);
     }
     @Override
     public void onPageSelected(int position) {
-        Logger.d(TAG, "onPageSelected", "position = " + position);
-        TextureVideoView2 view = mMap.get(position);
+       // Logger.d(TAG, "onPageSelected", "position = " + position);
+        TextureVideoView view = mMap.get(position);
+        if(mTask != null){
+            mTask.cancel();
+            mTask = null;
+        }
         if(view == null){
             //first time, not prepared.
-            MainWorker.postDelay(200, new Runnable() {
-                @Override
-                public void run() {
-                    onPageSelected(position);
-                }
-            });
+            Logger.w(TAG, "onPageSelected", "position = " + position + " not prepared.");
+            mTask = new Task(position);
+            MainWorker.postDelay(200, mTask);
         }else {
-            pauseLast(view);
-            mWeakView = new WeakReference<>(view);
-            view.start();
+            if(!stopLast(view)){
+                mWeakView = new WeakReference<>(view);
+                view.start();
+                Logger.w(TAG, "onPageSelected", " position = " + position + ", start play.");
+            }else {
+                Logger.w(TAG, "onPageSelected", " position = " + position + ",duplicate start play.");
+            }
         }
     }
     @Override
     public void onPageScrollStateChanged(int state) {
-        //mScrollState = state;
+       // mScrollState = state;
     }
-    private void pauseLast(TextureVideoView2 next){
+    private boolean stopLast(TextureVideoView next){
         if(mWeakView != null){
-            TextureVideoView2 view = mWeakView.get();
-            if(view != null && view != next){
-                Logger.d(TAG, "", "start pause: pos = " + view.getTag());
-                //view.setVideoURI(null);
+            TextureVideoView view = mWeakView.get();
+            if(view == null){
+                return false;
+            }
+            if(view != next){
+                Logger.d(TAG, "stopLast", "start stop: pos = " + view.getTag());
                 view.stop();
+            }else {
+                return true;
             }
         }
+        return false;
     }
 
-    private void release(TextureVideoView2 view){
+    private void release(TextureVideoView view){
         if(view != null){
             view.cancel();
             view.release();
         }
     }
+   // private int mScrollState;
+    private class Task implements Runnable{
+       final int position;
+       AtomicBoolean cancelled = new AtomicBoolean(false);
+       public Task(int position) {
+           this.position = position;
+       }
+       @Override
+       public void run() {
+           if(!cancelled.get()){
+               onPageSelected(position);
+           }
+       }
+       public void cancel(){
+           if(cancelled.compareAndSet(false, true)){
+               MainWorker.remove(this);
+           }
+       }
+   }
 
-    private class MediaCallback0 extends TextureVideoView2.Callback{
+    private class MediaCallback0 extends TextureVideoView.Callback{
 
         private final PowerManager mPM;
         private PowerManager.WakeLock mWakeLock;

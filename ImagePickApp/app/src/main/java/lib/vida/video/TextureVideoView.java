@@ -23,6 +23,7 @@ import android.view.TextureView;
 
 import com.heaven7.android.pick.app.BuildConfig;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.ScaleManager;
 import com.heaven7.core.util.Logger;
 
 import java.io.IOException;
@@ -137,9 +138,9 @@ public class TextureVideoView extends TextureView
         super(context, attrs, defStyleAttr);
 
         if(attrs != null){
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView, 0, 0);
+            TypedArray a = context.obtainStyledAttributes(attrs, new int[]{R.attr.h7_lib_media_scaleType}, 0, 0);
             try {
-                final int scaleType = a.getInt(R.styleable.TextureVideoView_scaleType, mScaleType);
+                final int scaleType = a.getInt(0, mScaleType);
                 setScaleType(scaleType);
             }finally {
                 a.recycle();
