@@ -29,7 +29,7 @@ public class LogUtil {
     public static final int WARNING = 2;
     public static final int ERROR = 1;
     /**
-     * default true(only called internal)
+     * default true(only called com.heaven7.android.imagepick.internal)
      */
     public static boolean IsDebug = true;
 

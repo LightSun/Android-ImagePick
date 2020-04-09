@@ -70,7 +70,7 @@ public class DeviceUtil {
         if (statusHeight <= 0) {
             Class<?> localClass;
             try {
-                localClass = Class.forName("com.android.internal.R$dimen");
+                localClass = Class.forName("com.android.com.heaven7.android.imagepick.internal.R$dimen");
                 Object localObject = localClass.newInstance();
                 int i5 = Integer.parseInt(localClass.getField("status_bar_height").get(localObject).toString());
                 statusHeight = activity.getResources().getDimensionPixelSize(i5);

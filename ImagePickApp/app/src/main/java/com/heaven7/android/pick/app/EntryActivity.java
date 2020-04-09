@@ -61,7 +61,7 @@ public class EntryActivity extends AppCompatActivity {
                 return false;
             }
         });
-        VideoManager vm = new VideoManager(getApplicationContext());
+        VideoManager2 vm = new VideoManager2(getApplicationContext());
         ImagePickManager.get().getImagePickDelegate().setVideoManageDelegate(vm);
         ImagePickManager.get().getImagePickDelegate().setOnPageChangeListener(vm);
         test1();

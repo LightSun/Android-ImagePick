@@ -306,7 +306,7 @@ public class CameraFragment extends Fragment {
     public static abstract class PictureCallback extends CameraView.Callback{
 
         /**
-         * called when you want save picture file internal. default return true.
+         * called when you want save picture file com.heaven7.android.imagepick.internal. default return true.
          * @return true .
          */
         protected boolean shouldSavePicture(){

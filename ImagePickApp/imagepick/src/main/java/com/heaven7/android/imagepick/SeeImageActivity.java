@@ -20,7 +20,7 @@ import com.heaven7.java.visitor.collection.VisitServices;
 
 import java.util.List;
 
-import internal.LibUtils;
+import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * see image/videos.

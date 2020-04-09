@@ -1,5 +1,6 @@
 package lib.vida.video;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Matrix;
@@ -19,6 +20,7 @@ import android.view.TextureView;
 import com.heaven7.android.pick.app.R;
 import com.heaven7.android.util2.MediaHelper;
 import com.heaven7.core.util.Logger;
+import com.heaven7.core.util.WeakHandler;
 import com.heaven7.java.base.util.Throwables;
 
 import java.io.File;
@@ -38,12 +40,13 @@ public class TextureVideoView2 extends TextureView
     private static final int MSG_RELEASE = 0x0005;
     private static final int MSG_SEEK    = 0x0006;*/
 
-    private final AudioManager mAudioM;
     private final InternalCallback mInternalCallback = new InternalCallback();
     private final MediaHelper0 mMedia = new MediaHelper0(mInternalCallback);
     private Handler mMainHandler;
     private Handler mWorkHandler;
     private Callback mCallback;
+
+    private AudioManagerCompat.Delegate mAudioMDelegate;
 
     private final AtomicBoolean mCancelled = new AtomicBoolean(false);
     private final AtomicReference<Runnable> mStartTask = new AtomicReference<>();
@@ -61,7 +64,6 @@ public class TextureVideoView2 extends TextureView
         sThread.start();
     }
 
-
     public TextureVideoView2(Context context) {
         this(context, null);
     }
@@ -72,8 +74,8 @@ public class TextureVideoView2 extends TextureView
 
     public TextureVideoView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mAudioM = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
+        AudioManager mAudioM = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mAudioMDelegate = AudioManagerCompat.create(mAudioM, new MediaPlayer0());
 
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextureVideoView2, 0, 0);
@@ -87,8 +89,8 @@ public class TextureVideoView2 extends TextureView
         }
         mMedia.setMediaCallback(mInternalCallback);
         if (!isInEditMode()) {
-            mMainHandler = new Handler(Looper.getMainLooper());
-            mWorkHandler = new Handler(sThread.getLooper());
+            mMainHandler = new MainHandler(this);
+            mWorkHandler = new InternalHandler(this);
             setSurfaceTextureListener(this);
         }
     }
@@ -128,7 +130,7 @@ public class TextureVideoView2 extends TextureView
         mUrl = url;
     }
     public void setVideoURI(Uri uri){
-        mUrl = uri.toString();
+        mUrl = uri != null ? uri.toString() : null;
     }
     public boolean isPlaying() {
         return mMedia.getMediaState() == MediaHelper.STATE_PLAYING;
@@ -309,6 +311,7 @@ public class TextureVideoView2 extends TextureView
                         if(mCancelled.get()){
                             return;
                         }
+                        requestAudioFocus();
                         mMedia.resumePlay();
                         __log("resume", "STATE_PAUSED end...<<<");
                     }
@@ -325,14 +328,16 @@ public class TextureVideoView2 extends TextureView
     //----------------------------------------------------
     private void __log(String method, String msg){
         if(mDebug){
-            Logger.d(TAG, method, msg);
+            Logger.d(TAG, method, "pos = " + getTag() + ", " + msg);
         }
     }
     private void lossAudioFocus(){
       //  mAudioM.abandonAudioFocus(onAudioFocusChangeListener);
+       // mAudioMDelegate.lossAudioFocus();
     }
-    private void requestAudioFocus(){
-      /*  mAudioM.requestAudioFocus(
+    public void requestAudioFocus(){
+       // mAudioMDelegate.requestAudioFocus();
+       /* mAudioM.requestAudioFocus(
                 onAudioFocusChangeListener,
                 AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);*/
@@ -403,6 +408,7 @@ public class TextureVideoView2 extends TextureView
         }
         if(mPendingMessage == MSG_START){
             Logger.d(TAG, "onSurfaceTextureAvailable", "handle pending start.");
+            mPendingMessage = MSG_NONE;
             start(mStartPos);
         }
     }
@@ -462,6 +468,20 @@ public class TextureVideoView2 extends TextureView
         public void setShouldPlayWhenPrepared(boolean shouldPlayWhenPrepared){
             this.shouldPlayWhenPrepared = shouldPlayWhenPrepared;
         }
+
+        @TargetApi(21)
+        public void setAudioAttributes(AudioAttributes audioAttrs) {
+            MediaPlayer player = getMediaPlayer();
+            if(player != null){
+                player.setAudioAttributes(audioAttrs);
+            }
+        }
+        public void setStreamType(int type) {
+            MediaPlayer player = getMediaPlayer();
+            if(player != null){
+                player.setAudioStreamType(type);
+            }
+        }
     }
 
     private class InternalCallback extends MediaHelper.MediaCallback implements MediaPlayer.OnBufferingUpdateListener,
@@ -503,13 +523,15 @@ public class TextureVideoView2 extends TextureView
 
         @Override
         public void onPrePrepare(MediaPlayer mp, String filename) {
+            __log("onPrePrepare","filename = " + filename);
             if(mSurface != null){
                 mp.setSurface(mSurface);
             }else {
                 Logger.w(TAG, "onPrePrepare", "no surface.");
             }
-            mp.setLooping(true);
-            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //mp.setLooping(true);
+            //mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mAudioMDelegate.setStreamType(AudioManager.STREAM_MUSIC);
 
             requestAudioFocus();
             if (mCallback != null) {
@@ -552,6 +574,50 @@ public class TextureVideoView2 extends TextureView
             scaleVideoSize(width, height);
         }
     }
+
+    private class MediaPlayer0 implements AudioManagerCompat.IMediaPlayer{
+
+        @Override
+        public MediaPlayer getMediaPlayer() {
+            return mMedia.getMediaPlayer();
+        }
+        @Override
+        public void setStreamType(int type) {
+            mMedia.setStreamType(type);
+        }
+        @Override
+        public void setAudioAttributes(AudioAttributes audioAttrs) {
+            mMedia.setAudioAttributes(audioAttrs);
+        }
+        @Override
+        public void pause() {
+            TextureVideoView2.this.pause();
+        }
+        @Override
+        public void stop() {
+            TextureVideoView2.this.stop();
+        }
+        @Override
+        public void resumeIfNeed() {
+            if(isPaused()){
+                resume();
+            }
+        }
+    }
+
+    private static class InternalHandler extends WeakHandler<TextureVideoView2>{
+
+        public InternalHandler(TextureVideoView2 view) {
+            super(sThread.getLooper(), view);
+        }
+    }
+    private static class MainHandler extends WeakHandler<TextureVideoView2>{
+
+        public MainHandler(TextureVideoView2 view) {
+            super(Looper.getMainLooper(), view);
+        }
+    }
+
 
     public abstract static class Callback extends MediaHelper.MediaCallback {
 

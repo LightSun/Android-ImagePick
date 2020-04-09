@@ -14,7 +14,7 @@ import com.heaven7.memory.util.Cacher;
 
 import java.util.List;
 
-import internal.GestureImageUtils;
+import com.heaven7.android.imagepick.internal.GestureImageUtils;
 
 /**
  * the media page adapter .which support image and video
@@ -82,7 +82,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         IImageItem data = getItemAt(index);
         View view = (View)object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(videoM != null && videoM.isVideoView(view, data)){
+        if(videoM != null && data.isVideo()){
             videoM.setPrimaryItem(view, index, data);
         }
     }
@@ -99,7 +99,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         int index = getPositionActually(position);
         View view = (View) object;
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(videoM != null && videoM.isVideoView(view, getItemAt(index))){
+        if(videoM != null && getItemAt(index).isVideo()){
             videoM.destroyVideo(container.getContext(), view);
         }
         super.destroyItem(container, position, object);
@@ -156,7 +156,7 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
     protected boolean shouldRecycle(int position, View view) {
         MediaLog.recycleItem(position);
         VideoManageDelegate videoM = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-        if(videoM != null && videoM.isVideoView(view, getItemAt(position))){
+        if(videoM != null && getItemAt(position).isVideo()){
             mVideoViewCaher.recycle(view);
             return false;
         }

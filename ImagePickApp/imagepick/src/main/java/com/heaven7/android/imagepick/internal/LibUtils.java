@@ -1,4 +1,4 @@
-package internal;
+package com.heaven7.android.imagepick.internal;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -8,7 +8,7 @@ import androidx.annotation.RestrictTo;
 
 
 /**
- * internal
+ * com.heaven7.android.imagepick.internal
  * @author heaven7
  * @since 1.0.5
  */

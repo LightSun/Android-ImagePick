@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import internal.GestureImageUtils;
+import com.heaven7.android.imagepick.internal.GestureImageUtils;
 
 /**
  * bit image adapter ,support gesture

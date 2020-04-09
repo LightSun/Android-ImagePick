@@ -22,7 +22,7 @@ import com.heaven7.core.util.Toaster;
 
 import java.util.List;
 
-import internal.LibUtils;
+import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * @author heaven7

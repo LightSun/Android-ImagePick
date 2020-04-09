@@ -14,13 +14,12 @@ import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.core.util.Logger;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Semaphore;
 
 import lib.vida.video.TextureVideoView2;
 
 /**
  */
-public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
+public class VideoManager2 implements VideoManageDelegate, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView2> mWeakView;
@@ -28,7 +27,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
 
     private final MediaCallback0 mCallback;
 
-    public VideoManager(Context context) {
+    public VideoManager2(Context context) {
         this.mCallback = new MediaCallback0(context);
     }
     @Override

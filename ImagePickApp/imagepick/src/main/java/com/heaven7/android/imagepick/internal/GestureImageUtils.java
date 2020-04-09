@@ -1,4 +1,4 @@
-package internal;
+package com.heaven7.android.imagepick.internal;
 
 import android.content.Context;
 import android.view.ViewGroup;

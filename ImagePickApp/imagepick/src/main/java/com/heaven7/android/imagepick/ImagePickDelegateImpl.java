@@ -34,7 +34,7 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 
 /**
- * the image pick manager. used for internal
+ * the image pick manager. used for com.heaven7.android.imagepick.internal
  * @author heaven7
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)

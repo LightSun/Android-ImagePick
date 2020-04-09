@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import internal.LibUtils;
+import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * the image select activity. used for select image and videos.

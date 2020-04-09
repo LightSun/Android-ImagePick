@@ -140,6 +140,9 @@ public final class AudioManagerCompat {
         }
         @Override
         public void requestAudioFocus() {
+            if(audioAttrs == null){
+                setStreamType(AudioManager.STREAM_MUSIC);
+            }
             AudioFocusRequest request = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
                     .setAudioAttributes(audioAttrs)
                     .setOnAudioFocusChangeListener(this)
