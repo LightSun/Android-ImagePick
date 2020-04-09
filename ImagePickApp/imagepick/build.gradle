@@ -3,7 +3,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply from: '../androidx_compat.gradle'
 apply from: '../common.gradle'
 
-group='com.github.LightSun'
+//group='com.github.LightSun'
+//multi lib
+group = 'com.github.LightSun.Android-ImagePick'
+version = library_version
 
 android {
     compileSdkVersion 28
@@ -35,3 +38,42 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+//------------ multi lib >>> ------
+task sourcesJar(type: Jar) {
+    //classifier = 'sources'
+    getArchiveClassifier().set('sources')
+    from android.sourceSets.main.javaDirectories
+}
+artifacts {
+    archives sourcesJar
+}
+//------------ multi lib  <<< ------
+
+/*
+task sourcesJar(type: Jar) {
+    //classifier = 'sources'
+    getArchiveClassifier().set('sources')
+    from android.sourceSets.main.java.sourceFiles
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+   // classifier = 'javadoc'
+    getArchiveClassifier().set('javadoc')
+    from javadoc.destinationDir
+}
+
+task classesJar(type: Jar) {
+    from "$buildDir/intermediates/classes/release"
+}
+
+artifacts {
+    archives classesJar
+    archives javadocJar
+    archives sourcesJar
+}
+*/

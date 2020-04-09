@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.DrawableRes;
 
+/**
+ * the parameter for {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
+ */
 public class SeeImageParameter implements Parcelable {
 
     private int mSpanCount = 3;
@@ -13,7 +16,6 @@ public class SeeImageParameter implements Parcelable {
     private int mAspectY = 1;
 
     private @DrawableRes int pauseIconRes;
-
 
     protected SeeImageParameter(SeeImageParameter.Builder builder) {
         this.mSpanCount = builder.mSpanCount;

@@ -189,7 +189,7 @@ public abstract class SeeBigImageDelegate {
         public Provider getProvider(){
             return mDelegate.getProvider();
         }
-        public BigImageSelectParameter getSelectParams(){
+        public BigImageSelectParameter getParameter(){
             return mDelegate.getParameter();
         }
         public ViewGroup getViewParent() {
