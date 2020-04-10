@@ -90,22 +90,8 @@ public class SeeBigImageActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Logger.d(TAG,"onPause");
-        mMediaAdapter.onPause(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mMediaAdapter.onResume( mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
-    }
-
-    @Override
     protected void onDestroy() {
         Logger.d(TAG, "onDestroy");
-        //release media
-        mMediaAdapter.onDestroy(mVp.getCurrentItem(), LibPick$_ViewPagerUtils.getCurrentView(mVp));
         //on detach
         VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
         if(vmd != null){
@@ -275,4 +261,5 @@ public class SeeBigImageActivity extends BaseActivity {
             return mMediaAdapter.getPositionActually(mVp.getCurrentItem());
         }
     }
+
 }

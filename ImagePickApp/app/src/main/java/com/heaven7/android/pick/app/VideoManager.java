@@ -8,6 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.IImageItem;
@@ -31,8 +36,9 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     private WeakReference<TextureVideoView> mWeakView;
 
     private final MediaCallback0 mCallback;
-    private final SparseArrayDelegate<TextureVideoView> mMap = SparseFactory.newSparseArray(10);
+    private final SparseArrayDelegate<MediaPlayerView> mMap = SparseFactory.newSparseArray(10);
     private Task mTask;
+    private int mCurrentPos;
 
     public VideoManager(Context context) {
         this.mCallback = new MediaCallback0(context);
@@ -40,6 +46,10 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     private TextureVideoView getTextureVideoView(View view){
         MediaPlayerView playerView = (MediaPlayerView) view;
         return (TextureVideoView) playerView.getVideoView();
+    }
+    private TextureVideoView getTextureVideoView(int pos){
+        MediaPlayerView playerView = mMap.get(pos);
+        return playerView != null ? (TextureVideoView) playerView.getVideoView() : null;
     }
     @Override
     public View createVideoView(Context context, ViewGroup parent, IImageItem data) {
@@ -70,23 +80,8 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         TextureVideoView view = getTextureVideoView(v);
         view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
         view.setTag(position);
-        mMap.put(position, view);
+        mMap.put(position, (MediaPlayerView) v);
     }
-
-    @Override
-    public void pauseVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "pauseVideo", "position = " + position);
-        MediaPlayerView playerView = (MediaPlayerView) v;
-        playerView.performClickType();
-    }
-
-    @Override
-    public void resumeVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "resumeVideo", "position = " + position);
-        MediaPlayerView playerView = (MediaPlayerView) v;
-        playerView.performClickType();
-    }
-
     @Override
     public void onDestroyItem(View v, int position, IImageItem data) {
         Logger.d(TAG, "destroyVideo", "position = " + position);
@@ -96,15 +91,6 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         playerView.showContent(MediaViewCons.TYPE_VIDEO);
         mMap.remove(position);
     }
-
-    @Override
-    public void releaseVideo(View v, int position, IImageItem data) {
-        Logger.d(TAG, "releaseVideo", "position = " + position);
-        MediaPlayerView playerView = (MediaPlayerView) v;
-        release(getTextureVideoView(v));
-        playerView.showContent(MediaViewCons.TYPE_VIDEO);
-    }
-
     @Override
     public void onDetach(Activity activity) {
         mMap.clear();
@@ -113,7 +99,8 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
 
     @Override
     public void onAttach(Activity activity) {
-
+        AppCompatActivity ac = (AppCompatActivity) activity;
+        ac.getLifecycle().addObserver(new LifecycleListener());
     }
 
     @Override
@@ -132,7 +119,8 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void onPageSelected(int position) {
        // Logger.d(TAG, "onPageSelected", "position = " + position);
-        TextureVideoView view = mMap.get(position);
+        mCurrentPos = position;
+        TextureVideoView view = getTextureVideoView(position);
         if(mTask != null){
             mTask.cancel();
             mTask = null;
@@ -194,6 +182,45 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
        public void cancel(){
            if(cancelled.compareAndSet(false, true)){
                MainWorker.remove(this);
+           }
+       }
+   }
+   private class LifecycleListener implements LifecycleEventObserver{
+       @Override
+       public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+           switch (event){
+               case ON_PAUSE: {
+                   MediaPlayerView view = mMap.get(mCurrentPos);
+                   if (view != null) {
+                       view.performClickType();
+                   } else {
+                       Logger.d(TAG, "onStateChanged", "ON_PAUSE");
+                   }
+                   break;
+               }
+               case ON_RESUME: {
+                   MediaPlayerView view = mMap.get(mCurrentPos);
+                   if(view != null){
+                       view.performClickType();
+                   }else {
+                       Logger.d(TAG, "onStateChanged", "ON_RESUME");
+                   }
+                   break;
+               }
+               case ON_STOP: {
+                   TextureVideoView videoView = getTextureVideoView(mCurrentPos);
+                   videoView.stop();
+                   break;
+               }
+               case ON_DESTROY: {
+                   MediaPlayerView playerView = mMap.get(mCurrentPos);
+                   TextureVideoView view = (TextureVideoView) playerView.getVideoView();
+                   view.cancel();
+                   view.release();
+                   playerView.showContent(MediaViewCons.TYPE_VIDEO);
+                   mMap.remove(mCurrentPos);
+                   break;
+               }
            }
        }
    }

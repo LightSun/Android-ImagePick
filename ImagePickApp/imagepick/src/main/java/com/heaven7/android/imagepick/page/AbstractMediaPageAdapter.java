@@ -37,46 +37,6 @@ public abstract class AbstractMediaPageAdapter extends AbstractPagerAdapter<IIma
         this.supportGestureImage = supportGestureImage;
     }
 
-    public void onPause(int pos, View view){
-        if(view == null){
-            return;
-        }
-        int realPos = getPositionActually(pos);
-        IImageItem item = getItemAt(realPos);
-        if(item.isVideo()){
-            VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-            if(vm != null){
-                vm.pauseVideo(view, realPos, item);
-            }
-        }
-    }
-    public void onResume(int pos, View view){
-        if(view == null){
-            return;
-        }
-        int position = getPositionActually(pos);
-        IImageItem item = getItemAt(position);
-        if(item.isVideo()){
-            VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-            if(vm != null){
-                vm.resumeVideo(view, position, item);
-            }
-        }
-    }
-    public void onDestroy(int pos, View view){
-        if(view == null){
-            return;
-        }
-        int position = getPositionActually(pos);
-        IImageItem item = getItemAt(position);
-        if(item.isVideo()){
-            VideoManageDelegate vm = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
-            if(vm != null){
-                vm.releaseVideo(view, position, item);
-            }
-        }
-    }
-
     @Override
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         int index = getPositionActually(position);

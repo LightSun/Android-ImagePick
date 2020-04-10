@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * the video manage delegate
  * @author heaven7
@@ -38,31 +40,7 @@ public interface VideoManageDelegate {
     void onDestroyItem(View v, int position, IImageItem data);
 
     /**
-     * called on pause video. this is call on {@linkplain Activity#onPause()}.
-     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the position
-     * @param data the media item
-     */
-    void pauseVideo(View v, int position, IImageItem data);
-
-    /**
-     * called on resume video. this is call on {@linkplain Activity#onResume()}.
-     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the position
-     * @param data the media item
-     */
-    void resumeVideo(View v, int position, IImageItem data);
-
-    /**
-     * called on activity destroy. this is call on {@linkplain Activity#onDestroy()}.
-     * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the position
-     * @param data the media item
-     */
-    void releaseVideo(View v, int position, IImageItem data);
-
-    /**
-     * called on set primary item, this is often used to start play video.
+     * called on set primary item
      * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
      * @param position the real position
      * @param data the media data
