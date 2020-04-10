@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.pub.AdapterManageDelegate;
 import com.heaven7.android.imagepick.pub.GroupItem;
 import com.heaven7.android.imagepick.pub.IImageItem;
@@ -19,8 +20,6 @@ import com.heaven7.java.visitor.collection.KeyValuePair;
 import com.heaven7.java.visitor.collection.VisitServices;
 
 import java.util.List;
-
-import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * see image/videos.
@@ -81,7 +80,7 @@ public class SeeImageActivity extends BaseActivity implements SeeImageDelegate.M
     }
     @Override
     public void onScanFinished(List<KeyValuePair<String, List<IImageItem>>> list) {
-        final List<GroupItem> pairs = VisitServices.from(list).map(
+        final List<GroupItem> pairs = VisitServices.fromPairs(list).map(
                 new ResultVisitor<KeyValuePair<String, List<IImageItem>>, GroupItem>() {
             @Override
             public GroupItem visit(KeyValuePair<String, List<IImageItem>> pair, Object param) {

@@ -86,7 +86,7 @@ public class BrowseActivity extends BaseActivity {
                                 .setTargetWidth(rootView.getWidth())
                                 .setTargetHeight(rootView.getHeight())
                                 .build();
-                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(imageView, item, options);
+                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(BrowseActivity.this, imageView, item, options);
                     }
                 }).setRootOnClickListener(new View.OnClickListener() {
                     @Override
@@ -151,7 +151,7 @@ public class BrowseActivity extends BaseActivity {
         }
         @Override
         protected void onBindItem(ImageView iv, int index, ImageItem data) {
-            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
+            ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(BrowseActivity.this, iv, data, null);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

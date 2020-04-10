@@ -187,7 +187,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
                     @Override
                     public void onGotView(ImageView view, ViewHelper vp) {
                         IImageItem mr = item.getItems().get(0);
-                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, mr, null);
+                        ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(getActivity(), view, mr, null);
                     }
                 });
             }
@@ -230,7 +230,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
             helper.performViewGetter(R.id.iv, new Getters.ImageViewGetter() {
                 @Override
                 public void onGotView(ImageView view, ViewHelper viewHelper) {
-                    ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, item, null);
+                    ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(getActivity(), view, item, null);
                 }
             }).setImageResource(R.id.iv_pause, getParameter().getPauseIconRes())
                     .setVisibility(R.id.iv_pause, item.isVideo())

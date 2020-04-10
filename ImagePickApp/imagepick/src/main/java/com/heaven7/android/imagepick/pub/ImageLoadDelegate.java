@@ -3,9 +3,11 @@ package com.heaven7.android.imagepick.pub;
 import android.app.Activity;
 import android.widget.ImageView;
 
+import androidx.lifecycle.LifecycleOwner;
+
 public interface ImageLoadDelegate {
 
-    void loadImage(ImageView iv, IImageItem item, ImageOptions options);
+    void loadImage(LifecycleOwner owner, ImageView iv, IImageItem item, ImageOptions options);
 
     void pauseRequests(Activity activity);
 

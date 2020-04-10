@@ -219,7 +219,7 @@ public class SeeBigImageActivity extends BaseActivity {
         @Override
         protected void onBindImageItem(ImageView iv, final int index, final IImageItem data) {
             if(!mDelegate.bindImageItem(iv, index, data)){
-                ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(iv, data, null);
+                ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(SeeBigImageActivity.this,iv, data, null);
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
