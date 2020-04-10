@@ -14,7 +14,7 @@ import java.util.List;
 public class MediaOption implements Parcelable {
 
     public static final MediaOption DEFAULT = new MediaOption.Builder()
-            .setImageMimes(Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/gif"))
+            .setImageMimes(Arrays.asList("image/jpeg", "image/png", "image/jpg")) // "image/gif" allow width height = 0.
             .setVideoMimes(Arrays.asList("video/mp4"))
             .build();
 
@@ -26,8 +26,13 @@ public class MediaOption implements Parcelable {
 
     private int mMaxImageSize = Integer.MAX_VALUE;  // in bytes
     private long mMaxVideoSize = Long.MAX_VALUE;    // in bytes
-    private boolean mAllowInvalidWidthHeight;       // if allow invalid width and height to
 
+    public static MediaOption withGif(){
+        return new MediaOption.Builder()
+                .setImageMimes(Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/gif"))
+                .setVideoMimes(Arrays.asList("video/mp4"))
+                .build();
+    }
     @Override
     public int describeContents() {
         return 0;

@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,14 +21,20 @@ import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.SeeImageParameter;
+import com.heaven7.android.imagepick.pub.delegate.DefaultSeeImageDelegate;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
+import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
 import com.heaven7.java.base.anno.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
+import pl.droidsonroids.gif.GifDrawable;
 
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
@@ -36,10 +44,15 @@ public class EntryActivity extends AppCompatActivity {
     private final PermissionHelper mHelper = new PermissionHelper(this);
     private RetrofitRxComponent mComponent;
 
+    private static final String GIF = "/storage/emulated/0/Pictures/gangxin/27c233cf2d3f0516f75c1c4e88af5a0e.gif";
+
+    @BindView(R.id.iv)
+    ImageView mIv;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_entry);
+        ButterKnife.bind(this);
         mComponent = new RetrofitRxComponent();
 
         ImagePickManager.get().getImagePickDelegate().setImageLoadDelegate(new ImageLoadImpl());
@@ -65,6 +78,16 @@ public class EntryActivity extends AppCompatActivity {
         ImagePickManager.get().getImagePickDelegate().setVideoManageDelegate(vm);
         ImagePickManager.get().getImagePickDelegate().setOnPageChangeListener(vm);
         test1();
+    }
+    private void testGif(){
+        long start = SystemClock.elapsedRealtime();
+        try {
+            GifDrawable gifDrawable = new GifDrawable(new File(GIF));
+            System.out.println("cost  = " + (SystemClock.elapsedRealtime() - start));
+            mIv.setImageDrawable(gifDrawable);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -124,10 +147,9 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            SeeImageParameter parameter = new SeeImageParameter.Builder()
-                                    .setPauseIconRes(R.drawable.ic_video_pause)
-                                    .build();
-                            ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this, parameter);
+                            testGif();
+                            startWithGif();
+                            //startWithoutGif();
                         }
                     }
                     @Override
@@ -136,6 +158,22 @@ public class EntryActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+    private void startWithGif(){
+        SeeImageParameter parameter = new SeeImageParameter.Builder()
+                .setPauseIconRes(R.drawable.ic_video_pause)
+                .build();
+        Bundle extr = new BundleHelper()
+                .putBoolean(PickConstants.KEY_WITH_GIF, true)
+                .getBundle();
+        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this,
+                DefaultSeeImageDelegate.class, parameter, extr);
+    }
+    private void startWithoutGif(){
+        SeeImageParameter parameter = new SeeImageParameter.Builder()
+                .setPauseIconRes(R.drawable.ic_video_pause)
+                .build();
+        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this, parameter);
     }
 
     @Override

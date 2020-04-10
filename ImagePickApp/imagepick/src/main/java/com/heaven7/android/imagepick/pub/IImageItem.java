@@ -15,6 +15,8 @@ public interface IImageItem extends ISelectable, Parcelable {
 
     boolean isVideo();
 
+    boolean isGif();
+
     void setExtra(Parcelable extra);
 
     Parcelable getExtra();

@@ -1,0 +1,27 @@
+/*private static Pair<Integer, Integer> readImagePixel(String path) {
+        if (!new File(path).exists()) {
+            return null;
+        }
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, options);
+            int width = options.outWidth;
+            int height = options.outHeight;
+            if (width > 0 && height > 0) {
+                val exifInterface = new ExifInterface(filePath);
+                val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL)
+                // 如果图片的旋转角度为 90 或者 270，则宽高互换
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    return Pair(height, width)
+                }
+                return Pair(width, height)
+            }
+
+        } catch (e: Exception) {
+            LogUtils.e(TAG, e.message)
+        }
+        return null
+    }*/

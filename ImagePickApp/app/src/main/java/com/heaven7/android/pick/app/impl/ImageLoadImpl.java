@@ -17,10 +17,28 @@ import com.heaven7.android.pick.app.FileProviderHelper;
 import com.heaven7.android.video.ScaleManager;
 import com.heaven7.android.video.load.FrameInfo;
 
+import java.io.IOException;
+
+import pl.droidsonroids.gif.GifDrawable;
+
 public class ImageLoadImpl implements ImageLoadDelegate {
 
     @Override
     public void loadImage(ImageView iv, IImageItem item, ImageOptions options) {
+        if(item.isGif()){
+            if(item.getUrl() != null){
+                //net
+                throw new UnsupportedOperationException("you should download the gif. and load as GifDrawable.");
+            }else {
+                try {
+                    iv.setImageDrawable(new GifDrawable(item.getFilePath()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return;
+        }
+
         Context context = iv.getContext();
         FrameInfo info = getFrameInfo(iv.getContext(), item, options);
         if (options != null) {
@@ -88,6 +106,9 @@ public class ImageLoadImpl implements ImageLoadDelegate {
 
     @Override
     public void resumeRequests(Activity activity) {
+        if(activity.isFinishing() || activity.isDestroyed()){
+            return;
+        }
         Glide.with(activity).resumeRequests();
     }
 }

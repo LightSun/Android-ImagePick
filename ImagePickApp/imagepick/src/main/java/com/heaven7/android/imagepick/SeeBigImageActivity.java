@@ -126,13 +126,13 @@ public class SeeBigImageActivity extends BaseActivity {
             }
             @Override
             public void onPageSelected(int i) {
-                System.out.println("onPageSelected i = " + i);
+                //System.out.println("onPageSelected i = " + i);
                 setSelectOrder(i + 1, false);
             }
             @Override
             public void onPageScrollStateChanged(int i) {
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
-                    System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE. i = " + i);
+                    //System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE. i = " + i);
                     setSelectOrder(mVp.getCurrentItem() + 1, false);
                 }
             }

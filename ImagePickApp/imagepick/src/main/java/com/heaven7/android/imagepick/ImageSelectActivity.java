@@ -20,6 +20,7 @@ import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.RecyclerViewUtils;
 import com.heaven7.adapter.util.ViewHelper2;
+import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageItem;
@@ -54,8 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.heaven7.android.imagepick.internal.LibUtils;
 
 /**
  * the image select activity. used for select image and videos.
@@ -413,7 +412,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     @Override
                     public void onGotView(ImageView view, ViewHelper vp) {
                         MediaResourceItem mr = item.getItems().get(0);
-                        ImageItem it = ImageItem.of(mr.getFilePath(), mr.isImage());
+                        ImageItem it = ImageItem.of(mr.getFilePath(), mr.getMime(), mr.isImage());
                         ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                     }
                 });
@@ -450,7 +449,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                     .performViewGetter(R.id.iv, new Getters.ImageViewGetter() {
                         @Override
                         public void onGotView(ImageView view, ViewHelper viewHelper) {
-                            ImageItem it = ImageItem.of(item.getFilePath(), item.isImage());
+                            ImageItem it = ImageItem.of(item.getFilePath(), item.getMime(), item.isImage());
                             ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(view, it, null);
                         }
                     }).setOnClickListener(R.id.iv_select_state, new View.OnClickListener() {

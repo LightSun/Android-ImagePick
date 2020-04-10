@@ -26,4 +26,11 @@
         android:text="start see-image"
         android:onClick="onClickSeeImage"
         />
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/iv"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="20dp"
+        />
 </LinearLayout>

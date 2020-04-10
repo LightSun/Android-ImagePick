@@ -22,6 +22,7 @@ import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.MediaResourceHelper;
 import com.heaven7.android.imagepick.R;
+import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.pub.AdapterManageDelegate;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.GroupItem;
@@ -44,17 +45,17 @@ import com.heaven7.java.visitor.util.Predicates;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.heaven7.android.imagepick.internal.LibUtils;
-
 public class DefaultSeeImageDelegate extends SeeImageDelegate {
 
     private Header mHeader;
     private AdapterManageDelegate<IImageItem> mContentManager;
     private MediaResourceHelper mMediaHelper;
+    private boolean mSupportGif;
 
     @Override
     public void initialize(ViewGroup headContainer, Intent intent) {
         mHeader = new Header(headContainer);
+        mSupportGif = intent.getBooleanExtra(PickConstants.KEY_WITH_GIF, false);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
 
     @Override
     public void startScan(final MediaResourceCallback callback) {
-        mMediaHelper = new MediaResourceHelper(getActivity(), MediaOption.DEFAULT);
+        mMediaHelper = new MediaResourceHelper(getActivity(), mSupportGif ? MediaOption.withGif() : MediaOption.DEFAULT);
         mMediaHelper.getMediaResource(MediaResourceHelper.FLAG_IMAGE_AND_VIDEO, new MediaResourceHelper.Callback() {
             @Override
             public void onCallback(List<MediaResourceItem> photoes, List<MediaResourceItem> videoes) {

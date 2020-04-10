@@ -209,16 +209,21 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                }
                case ON_STOP: {
                    TextureVideoView videoView = getTextureVideoView(mCurrentPos);
-                   videoView.stop();
+                   if(videoView != null){
+                       videoView.stop();
+                   }else {
+                       Logger.d(TAG, "onStateChanged", "ON_STOP. no video view.");
+                   }
                    break;
                }
                case ON_DESTROY: {
-                   MediaPlayerView playerView = mMap.get(mCurrentPos);
-                   TextureVideoView view = (TextureVideoView) playerView.getVideoView();
-                   view.cancel();
-                   view.release();
-                   playerView.showContent(MediaViewCons.TYPE_VIDEO);
-                   mMap.remove(mCurrentPos);
+                   MediaPlayerView playerView = mMap.getAndRemove(mCurrentPos);
+                   if(playerView != null){
+                       TextureVideoView view = (TextureVideoView) playerView.getVideoView();
+                       view.cancel();
+                       view.release();
+                       playerView.showContent(MediaViewCons.TYPE_VIDEO);
+                   }
                    break;
                }
            }

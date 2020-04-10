@@ -274,7 +274,7 @@ public class CameraFragment extends Fragment {
                          .setTargetWidth(lp.width)
                          .setTargetHeight(lp.height)
                          .build();
-                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(mIv_image, ImageItem.of(file, false), options);
+                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(mIv_image, ImageItem.ofImage(file), options);
              }
          });
     }
