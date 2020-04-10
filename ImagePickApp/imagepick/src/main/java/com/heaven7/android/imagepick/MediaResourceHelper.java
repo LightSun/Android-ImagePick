@@ -2,8 +2,11 @@ package com.heaven7.android.imagepick;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
+import androidx.core.util.Pair;
 
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.MediaOption;
@@ -207,6 +210,10 @@ public final class MediaResourceHelper {
                 }
                 materialBean.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
                 byte[] data = cursor.getBlob(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                String path = new String(data, 0, data.length - 1);
+                if(path.endsWith("gif")){
+                    Logger.d("MediaResourceHelper", "getAllLocalPhotos", "path = " + path);
+                }
 
                 String mime = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
                 int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
@@ -220,8 +227,6 @@ public final class MediaResourceHelper {
                 materialBean.setWidth(width);
                 materialBean.setHeight(height);
 
-                String path = new String(data, 0, data.length - 1);
-                // Logger.d("MediaResourceHelper", "getAllLocalPhotos", "path = " + path);
                 File file = new File(path);
                 //file not exist
                 if (!file.exists()) {
@@ -242,6 +247,33 @@ public final class MediaResourceHelper {
         }
         return list;
     }
+    /*private static Pair<Integer, Integer> readImagePixel(String path) {
+        if (!new File(path).exists()) {
+            return null;
+        }
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, options);
+            int width = options.outWidth;
+            int height = options.outHeight;
+            if (width > 0 && height > 0) {
+                val exifInterface = new ExifInterface(filePath);
+                val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL)
+                // 如果图片的旋转角度为 90 或者 270，则宽高互换
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    return Pair(height, width)
+                }
+                return Pair(width, height)
+            }
+
+        } catch (e: Exception) {
+            LogUtils.e(TAG, e.message)
+        }
+        return null
+    }*/
 
     private static String createMimeWhere(List<String> mimes) {
        /*  String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
