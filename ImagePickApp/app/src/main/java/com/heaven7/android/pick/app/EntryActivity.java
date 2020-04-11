@@ -147,7 +147,7 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            testGif();
+                            //testGif();
                             startWithGif();
                             //startWithoutGif();
                         }
@@ -163,11 +163,11 @@ public class EntryActivity extends AppCompatActivity {
         SeeImageParameter parameter = new SeeImageParameter.Builder()
                 .setPauseIconRes(R.drawable.ic_video_pause)
                 .build();
-        Bundle extr = new BundleHelper()
+        Bundle extra = new BundleHelper()
                 .putBoolean(PickConstants.KEY_WITH_GIF, true)
                 .getBundle();
         ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this,
-                DefaultSeeImageDelegate.class, parameter, extr);
+                DefaultSeeImageDelegate.class, parameter, extra);
     }
     private void startWithoutGif(){
         SeeImageParameter parameter = new SeeImageParameter.Builder()

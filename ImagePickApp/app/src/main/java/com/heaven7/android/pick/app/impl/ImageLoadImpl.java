@@ -5,9 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.bumptech.glide.Glide;
@@ -28,18 +25,6 @@ import pl.droidsonroids.gif.GifDrawable;
 
 public class ImageLoadImpl implements ImageLoadDelegate {
 
-    private static class GifObserver implements LifecycleEventObserver{
-        final GifDrawable gifDrawable;
-        public GifObserver(GifDrawable gifDrawable) {
-            this.gifDrawable = gifDrawable;
-        }
-        @Override
-        public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-            if(event == Lifecycle.Event.ON_DESTROY){
-                gifDrawable.recycle();
-            }
-        }
-    }
     @Override
     public void loadImage(LifecycleOwner owner, ImageView iv, IImageItem item, ImageOptions options) {
         if(item.isGif()){
@@ -53,10 +38,6 @@ public class ImageLoadImpl implements ImageLoadDelegate {
                     iv.setImageDrawable(gifDrawable);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
-                    if(gifDrawable != null){
-                        owner.getLifecycle().addObserver(new GifObserver(gifDrawable));
-                    }
                 }
             }
             return;

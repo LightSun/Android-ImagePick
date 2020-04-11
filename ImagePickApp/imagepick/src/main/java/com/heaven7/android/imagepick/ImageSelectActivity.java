@@ -33,7 +33,6 @@ import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
 import com.heaven7.android.imagepick.utils.OptimiseScrollListenerImpl;
 import com.heaven7.core.util.ImageParser;
-import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MD5Util;
 import com.heaven7.core.util.Toaster;
 import com.heaven7.core.util.ViewHelper;
@@ -379,13 +378,13 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     public void onSelect(List<MediaResourceItem> items, MediaResourceItem item) {
         notifyItemChangeIfNeed(item);
         setSelectText();
-        Logger.d(TAG, "onSelect", item.getFilePath());
+       // Logger.d(TAG, "onSelect", item.getFilePath());
     }
     @Override
     public void onUnselect(List<MediaResourceItem> items, MediaResourceItem item) {
         notifyItemChangeIfNeed(item);
         setSelectText();
-        Logger.d(TAG, "onUnselect", item.getFilePath());
+      //  Logger.d(TAG, "onUnselect", item.getFilePath());
     }
 
     private void notifyItemChangeIfNeed(MediaResourceItem item) {

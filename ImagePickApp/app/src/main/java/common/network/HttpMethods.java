@@ -1,8 +1,10 @@
 package common.network;
 
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -22,8 +24,13 @@ public class HttpMethods {
 
     public static final int DEFAULT_TIMEOUT = 40;
     public static final Gson mGson;
+    public static Context sAppContext;
     public ApiService mApi;
     private Retrofit mRetrofit;
+
+    public static void initialize(Context context){
+        sAppContext = context.getApplicationContext();
+    }
 
     static {
         mGson = new GsonBuilder()
@@ -74,7 +81,8 @@ public class HttpMethods {
     private HttpMethods() {
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new NetworkInterceptor());
+                .addInterceptor(new NetworkInterceptor())
+         .addInterceptor(new ChuckerInterceptor(sAppContext));
         if(BuildConfig.DEBUG){
             builder.addInterceptor(new HttpLogInterceptor());
         }
