@@ -202,7 +202,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
    // private int mScrollState;
     private class Task implements Runnable{
        final int position;
-       AtomicBoolean cancelled = new AtomicBoolean(false);
+       final AtomicBoolean cancelled = new AtomicBoolean(false);
        public Task(int position) {
            this.position = position;
        }
@@ -284,7 +284,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
        }
    }
 
-    private class MediaCallback0 extends TextureVideoView.Callback{
+    private static class MediaCallback0 extends TextureVideoView.Callback{
 
         private final PowerManager mPM;
         private PowerManager.WakeLock mWakeLock;
