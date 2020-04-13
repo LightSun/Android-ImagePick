@@ -68,7 +68,7 @@ public class MediaPlayerView extends FrameLayout {
         mDelegate.initViews(needProxy);
         mDelegate.getPauseView().setImageDrawable(pauseIcon);
         //default is video
-        showContent(type);
+        setContentType(type);
     }
 
     public MediaViewDelegate<MediaPlayerView, TextureView> getDelegate(){
@@ -94,8 +94,8 @@ public class MediaPlayerView extends FrameLayout {
         mDelegate.performClickType();
     }
 
-    public void showContent(@MediaViewCons.TypeDef int type){
-        mDelegate.showContent(type);
+    public void setContentType(@MediaViewCons.TypeDef int type){
+        mDelegate.setContentType(type);
     }
 
     public @MediaViewCons.TypeDef int getContentType(){

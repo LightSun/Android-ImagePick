@@ -16,6 +16,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
+import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.android.video.view.MediaPlayerView;
@@ -28,6 +30,8 @@ import com.heaven7.java.base.util.SparseFactory;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import lib.vida.video.MediaSdkPlayerView;
+
 /**
  */
 public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
@@ -39,6 +43,8 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     private final SparseArrayDelegate<MediaPlayerView> mMap = SparseFactory.newSparseArray(10);
     private Task mTask;
     private int mCurrentPos;
+
+    private int mInitContentType = MediaViewCons.TYPE_VIDEO;
 
     public VideoManager(Context context) {
         this.mCallback = new MediaCallback0(context);
@@ -64,13 +70,18 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
             }
             @Override
             public void resumeVideo(MediaPlayerView mpv) {
-                videoView.resume();
+                if(videoView.isPaused()){
+                    videoView.resume();
+                }else {
+                    videoView.start();
+                }
             }
             @Override
             public void onClickCover(MediaPlayerView mpv) {
                 //not need current
             }
         });
+        mInitContentType = playerView.getContentType();
         return playerView;
     }
 
@@ -80,6 +91,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         TextureVideoView view = getTextureVideoView(v);
         view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
         view.setTag(position);
+        v.setTag(data);
         mMap.put(position, (MediaPlayerView) v);
     }
     @Override
@@ -88,7 +100,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         MediaPlayerView playerView = (MediaPlayerView) v;
         TextureVideoView view = getTextureVideoView(v);
         view.stop();
-        playerView.showContent(MediaViewCons.TYPE_VIDEO);
+        playerView.setContentType(mInitContentType);
         mMap.remove(position);
     }
     @Override
@@ -133,15 +145,32 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
             MainWorker.postDelay(200, mTask);
         }else {
             //only for video we need start play
-            if(playerView.getContentType() == MediaViewCons.TYPE_VIDEO){
-                if(!stopLast(view)){
-                    mWeakView = new WeakReference<>(view);
-                    view.start();
-                    Logger.d(TAG, "onPageSelected", " position = " + position + ", start play.");
-                }else {
-                    Logger.d(TAG, "onPageSelected", " position = " + position + ",duplicate start play.");
+            if(!stopLast(view)){
+                mWeakView = new WeakReference<>(view);
+                //only for video we need start play
+                switch (playerView.getContentType()){
+                    case MediaViewCons.TYPE_VIDEO:
+                        view.start();
+                        Logger.d(TAG, "onPageSelected", " position = " + position + ", start play.");
+                        break;
+
+                    case MediaViewCons.TYPE_PAUSE:
+                        //show cover?
+                    case MediaViewCons.TYPE_COVER:
+                    case MediaViewCons.TYPE_COVER_PAUSE:{
+                        IImageItem item = (IImageItem) playerView.getTag();
+                        ImageLoadDelegate delegate = ImagePickManager.get().getImagePickDelegate().getImageLoadDelegate();
+                        delegate.loadImage(null, playerView.getCoverView(), item, null);
+                        break;
+                    }
+
+                    default:
+                        throw new UnsupportedOperationException();
                 }
+            }else {
+                Logger.d(TAG, "onPageSelected", " position = " + position + ",duplicate start play.");
             }
+            //for cover show cover.
         }
     }
     @Override
@@ -157,6 +186,8 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
             if(view != next){
                 Logger.d(TAG, "stopLast", "start stop: pos = " + view.getTag());
                 view.stop();
+                MediaPlayerView playerView = (MediaPlayerView) view.getParent();
+                playerView.setContentType(mInitContentType);
             }else {
                 return true;
             }
@@ -164,12 +195,6 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
         return false;
     }
 
-    private void release(TextureVideoView view){
-        if(view != null){
-            view.cancel();
-            view.release();
-        }
-    }
    // private int mScrollState;
     private class Task implements Runnable{
        final int position;
@@ -196,7 +221,11 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                case ON_PAUSE: {
                    MediaPlayerView view = mMap.get(mCurrentPos);
                    if (view != null) {
-                       view.performClickType();
+                       TextureVideoView videoView = getTextureVideoView(view);
+                       //non-pause -> paused
+                       if(!videoView.isPaused()){
+                           view.performClickType();
+                       }
                    } else {
                        Logger.d(TAG, "onStateChanged", "ON_PAUSE");
                    }
@@ -212,21 +241,24 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                    break;
                }
                case ON_STOP: {
+                   MediaPlayerView view = mMap.get(mCurrentPos);
                    TextureVideoView videoView = getTextureVideoView(mCurrentPos);
                    if(videoView != null){
                        videoView.stop();
+                       view.setContentType(mInitContentType);
                    }else {
                        Logger.d(TAG, "onStateChanged", "ON_STOP. no video view.");
                    }
                    break;
                }
                case ON_DESTROY: {
+                   source.getLifecycle().removeObserver(this);
                    MediaPlayerView playerView = mMap.getAndRemove(mCurrentPos);
                    if(playerView != null){
                        TextureVideoView view = (TextureVideoView) playerView.getVideoView();
                        view.cancel();
                        view.release();
-                       playerView.showContent(MediaViewCons.TYPE_VIDEO);
+                       playerView.setContentType(mInitContentType);
                    }
                    break;
                }

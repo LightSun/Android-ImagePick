@@ -139,7 +139,7 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
         }
         switch (type){
             case TYPE_VIDEO:
-                showContent(TYPE_PAUSE);
+                setContentType(TYPE_PAUSE);
                 mCallback.pauseVideo(mParent);
                 break;
 
@@ -149,7 +149,7 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
 
             case TYPE_COVER_PAUSE:
             case TYPE_PAUSE:
-                showContent(TYPE_VIDEO);
+                setContentType(TYPE_VIDEO);
                 mCallback.resumeVideo(mParent);
                 break;
         }
@@ -159,7 +159,7 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
         return getContentType() == TYPE_PAUSE;
     }
 
-    public void showContent(@MediaViewCons.TypeDef int type){
+    public void setContentType(@MediaViewCons.TypeDef int type){
         switch (type){
             case TYPE_VIDEO:
                 mPauseView.setVisibility(View.GONE);
@@ -214,7 +214,7 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
 
     public Parcelable onRestoreInstanceState(Parcelable state) {
         Bundle b = (Bundle) state;
-        showContent(b.getInt("type"));
+        setContentType(b.getInt("type"));
         return b.getParcelable("super");
     }
 
