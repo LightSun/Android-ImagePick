@@ -71,7 +71,9 @@ public class VideoFrameLoader {
     public void cancel() {
         if(!mCancelled){
             mCancelled = true;
-            mDownloadExecutor.cancel();
+            if(mDownloadExecutor != null){
+                mDownloadExecutor.cancel(mInfo.getUri().toString());
+            }
         }
     }
     public InputStream loadData() throws Exception {
@@ -95,6 +97,9 @@ public class VideoFrameLoader {
         //check if need load
         Uri dst = mInfo.getUri();
         if (!mInfo.isLocal()) {
+            if(mDownloadExecutor == null){
+                throw new IllegalStateException("you must call setDownloadExecutor(...) for download net uri.");
+            }
             dst = mDownloadExecutor.download(mContext, mInfo.getUri().toString());
             if (dst == null) {
                 return null;

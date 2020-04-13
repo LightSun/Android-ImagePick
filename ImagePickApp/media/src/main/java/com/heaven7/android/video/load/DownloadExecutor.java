@@ -19,7 +19,8 @@ public interface DownloadExecutor {
     Uri download(Context context, String url) throws Exception;
 
     /**
-     * cancel download
+     * cancel download for target url
+     * @param url the url. @added 2.0.1
      */
-    void cancel();
+    void cancel(String url);
 }
