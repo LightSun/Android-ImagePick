@@ -120,23 +120,27 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     public void onPageSelected(int position) {
        // Logger.d(TAG, "onPageSelected", "position = " + position);
         mCurrentPos = position;
-        TextureVideoView view = getTextureVideoView(position);
+        MediaPlayerView playerView = mMap.get(position);
+        TextureVideoView view = playerView != null ? (TextureVideoView) playerView.getVideoView() : null;
         if(mTask != null){
             mTask.cancel();
             mTask = null;
         }
         if(view == null){
             //first time, not prepared.
-            Logger.w(TAG, "onPageSelected", "position = " + position + " not prepared.");
+            Logger.d(TAG, "onPageSelected", "position = " + position + " not prepared.");
             mTask = new Task(position);
             MainWorker.postDelay(200, mTask);
         }else {
-            if(!stopLast(view)){
-                mWeakView = new WeakReference<>(view);
-                view.start();
-                Logger.w(TAG, "onPageSelected", " position = " + position + ", start play.");
-            }else {
-                Logger.w(TAG, "onPageSelected", " position = " + position + ",duplicate start play.");
+            //only for video we need start play
+            if(playerView.getContentType() == MediaViewCons.TYPE_VIDEO){
+                if(!stopLast(view)){
+                    mWeakView = new WeakReference<>(view);
+                    view.start();
+                    Logger.d(TAG, "onPageSelected", " position = " + position + ", start play.");
+                }else {
+                    Logger.d(TAG, "onPageSelected", " position = " + position + ",duplicate start play.");
+                }
             }
         }
     }

@@ -50,12 +50,15 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
     private Header mHeader;
     private AdapterManageDelegate<IImageItem> mContentManager;
     private MediaResourceHelper mMediaHelper;
-    private boolean mSupportGif;
+    protected MediaOption mOption;
 
     @Override
     public void initialize(ViewGroup headContainer, Intent intent) {
         mHeader = new Header(headContainer);
-        mSupportGif = intent.getBooleanExtra(PickConstants.KEY_WITH_GIF, false);
+        mOption = intent.getParcelableExtra(PickConstants.KEY_MEDIA_OPTION);
+        if(mOption == null){
+            mOption = MediaOption.DEFAULT;
+        }
     }
 
     @Override
@@ -79,8 +82,15 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
 
     @Override
     public void startScan(final MediaResourceCallback callback) {
-        mMediaHelper = new MediaResourceHelper(getActivity(), mSupportGif ? MediaOption.withGif() : MediaOption.DEFAULT);
-        mMediaHelper.getMediaResource(MediaResourceHelper.FLAG_IMAGE_AND_VIDEO, new MediaResourceHelper.Callback() {
+        mMediaHelper = new MediaResourceHelper(getActivity(), mOption);
+        int flags = 0;
+        if(!Predicates.isEmpty(mOption.getImageMimes())){
+            flags |= PickConstants.FLAG_IMAGE;
+        }
+        if(!Predicates.isEmpty(mOption.getVideoMimes())){
+            flags |= PickConstants.FLAG_VIDEO;
+        }
+        mMediaHelper.getMediaResource(flags, new MediaResourceHelper.Callback() {
             @Override
             public void onCallback(List<MediaResourceItem> photoes, List<MediaResourceItem> videoes) {
                 List<MediaResourceItem> items = new ArrayList<>(videoes);

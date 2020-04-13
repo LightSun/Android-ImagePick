@@ -39,6 +39,12 @@
         <attr name="media_mpv_delegate" format="string|reference"/>
         <attr name="media_mpv_need_proxy" format="boolean|reference"/>
         <attr name="media_mpv_pause_icon" format="reference"/>
+        <attr name="media_mpv_init_content_type" format="enum">
+            <enum name="video">1</enum>
+            <enum name="cover">2</enum>
+            <enum name="pause">3</enum>
+            <enum name="cover_and_pause">4</enum>
+        </attr>
     </declare-styleable>
 
 </resources>

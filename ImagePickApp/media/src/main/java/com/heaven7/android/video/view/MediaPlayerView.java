@@ -42,6 +42,7 @@ public class MediaPlayerView extends FrameLayout {
         String dname;
         boolean needProxy = false;
         Drawable pauseIcon;
+        int type = TYPE_VIDEO;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MediaPlayerView);
         try {
             dname = a.getString(R.styleable.MediaPlayerView_media_mpv_delegate);
@@ -51,6 +52,7 @@ public class MediaPlayerView extends FrameLayout {
             }
             needProxy = a.getBoolean(R.styleable.MediaPlayerView_media_mpv_need_proxy, needProxy);
             pauseIcon = a.getDrawable(R.styleable.MediaPlayerView_media_mpv_pause_icon);
+            type = a.getInt(R.styleable.MediaPlayerView_media_mpv_init_content_type, type);
             if(pauseIcon != null){
                 pauseIcon.setBounds(0, 0 ,pauseIcon.getIntrinsicWidth(), pauseIcon.getIntrinsicHeight());
             }
@@ -66,7 +68,7 @@ public class MediaPlayerView extends FrameLayout {
         mDelegate.initViews(needProxy);
         mDelegate.getPauseView().setImageDrawable(pauseIcon);
         //default is video
-        showContent(TYPE_VIDEO);
+        showContent(type);
     }
 
     public MediaViewDelegate<MediaPlayerView, TextureView> getDelegate(){

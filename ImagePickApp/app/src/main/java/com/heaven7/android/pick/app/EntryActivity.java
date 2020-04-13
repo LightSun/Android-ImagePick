@@ -18,6 +18,7 @@ import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.MediaOption;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.SeeImageParameter;
@@ -164,7 +165,7 @@ public class EntryActivity extends AppCompatActivity {
                 .setPauseIconRes(R.drawable.ic_video_pause)
                 .build();
         Bundle extra = new BundleHelper()
-                .putBoolean(PickConstants.KEY_WITH_GIF, true)
+                .putParcelable(PickConstants.KEY_MEDIA_OPTION, MediaOption.withGif())
                 .getBundle();
         ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this,
                 DefaultSeeImageDelegate.class, parameter, extra);

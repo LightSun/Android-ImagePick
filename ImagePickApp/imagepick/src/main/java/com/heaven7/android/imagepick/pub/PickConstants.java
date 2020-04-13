@@ -10,7 +10,7 @@ public interface PickConstants {
     String KEY_SAVE_DIR          = "save_dir";
     String KEY_DELEGATE          = "delegate";
     String KEY_EXTRA             = "extra";
-    String KEY_WITH_GIF          = "withGif"; //support gif or not
+    String KEY_MEDIA_OPTION      = "mediaOption";
 
     /** the flags for see-big-image */
     int FLAG_SHOW_TOP             = 0x0001;
