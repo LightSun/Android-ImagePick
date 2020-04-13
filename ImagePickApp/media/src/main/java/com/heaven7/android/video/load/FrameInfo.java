@@ -211,6 +211,7 @@ public class FrameInfo {
         if(Objects.equals(uri, info.uri)){
             if (width != info.width) return false;
             if (height != info.height) return false;
+
             if(isFromVideo()){
                 if(frameTime != info.frameTime){
                     return false;

@@ -343,11 +343,11 @@ public class TextureVideoView extends TextureView
             Logger.d(TAG, method, "pos = " + getTag() + ", " + msg);
         }
     }
-    public void lossAudioFocus(){
-       // mAudioMDelegate.lossAudioFocus();
+    private void lossAudioFocus(){
+        mAudioMDelegate.lossAudioFocus();
     }
-    public void requestAudioFocus(){
-       // mAudioMDelegate.requestAudioFocus();
+    private void requestAudioFocus(){
+        mAudioMDelegate.requestAudioFocus();
     }
 
     private void removeStartTask(){

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:media_mpv_pause_icon="@drawable/ic_video_pause"
-    app:media_mpv_init_content_type="pause"
+    app:media_mpv_init_content_type="cover_and_pause"
     >
 
 </com.heaven7.android.video.view.MediaPlayerView>

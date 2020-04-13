@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.heaven7.android.component.lifecycle.LifeCycleComponent;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.core.util.Logger;
 
 /**

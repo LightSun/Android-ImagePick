@@ -241,7 +241,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                    if (view != null) {
                        TextureVideoView videoView = vm.getTextureVideoView(view);
                        //non-pause -> paused
-                       if(!videoView.isPaused()){
+                       if(videoView.isPlaying()){
                            view.performClickType();
                        }
                    } else {
