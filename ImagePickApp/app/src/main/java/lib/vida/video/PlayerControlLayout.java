@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.java.base.anno.Nullable;
 
 import java.util.Set;

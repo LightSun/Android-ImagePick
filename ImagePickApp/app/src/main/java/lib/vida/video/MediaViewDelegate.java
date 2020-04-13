@@ -13,11 +13,12 @@ import android.widget.ImageView;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.MediaViewCons;
 
-import static lib.vida.video.MediaViewCons.TYPE_COVER;
-import static lib.vida.video.MediaViewCons.TYPE_COVER_PAUSE;
-import static lib.vida.video.MediaViewCons.TYPE_PAUSE;
-import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
+import static com.heaven7.android.video.MediaViewCons.TYPE_COVER;
+import static com.heaven7.android.video.MediaViewCons.TYPE_COVER_PAUSE;
+import static com.heaven7.android.video.MediaViewCons.TYPE_PAUSE;
+import static com.heaven7.android.video.MediaViewCons.TYPE_VIDEO;
 
 /**
  * the media view delegate.

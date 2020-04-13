@@ -29,6 +29,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.java.base.anno.Nullable;
 
 import java.util.List;

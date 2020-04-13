@@ -16,10 +16,11 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.heaven7.android.pick.app.R;
+import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.core.util.Logger;
 import com.heaven7.java.base.anno.Nullable;
 
-import static lib.vida.video.MediaViewCons.TYPE_VIDEO;
+import static com.heaven7.android.video.MediaViewCons.TYPE_VIDEO;
 
 /**
  * the media player view .contains: videoView, coverView, pauseView.

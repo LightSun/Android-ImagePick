@@ -20,6 +20,7 @@ import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
+import com.heaven7.android.util2.WeakObject;
 import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.android.video.view.MediaPlayerView;
 import com.heaven7.android.video.view.TextureVideoView;
@@ -115,7 +116,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     @Override
     public void onAttach(Activity activity) {
         AppCompatActivity ac = (AppCompatActivity) activity;
-        ac.getLifecycle().addObserver(new LifecycleListener());
+        ac.getLifecycle().addObserver(new LifecycleListener(this));
     }
 
     @Override
@@ -217,14 +218,28 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
            }
        }
    }
-   private class LifecycleListener implements LifecycleEventObserver{
+   private static class LifecycleListener implements LifecycleEventObserver{
+
+        final WeakReference<VideoManager> mWeakRef;
+
+       public LifecycleListener(VideoManager vm) {
+           this.mWeakRef = new WeakReference<>(vm);
+       }
+
        @Override
        public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+           VideoManager vm = mWeakRef.get();
+           if(vm == null){
+               return;
+           }
+           final SparseArrayDelegate<MediaPlayerView> mMap = vm.mMap;
+           final int mCurrentPos = vm.mCurrentPos;
+
            switch (event){
                case ON_PAUSE: {
                    MediaPlayerView view = mMap.get(mCurrentPos);
                    if (view != null) {
-                       TextureVideoView videoView = getTextureVideoView(view);
+                       TextureVideoView videoView = vm.getTextureVideoView(view);
                        //non-pause -> paused
                        if(!videoView.isPaused()){
                            view.performClickType();
@@ -245,10 +260,10 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                }
                case ON_STOP: {
                    MediaPlayerView view = mMap.get(mCurrentPos);
-                   TextureVideoView videoView = getTextureVideoView(mCurrentPos);
+                   TextureVideoView videoView = vm.getTextureVideoView(mCurrentPos);
                    if(videoView != null){
                        videoView.stop();
-                       view.setContentType(mInitContentType);
+                       view.setContentType(vm.mInitContentType);
                    }else {
                        Logger.d(TAG, "onStateChanged", "ON_STOP. no video view.");
                    }
@@ -261,7 +276,7 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
                        TextureVideoView view = (TextureVideoView) playerView.getVideoView();
                        view.cancel();
                        view.release();
-                       playerView.setContentType(mInitContentType);
+                       playerView.setContentType(vm.mInitContentType);
                    }
                    break;
                }

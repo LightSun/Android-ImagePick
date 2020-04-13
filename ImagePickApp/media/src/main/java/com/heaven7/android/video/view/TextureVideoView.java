@@ -334,7 +334,7 @@ public class TextureVideoView extends TextureView
     }
     public void cancel(){
         if(mCancelled.compareAndSet(false, true)){
-            __log("destroy", "");
+            __log("cancel", "");
         }
     }
     //----------------------------------------------------
@@ -343,7 +343,7 @@ public class TextureVideoView extends TextureView
             Logger.d(TAG, method, "pos = " + getTag() + ", " + msg);
         }
     }
-    private void lossAudioFocus(){
+    public void lossAudioFocus(){
        // mAudioMDelegate.lossAudioFocus();
     }
     public void requestAudioFocus(){
