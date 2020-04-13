@@ -5,6 +5,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -61,19 +62,21 @@ public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChange
     public View createVideoView(Context context, ViewGroup parent, IImageItem data) {
         MediaPlayerView playerView = (MediaPlayerView) LayoutInflater.from(context)
                 .inflate(R.layout.item_texture_video2, parent, false);
-        final TextureVideoView videoView = getTextureVideoView(playerView);
+        TextureVideoView videoView = getTextureVideoView(playerView);
         videoView.setCallback(mCallback);
         playerView.getDelegate().setCallback(new MediaPlayerView.Callback() {
             @Override
             public void pauseVideo(MediaPlayerView mpv) {
-                videoView.pause();
+                TextureVideoView view = (TextureVideoView) mpv.getVideoView();
+                view.pause();
             }
             @Override
             public void resumeVideo(MediaPlayerView mpv) {
-                if(videoView.isPaused()){
-                    videoView.resume();
+                TextureVideoView view = (TextureVideoView) mpv.getVideoView();
+                if(view.isPaused()){
+                    view.resume();
                 }else {
-                    videoView.start();
+                    view.start();
                 }
             }
             @Override
