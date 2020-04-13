@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply from: '../androidx_compat.gradle'
-apply from: '../common.gradle'
+apply from: '../common_media.gradle'
 
 group = 'com.github.LightSun.Android-ImagePick'
 version = library_version
