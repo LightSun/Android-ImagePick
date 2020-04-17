@@ -29,6 +29,9 @@ public class OptimiseScrollListenerImpl extends RecyclerView.OnScrollListener{
                 break;
 
             case RecyclerView.SCROLL_STATE_IDLE:
+                if(activity.isFinishing() || activity.isDestroyed()){
+                    return;
+                }
                 //Glide.with(recyclerView.getContext()).resumeRequests();
                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().resumeRequests(activity);
                 break;
