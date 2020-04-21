@@ -84,7 +84,6 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View>{
         //set default res
         //mPauseView.setImageResource(R.drawable.ic_video_pause);
         if(mVideoView instanceof VideoRender){
-            mPendingPaused = true;
             ((VideoRender) mVideoView).setRenderCallback(mRenderCallback);
         }
 
@@ -182,6 +181,10 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View>{
         return getContentType() == TYPE_PAUSE || mPendingPaused;
     }
 
+    /**
+     * reset the state of media control
+     * @since 2.0.1
+     */
     public void reset(){
         mPendingPaused = false;
     }
