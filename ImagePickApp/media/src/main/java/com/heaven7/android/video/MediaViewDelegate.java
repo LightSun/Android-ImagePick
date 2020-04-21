@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.heaven7.android.video.view.ProxyView;
+import com.heaven7.android.video.view.VideoRender;
 
 import static com.heaven7.android.video.MediaViewCons.TYPE_COVER;
 import static com.heaven7.android.video.MediaViewCons.TYPE_COVER_PAUSE;
@@ -24,7 +25,7 @@ import static com.heaven7.android.video.MediaViewCons.TYPE_VIDEO;
  * @param <V> the video view type
  * Created by heaven7 on 2018/11/9 0009.
  */
-public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
+public abstract class MediaViewDelegate<P extends ViewGroup,V extends View>{
 
     private final P mParent;
     private V mVideoView;
@@ -36,6 +37,19 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
     private Callback<P> mCallback;
     private TouchPositionProvider mProvider;
     private PositionCallback<P> mPositionCallback;
+    private boolean mPendingPaused = false;
+
+    private final VideoRender.Callback mRenderCallback = new VideoRender.Callback() {
+        @Override
+        public void onStartRender() {
+            mVideoView.post(new Runnable() {
+                @Override
+                public void run() {
+                    setContentType(TYPE_VIDEO);
+                }
+            });
+        }
+    };
 
     @SuppressWarnings("unchecked")
     public MediaViewDelegate(ViewGroup parent) {
@@ -69,6 +83,10 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
         mParent.addView(mPauseView);
         //set default res
         //mPauseView.setImageResource(R.drawable.ic_video_pause);
+        if(mVideoView instanceof VideoRender){
+            mPendingPaused = true;
+            ((VideoRender) mVideoView).setRenderCallback(mRenderCallback);
+        }
 
         //set click listener
         mParent.setOnClickListener(new View.OnClickListener() {
@@ -149,17 +167,27 @@ public abstract class MediaViewDelegate<P extends ViewGroup,V extends View> {
 
             case TYPE_COVER_PAUSE:
             case TYPE_PAUSE:
-                setContentType(TYPE_VIDEO);
+                if(mVideoView instanceof VideoRender){
+                    mPendingPaused = true;
+                    //mark and wait render
+                }else {
+                    setContentType(TYPE_VIDEO);
+                }
                 mCallback.resumeVideo(mParent);
                 break;
         }
     }
 
     public boolean isPaused(){
-        return getContentType() == TYPE_PAUSE;
+        return getContentType() == TYPE_PAUSE || mPendingPaused;
+    }
+
+    public void reset(){
+        mPendingPaused = false;
     }
 
     public void setContentType(@MediaViewCons.TypeDef int type){
+        mPendingPaused = false;
         switch (type){
             case TYPE_VIDEO:
                 mPauseView.setVisibility(View.GONE);

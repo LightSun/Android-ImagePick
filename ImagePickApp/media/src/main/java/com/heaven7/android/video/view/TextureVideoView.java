@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 
 import com.heaven7.android.util2.MediaHelper;
 import com.heaven7.android.video.AudioManageCompat;
@@ -31,8 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class TextureVideoView extends TextureView
-        implements TextureView.SurfaceTextureListener{
+public class TextureVideoView extends TextureView implements TextureView.SurfaceTextureListener,
+        VideoRender{
 
     private final String TAG = "TextureVideoView_"+hashCode();
     private static final int MSG_NONE = 0;
@@ -55,6 +56,7 @@ public class TextureVideoView extends TextureView
     //attr value
     private int mScaleType = ScaleManager.ScaleType_FIT_CENTER;
     private boolean mDebug;
+    private VideoRender.Callback mRenderCallback;
 
     private static final HandlerThread sThread = new HandlerThread("VideoPlayThread");
     private static final int[] sAttrs = {
@@ -96,6 +98,11 @@ public class TextureVideoView extends TextureView
     }
     public void setDebug(boolean debug){
         this.mDebug = debug;
+    }
+
+    @Override
+    public void setRenderCallback(VideoRender.Callback cb) {
+        mRenderCallback = cb;
     }
 
     public void setCallback(Callback callback) {
@@ -570,6 +577,12 @@ public class TextureVideoView extends TextureView
 
         @Override
         public boolean onInfo(MediaPlayer mp, int what, int extra) {
+            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                // Video available, show view now. this often called in sub-thread.
+                if(mRenderCallback != null){
+                    mRenderCallback.onStartRender();
+                }
+            }
             if(mCallback != null){
                 return mCallback.onInfo(mp, what, extra);
             }
