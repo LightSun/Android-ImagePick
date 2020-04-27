@@ -50,7 +50,7 @@ public class SeeBigImageActivity extends BaseActivity {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
 
-        mVp = findViewById(R.id.vp);
+        mVp = findViewById(R.id.lib_pick_vp);
         mVg_root = findViewById(R.id.vg_root);
         mDelegate.initialize(context, mVg_root, getIntent());
 
@@ -252,13 +252,6 @@ public class SeeBigImageActivity extends BaseActivity {
             } else {
                 setSelectState(true);
             }
-        }
-        @Override
-        public View getCurrentView() {
-            return LibPick$_ViewPagerUtils.getCurrentView(mVp);
-        }
-        public int getCurrentPosition(){
-            return mMediaAdapter.getPositionActually(mVp.getCurrentItem());
         }
     }
 

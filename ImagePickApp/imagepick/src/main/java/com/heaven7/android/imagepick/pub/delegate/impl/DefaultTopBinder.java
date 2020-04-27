@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick.pub.delegate;
+package com.heaven7.android.imagepick.pub.delegate.impl;
 
 import android.app.Activity;
 import android.view.View;
@@ -13,6 +13,7 @@ import com.heaven7.android.imagepick.R;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 
 import java.util.Locale;
 

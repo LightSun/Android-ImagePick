@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick.pub.delegate;
+package com.heaven7.android.imagepick.pub.delegate.impl;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.heaven7.android.imagepick.R;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 
 /*public*/ class DefaultBottomBinder extends SeeBigImageDelegate.ViewBinder {
 

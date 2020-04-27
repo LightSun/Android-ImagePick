@@ -18,10 +18,10 @@ import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.DefaultSeeBigImageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.DefaultSeeImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
 import com.heaven7.android.util2.LauncherIntent;
 
 import java.util.ArrayList;

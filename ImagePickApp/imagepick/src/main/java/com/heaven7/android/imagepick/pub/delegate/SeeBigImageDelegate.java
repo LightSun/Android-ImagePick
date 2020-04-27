@@ -233,7 +233,5 @@ public abstract class SeeBigImageDelegate {
         BigImageSelectParameter getParameter();
         IImageItem getImageItem(int index);
         void onClickSelect(View v);
-        View getCurrentView();
-        int getCurrentPosition();
     }
 }

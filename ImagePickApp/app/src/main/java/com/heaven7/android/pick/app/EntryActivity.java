@@ -22,7 +22,7 @@ import com.heaven7.android.imagepick.pub.MediaOption;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.SeeImageParameter;
-import com.heaven7.android.imagepick.pub.delegate.DefaultSeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.Logger;

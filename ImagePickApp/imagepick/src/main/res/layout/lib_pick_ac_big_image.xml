@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     >
     <com.heaven7.android.imagepick.page.HackyViewPager
-        android:id="@+id/vp"
+        android:id="@+id/lib_pick_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

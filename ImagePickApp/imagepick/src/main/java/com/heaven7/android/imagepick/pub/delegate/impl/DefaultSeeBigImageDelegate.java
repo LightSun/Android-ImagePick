@@ -1,8 +1,10 @@
-package com.heaven7.android.imagepick.pub.delegate;
+package com.heaven7.android.imagepick.pub.delegate.impl;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.ViewGroup;
+
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 
 public class DefaultSeeBigImageDelegate extends SeeBigImageDelegate{
 

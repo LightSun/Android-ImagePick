@@ -31,15 +31,6 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
             }
         };
     }
-    @Deprecated
-    public List<T> getDatas(){
-        return mDatas;
-    }
-    @Deprecated
-    public void addDatas(List<T> datas){
-        mDatas.addAll(datas);
-        notifyDataSetChanged();
-    }
     public List<T> getItems(){
         return mDatas;
     }

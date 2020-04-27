@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick.pub.delegate;
+package com.heaven7.android.imagepick.pub.delegate.impl;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import com.heaven7.android.imagepick.pub.MediaOption;
 import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.SeeImageParameter;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
 import com.heaven7.android.imagepick.utils.SimpleAdapterManagerDelegate;
 import com.heaven7.core.util.BundleHelper;
