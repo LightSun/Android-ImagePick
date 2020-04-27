@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.RecyclerViewUtils;
+import com.heaven7.adapter.Selector;
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.LibUtils;
@@ -89,7 +90,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         mSelector.setSingleMode(mParam.getMaxSelect() <= 1);
 
         mMediaHelper = new MediaResourceHelper(this, mParam.getMediaOption());
-        int width = LibUtils.getWidth(context);
+        int width = LibUtils.getDisplayWidth(context);
         mItemWidth = (width - mParam.getSpace() * (mParam.getSpanCount() - 1)) / mParam.getSpanCount();
         //x / y = mItemWidth / mItemHeight
         mItemHeight = mParam.getAspectY() * mItemWidth / mParam.getAspectX();

@@ -28,7 +28,7 @@ public final class LibUtils {
         }
     }
 
-    public static int getWidth(Context context) {
+    public static int getDisplayWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);

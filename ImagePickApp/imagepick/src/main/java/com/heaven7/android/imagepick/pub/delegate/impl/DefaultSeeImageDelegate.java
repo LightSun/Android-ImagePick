@@ -222,7 +222,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
         public ContentAdapter(List<IImageItem> mDatas) {
             super(R.layout.lib_pick_item_see_image, mDatas);
 
-            int width = LibUtils.getWidth(getActivity());
+            int width = LibUtils.getDisplayWidth(getActivity());
             SeeImageParameter mParam = getParameter();
             mItemWidth = (width - mParam.getSpace() * (mParam.getSpanCount() - 1)) / mParam.getSpanCount();
             //x / y = mItemWidth / mItemHeight
