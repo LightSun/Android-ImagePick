@@ -1,9 +1,12 @@
-package com.heaven7.android.imagepick.pub;
+package com.heaven7.android.imagepick.pub.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.DrawableRes;
+
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
+import com.heaven7.android.imagepick.pub.PickConstants;
 
 /**
  * the image select parameter

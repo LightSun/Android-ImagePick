@@ -6,9 +6,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.GestureImageUtils;
-import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.memory.util.Cacher;
 

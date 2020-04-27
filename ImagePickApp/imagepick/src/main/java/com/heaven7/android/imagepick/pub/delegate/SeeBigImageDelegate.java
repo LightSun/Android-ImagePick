@@ -10,9 +10,9 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 
 /**
  * the delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}.

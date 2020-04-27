@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick.pub;
+package com.heaven7.android.imagepick.pub.module;
 
 import android.os.Parcelable;
 

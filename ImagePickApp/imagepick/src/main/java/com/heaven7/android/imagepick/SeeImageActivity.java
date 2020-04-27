@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.pub.AdapterManageDelegate;
-import com.heaven7.android.imagepick.pub.GroupItem;
-import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.module.GroupItem;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
 import com.heaven7.android.imagepick.utils.OptimiseScrollListenerImpl;
 import com.heaven7.java.visitor.ResultVisitor;
 import com.heaven7.java.visitor.collection.KeyValuePair;
@@ -43,7 +43,7 @@ public class SeeImageActivity extends BaseActivity implements SeeImageDelegate.M
     }
 
     @Override
-    protected void init(Context context, Bundle savedInstanceState) {
+    protected void initialize(Context context, Bundle savedInstanceState) {
         mRv_content = findViewById(R.id.rv_content);
         mRv_dir = findViewById(R.id.rv_dir);
         mHeaderView = findViewById(R.id.vg_top);

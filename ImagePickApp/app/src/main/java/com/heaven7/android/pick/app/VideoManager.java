@@ -5,7 +5,6 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,13 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.viewpager.widget.ViewPager;
 
-import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
+import com.heaven7.android.imagepick.pub.OnPageChangeListener2;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
-import com.heaven7.android.util2.WeakObject;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.android.video.view.MediaPlayerView;
 import com.heaven7.android.video.view.TextureVideoView;
@@ -32,11 +30,9 @@ import com.heaven7.java.base.util.SparseFactory;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lib.vida.video.MediaSdkPlayerView;
-
 /**
  */
-public class VideoManager implements VideoManageDelegate, ViewPager.OnPageChangeListener {
+public class VideoManager extends OnPageChangeListener2 implements VideoManageDelegate{
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView> mWeakView;

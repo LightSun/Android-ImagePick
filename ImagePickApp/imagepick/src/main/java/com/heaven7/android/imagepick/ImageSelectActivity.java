@@ -20,16 +20,18 @@ import com.heaven7.adapter.BaseSelector;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.RecyclerViewUtils;
 import com.heaven7.adapter.util.ViewHelper2;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.LibUtils;
-import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.IImageItem;
-import com.heaven7.android.imagepick.pub.ImageItem;
-import com.heaven7.android.imagepick.pub.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
-import com.heaven7.android.imagepick.pub.ImageSelectParameter;
-import com.heaven7.android.imagepick.pub.MediaResourceItem;
+import com.heaven7.android.imagepick.pub.MediaResourceHelper;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
+import com.heaven7.android.imagepick.pub.module.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
 import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
 import com.heaven7.android.imagepick.utils.OptimiseScrollListenerImpl;
 import com.heaven7.core.util.ImageParser;
@@ -82,7 +84,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     }
 
     @Override
-    protected void init(Context context, Bundle savedInstanceState) {
+    protected void initialize(Context context, Bundle savedInstanceState) {
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mSelector.setSingleMode(mParam.getMaxSelect() <= 1);
 

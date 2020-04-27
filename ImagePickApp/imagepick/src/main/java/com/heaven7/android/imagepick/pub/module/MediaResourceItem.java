@@ -1,10 +1,9 @@
-package com.heaven7.android.imagepick.pub;
+package com.heaven7.android.imagepick.pub.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.heaven7.adapter.BaseSelector;
-import com.heaven7.android.imagepick.MediaResourceHelper;
 
 /**
  * media resource item.

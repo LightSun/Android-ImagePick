@@ -9,9 +9,9 @@ import android.view.WindowManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.util.DefaultItemAnimator;
-import com.heaven7.android.imagepick.pub.ImageParameter;
-import com.heaven7.android.imagepick.pub.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
+import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
 import com.heaven7.core.util.ImageParser;
 
 import java.util.ArrayList;

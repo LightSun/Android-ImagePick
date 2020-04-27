@@ -20,10 +20,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.cameraview.CameraView;
-import com.heaven7.android.imagepick.pub.CameraParameter;
-import com.heaven7.android.imagepick.pub.ImageItem;
-import com.heaven7.android.imagepick.pub.ImageOptions;
-import com.heaven7.android.imagepick.pub.ImageParameter;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.pub.module.CameraParameter;
+import com.heaven7.android.imagepick.pub.module.ImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageOptions;
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.core.util.DimenUtil;
 import com.heaven7.core.util.ImageParser;

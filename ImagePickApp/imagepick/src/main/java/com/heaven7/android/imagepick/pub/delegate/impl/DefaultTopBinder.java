@@ -8,10 +8,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.R;
-import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 

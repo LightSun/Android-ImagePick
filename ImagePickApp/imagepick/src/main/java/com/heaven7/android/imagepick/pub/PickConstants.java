@@ -1,7 +1,5 @@
 package com.heaven7.android.imagepick.pub;
 
-import com.heaven7.android.imagepick.MediaResourceHelper;
-
 public interface PickConstants {
 
     String KEY_RESULT            = "result";

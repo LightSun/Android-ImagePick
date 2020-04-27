@@ -9,13 +9,13 @@ import android.widget.ImageView;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.LibPick$_ViewPagerUtils;
 import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
-import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.IImageItem;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
@@ -46,7 +46,7 @@ public class SeeBigImageActivity extends BaseActivity {
         return R.layout.lib_pick_ac_big_image;
     }
     @Override
-    protected void init(Context context, Bundle savedInstanceState) {
+    protected void initialize(Context context, Bundle savedInstanceState) {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
 
@@ -79,7 +79,7 @@ public class SeeBigImageActivity extends BaseActivity {
         super.onNewIntent(intent);
        // Logger.d(TAG, "onNewIntent", "" + hashCode());
         setIntent(intent);
-        init(this, null);
+        initialize(this, null);
     }
 
     @Override

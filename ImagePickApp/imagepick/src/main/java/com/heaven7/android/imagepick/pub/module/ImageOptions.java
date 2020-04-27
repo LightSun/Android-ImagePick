@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick.pub;
+package com.heaven7.android.imagepick.pub.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -140,7 +140,7 @@ public class ImageOptions implements Parcelable {
         this.targetHeight = in.readInt();
     }
 
-    public static final Parcelable.Creator<ImageOptions> CREATOR = new Parcelable.Creator<ImageOptions>() {
+    public static final Creator<ImageOptions> CREATOR = new Creator<ImageOptions>() {
         @Override
         public ImageOptions createFromParcel(Parcel source) {
             return new ImageOptions(source);

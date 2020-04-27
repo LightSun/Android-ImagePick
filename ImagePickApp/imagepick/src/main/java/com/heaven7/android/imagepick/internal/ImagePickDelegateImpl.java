@@ -1,4 +1,4 @@
-package com.heaven7.android.imagepick;
+package com.heaven7.android.imagepick.internal;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,21 +7,26 @@ import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.CameraParameter;
+import com.heaven7.android.imagepick.CameraActivity;
+import com.heaven7.android.imagepick.ImageSelectActivity;
+import com.heaven7.android.imagepick.SeeBigImageActivity;
+import com.heaven7.android.imagepick.SeeImageActivity;
 import com.heaven7.android.imagepick.pub.ExceptionHandler;
-import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
-import com.heaven7.android.imagepick.pub.ImageSelectParameter;
-import com.heaven7.android.imagepick.pub.MediaResourceItem;
+import com.heaven7.android.imagepick.pub.OnPageChangeListener2;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.CameraParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
+import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
 import com.heaven7.android.util2.LauncherIntent;
 
 import java.util.ArrayList;
@@ -45,13 +50,13 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     private ExceptionHandler mHandler;
     private VideoManageDelegate mVideoManager;
     private ImageLoadDelegate mImageLoadDelegate;
-    private ViewPager.OnPageChangeListener mPageListener;
+    private OnPageChangeListener2 mPageListener;
 
     private ImagePickDelegateImpl(){}
 
     private List<String> mImages = new ArrayList<>(5);
     private List<IImageItem> mItems;
-    private List<ImagePickDelegate.OnSelectStateChangedListener> mSelectListeners;
+    private List<OnSelectStateChangedListener> mSelectListeners;
 
     public static ImagePickDelegateImpl getDefault(){
         if(sInstance == null){
@@ -60,11 +65,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         return sInstance;
     }
     @Override
-    public void setOnPageChangeListener(ViewPager.OnPageChangeListener l) {
+    public void setOnPageChangeListener(OnPageChangeListener2 l) {
         mPageListener = l;
     }
     @Override
-    public ViewPager.OnPageChangeListener getOnPageChangeListener() {
+    public OnPageChangeListener2 getOnPageChangeListener() {
         return mPageListener;
     }
     @Override
@@ -219,11 +224,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         builder.build().startActivityForResult(REQ_BROWSE_BIG_IMAGE);
     }
 
-    /*public*/ void onImageProcessStart(final Activity activity, final int count) {
+    public void onImageProcessStart(final Activity activity, final int count) {
         if(activity == null){
             return;
         }
-        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        final OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         if(dd != null){
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -233,11 +238,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
             });
         }
     }
-    /*public*/ void onImageProcessEnd(final Activity activity, final Runnable next) {
+    public void onImageProcessEnd(final Activity activity, final Runnable next) {
         if(activity == null){
             return;
         }
-        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        final OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         if(dd != null){
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -251,11 +256,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
             activity.runOnUiThread(next);
         }
     }
-    /*public*/ void onImageProcessUpdate(final Activity activity, final int update, final int total) {
+    public void onImageProcessUpdate(final Activity activity, final int update, final int total) {
         if(activity == null){
             return;
         }
-        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        final OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         if(dd != null){
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -266,13 +271,13 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         }
     }
 
-    /*public*/ boolean onImageProcessException(final Activity activity, final int order,
+    public boolean onImageProcessException(final Activity activity, final int order,
                                                final int size, MediaResourceItem item, final Exception e) {
-        final ImagePickDelegate.OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
+        final OnImageProcessListener dd = ImagePickDelegateImpl.getDefault().getOnImageProcessListener();
         return dd != null && dd.onProcessException(activity, order, size, item, e);
     }
 
-    /*public*/ boolean handleException(FragmentActivity activity, int code, Exception e) {
+    public boolean handleException(FragmentActivity activity, int code, Exception e) {
         return mHandler != null && mHandler.handleException(activity, code, e);
     }
 }

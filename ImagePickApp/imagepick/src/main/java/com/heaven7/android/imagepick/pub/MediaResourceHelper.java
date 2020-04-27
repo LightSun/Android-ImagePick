@@ -1,12 +1,12 @@
-package com.heaven7.android.imagepick;
+package com.heaven7.android.imagepick.pub;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.heaven7.android.imagepick.pub.MediaOption;
-import com.heaven7.android.imagepick.pub.MediaResourceItem;
+import com.heaven7.android.imagepick.pub.module.MediaOption;
+import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
 import com.heaven7.android.util2.WeakContextOwner;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MainWorker;

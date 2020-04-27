@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.pub.PickConstants;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
     }
 
     @Override
-    protected void init(Context context, Bundle savedInstanceState) {
+    protected void initialize(Context context, Bundle savedInstanceState) {
         Bundle extras = getIntent().getExtras();
         
         CameraFragment fragment = new CameraFragment();

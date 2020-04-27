@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
 
 /**
  * the video manage delegate

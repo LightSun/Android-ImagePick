@@ -3,10 +3,14 @@ package com.heaven7.android.imagepick.pub;
 import android.app.Activity;
 import android.os.Bundle;
 
-import androidx.viewpager.widget.ViewPager;
-
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.CameraParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
+import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
 
 import java.util.List;
 
@@ -19,14 +23,14 @@ public interface ImagePickDelegate {
     /**
      * set OnPageChangeListener which is used for {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}
      * @param l OnPageChangeListener
-     * @since 1.0.5
+     * @since 2.0.1
      */
-    void setOnPageChangeListener(ViewPager.OnPageChangeListener l);
+    void setOnPageChangeListener(OnPageChangeListener2 l);
     /**
      * get OnPageChangeListener
-     * @since 1.0.5
+     * @since 2.0.1
      */
-    ViewPager.OnPageChangeListener getOnPageChangeListener();
+    OnPageChangeListener2 getOnPageChangeListener();
     /**
      * set video manage delegate
      * @param delegate the image delegate

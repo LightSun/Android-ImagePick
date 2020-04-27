@@ -15,9 +15,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
 import com.heaven7.adapter.SelectHelper;
 import com.heaven7.adapter.util.ViewHelper2;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.page.GestureBigImageAdapter;
-import com.heaven7.android.imagepick.pub.ImageItem;
-import com.heaven7.android.imagepick.pub.ImageOptions;
+import com.heaven7.android.imagepick.pub.module.ImageItem;
+import com.heaven7.android.imagepick.pub.module.ImageOptions;
 import com.heaven7.core.util.DimenUtil;
 import com.heaven7.core.util.ViewHelper;
 import com.heaven7.core.util.viewhelper.action.Getters;
@@ -38,7 +39,7 @@ public class BrowseActivity extends BaseActivity {
         return R.layout.lib_pick_ac_browse;
     }
     @Override
-    protected void init(Context context, Bundle savedInstanceState) {
+    protected void initialize(Context context, Bundle savedInstanceState) {
         mVp = findViewById(R.id.vp);
         mRv = findViewById(R.id.rv);
         mRv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

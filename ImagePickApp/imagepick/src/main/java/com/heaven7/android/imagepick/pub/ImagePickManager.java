@@ -1,6 +1,6 @@
 package com.heaven7.android.imagepick.pub;
 
-import com.heaven7.android.imagepick.ImagePickDelegateImpl;
+import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 
 /**
  * the image pick manager
@@ -9,11 +9,16 @@ import com.heaven7.android.imagepick.ImagePickDelegateImpl;
 public final class ImagePickManager {
 
     private static ImagePickManager sInstance;
-    private ImagePickDelegate mDelegate = ImagePickDelegateImpl.getDefault();
 
-    public static ImagePickManager get(){
+    private final ImagePickDelegate mDelegate;
+
+    private ImagePickManager(ImagePickDelegate mDelegate) {
+        this.mDelegate = mDelegate;
+    }
+
+    public static synchronized ImagePickManager get(){
         if(sInstance == null){
-            sInstance = new ImagePickManager();
+            sInstance = new ImagePickManager(ImagePickDelegateImpl.getDefault());
         }
         return sInstance;
     }

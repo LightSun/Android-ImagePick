@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.heaven7.core.util.Logger;
 import com.heaven7.java.base.anno.Nullable;
 
 
@@ -16,11 +15,11 @@ import com.heaven7.java.base.anno.Nullable;
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
        // ButterKnife.bind(this);
-        init(this, savedInstanceState);
+        initialize(this, savedInstanceState);
     }
 
     protected abstract int getLayoutId();
 
-    protected abstract void init(Context context, Bundle savedInstanceState);
+    protected abstract void initialize(Context context, Bundle savedInstanceState);
 
 }
