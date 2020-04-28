@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.viewpager.widget.ViewPager;
 
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
-import com.heaven7.android.imagepick.pub.OnPageChangeListener2;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.video.MediaViewCons;
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  */
-public class VideoManager extends OnPageChangeListener2 implements VideoManageDelegate{
+public class VideoManager implements ViewPager.OnPageChangeListener, VideoManageDelegate{
 
     private static final String TAG = "VideoManager";
     private WeakReference<TextureVideoView> mWeakView;

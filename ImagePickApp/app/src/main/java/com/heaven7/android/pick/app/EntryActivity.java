@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.heaven7.adapter.page.WrappedPageChangeListener;
 import com.heaven7.android.imagepick.pub.module.CameraParameter;
 import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
@@ -77,7 +78,7 @@ public class EntryActivity extends AppCompatActivity {
         });
         VideoManager vm = new VideoManager(getApplicationContext());
         ImagePickManager.get().getImagePickDelegate().setVideoManageDelegate(vm);
-        ImagePickManager.get().getImagePickDelegate().setOnPageChangeListener(vm);
+        ImagePickManager.get().getImagePickDelegate().setOnPageChangeListener(new WrappedPageChangeListener(vm));
         test1();
     }
     private void testGif(){

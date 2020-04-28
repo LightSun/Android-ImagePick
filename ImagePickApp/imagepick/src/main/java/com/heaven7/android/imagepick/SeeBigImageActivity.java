@@ -11,6 +11,7 @@ import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.adapter.page.ViewPagerDelegate;
 import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
@@ -33,8 +34,10 @@ public class SeeBigImageActivity extends BaseActivity {
     ViewGroup mVg_root;
 
     private static final String TAG = "SeeBigImageActivity";
+    private int mLayoutId;
     private BigImageSelectParameter mParam;
     private SeeBigImageDelegate mDelegate;
+    private ViewPagerDelegate<?> mPagerDelegate;
 
     private List<IImageItem> mItems;
     private IImageItem mLastSingleItem;
@@ -43,15 +46,22 @@ public class SeeBigImageActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.lib_pick_ac_big_image;
+        return mLayoutId;
     }
+
     @Override
-    protected void initialize(Context context, Bundle savedInstanceState) {
+    protected void onPreSetContentView() {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
+        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
+    }
 
-        mVp = findViewById(R.id.lib_pick_vp);
-        mVg_root = findViewById(R.id.vg_root);
+    @Override
+    protected void initialize(Context context, Bundle savedInstanceState) {
+        mPagerDelegate = ViewPagerDelegate.get(mDelegate.getViewPager(getWindow().getDecorView()));
+
+        //mVp = findViewById(R.id.lib_pick_vp);
+        mVg_root = findViewById(R.id.lib_pick_vg_root);
         mDelegate.initialize(context, mVg_root, getIntent());
 
         setListeners();

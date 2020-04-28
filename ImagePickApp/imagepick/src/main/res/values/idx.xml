@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="lib_pick_vp" type="id"/>
+    <item name="lib_pick_vg_root" type="id"/>
 </resources>

@@ -13,9 +13,14 @@ import com.heaven7.java.base.anno.Nullable;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onPreSetContentView();
         setContentView(getLayoutId());
        // ButterKnife.bind(this);
         initialize(this, savedInstanceState);
+    }
+
+    protected void onPreSetContentView(){
+
     }
 
     protected abstract int getLayoutId();

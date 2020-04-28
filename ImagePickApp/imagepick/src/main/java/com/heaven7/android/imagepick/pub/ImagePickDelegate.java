@@ -3,6 +3,7 @@ package com.heaven7.android.imagepick.pub;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.heaven7.adapter.page.WrappedPageChangeListener;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
@@ -25,12 +26,12 @@ public interface ImagePickDelegate {
      * @param l OnPageChangeListener
      * @since 2.0.1
      */
-    void setOnPageChangeListener(OnPageChangeListener2 l);
+    void setOnPageChangeListener(WrappedPageChangeListener l);
     /**
      * get OnPageChangeListener
      * @since 2.0.1
      */
-    OnPageChangeListener2 getOnPageChangeListener();
+    WrappedPageChangeListener getOnPageChangeListener();
     /**
      * set video manage delegate
      * @param delegate the image delegate

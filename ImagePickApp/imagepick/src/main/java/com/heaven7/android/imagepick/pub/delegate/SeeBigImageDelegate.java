@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.heaven7.adapter.page.PageViewProvider;
+import com.heaven7.android.imagepick.R;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
@@ -47,6 +49,13 @@ public abstract class SeeBigImageDelegate {
     }
     public ViewBinder getBottomBinder(){
         return mBottomBinder != UNSET ? (ViewBinder) mBottomBinder : null;
+    }
+
+    public int getLayoutId(){
+        return 0;
+    }
+    public View getViewPager(View root){
+        return root.findViewById(R.id.lib_pick_vp);
     }
     public void onDestroy(){
         ViewBinder binder = getTopBinder();

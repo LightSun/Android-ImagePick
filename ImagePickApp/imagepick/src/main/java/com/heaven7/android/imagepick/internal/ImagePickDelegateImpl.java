@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.adapter.page.WrappedPageChangeListener;
 import com.heaven7.android.imagepick.CameraActivity;
 import com.heaven7.android.imagepick.ImageSelectActivity;
 import com.heaven7.android.imagepick.SeeBigImageActivity;
@@ -14,7 +14,6 @@ import com.heaven7.android.imagepick.SeeImageActivity;
 import com.heaven7.android.imagepick.pub.ExceptionHandler;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
-import com.heaven7.android.imagepick.pub.OnPageChangeListener2;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
@@ -50,7 +49,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     private ExceptionHandler mHandler;
     private VideoManageDelegate mVideoManager;
     private ImageLoadDelegate mImageLoadDelegate;
-    private OnPageChangeListener2 mPageListener;
+    private WrappedPageChangeListener mPageListener;
 
     private ImagePickDelegateImpl(){}
 
@@ -65,11 +64,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
         return sInstance;
     }
     @Override
-    public void setOnPageChangeListener(OnPageChangeListener2 l) {
+    public void setOnPageChangeListener(WrappedPageChangeListener l) {
         mPageListener = l;
     }
     @Override
-    public OnPageChangeListener2 getOnPageChangeListener() {
+    public WrappedPageChangeListener getOnPageChangeListener() {
         return mPageListener;
     }
     @Override
