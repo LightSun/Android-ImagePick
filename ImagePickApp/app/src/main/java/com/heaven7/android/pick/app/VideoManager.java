@@ -86,7 +86,7 @@ public class VideoManager implements ViewPager.OnPageChangeListener, VideoManage
     }
 
     @Override
-    public void onBindItem(View v, int position, IImageItem data) {
+    public void onBindItem(View v, int position, int realPos, IImageItem data) {
         Logger.d(TAG, "onBindItem", "position = " + position);
         TextureVideoView view = getTextureVideoView(v);
         view.setVideoURI(FileProviderHelper.getUriForFile(v.getContext(), data.getFilePath()));
@@ -95,7 +95,7 @@ public class VideoManager implements ViewPager.OnPageChangeListener, VideoManage
         mMap.put(position, (MediaPlayerView) v);
     }
     @Override
-    public void onDestroyItem(View v, int position, IImageItem data) {
+    public void onDestroyItem(View v, int position, int realPos, IImageItem data) {
         Logger.d(TAG, "destroyVideo", "position = " + position);
         MediaPlayerView playerView = (MediaPlayerView) v;
         TextureVideoView view = getTextureVideoView(v);
@@ -113,11 +113,6 @@ public class VideoManager implements ViewPager.OnPageChangeListener, VideoManage
     public void onAttach(Activity activity) {
         AppCompatActivity ac = (AppCompatActivity) activity;
         ac.getLifecycle().addObserver(new LifecycleListener(this));
-    }
-
-    @Override
-    public void setPrimaryItem(View v, int actualPosition, IImageItem data) {
-        Logger.d(TAG, "setPrimaryItem","pos: " + actualPosition + " ,path = " + data.getFilePath());
     }
 
     @Override

@@ -27,25 +27,19 @@ public interface VideoManageDelegate {
     /**
      * called on set media data to video view by onBindItem.
      * @param v the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the position
+     * @param pos the position in view pager
+     * @param realPos the real position
      * @param data the media data
      */
-    void onBindItem(View v, int position, IImageItem data);
+    void onBindItem(View v, int pos, int realPos, IImageItem data);
     /**
      * called on destroy video
      * @param v the video view. which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the position
+     * @param pos the position
+     * @param realPos the real position
      * @param data the media item
      */
-    void onDestroyItem(View v, int position, IImageItem data);
-
-    /**
-     * called on set primary item
-     * @param view the video view which is create by {@linkplain #createVideoView(Context, ViewGroup, IImageItem)}
-     * @param position the real position
-     * @param data the media data
-     */
-    void setPrimaryItem(View view, int position, IImageItem data);
+    void onDestroyItem(View v, int pos, int realPos, IImageItem data);
 
     /**
      * called on attach---onCreate

@@ -5,21 +5,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.heaven7.adapter.page.GenericPagerAdapter;
+import com.heaven7.adapter.page.ItemViewContext;
+import com.heaven7.adapter.page.PageDataProvider;
+import com.heaven7.adapter.page.PageViewProvider;
 import com.heaven7.adapter.page.ViewPagerDelegate;
+import com.heaven7.adapter.page.WrappedPageChangeListener;
 import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.internal.LibUtils;
-import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
-import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
-import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.page.MediaPageProviderManager;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
+import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.imagepick.utils.ComposePageViewProvider;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.Toaster;
 
@@ -30,7 +35,7 @@ import java.util.List;
  */
 public class SeeBigImageActivity extends BaseActivity {
 
-    ViewPager mVp;
+   // ViewPager mVp;
     ViewGroup mVg_root;
 
     private static final String TAG = "SeeBigImageActivity";
@@ -41,8 +46,6 @@ public class SeeBigImageActivity extends BaseActivity {
 
     private List<IImageItem> mItems;
     private IImageItem mLastSingleItem;
-
-    private MediaAdapter mMediaAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -71,9 +74,11 @@ public class SeeBigImageActivity extends BaseActivity {
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
        // Logger.d(TAG, "init_"+hashCode(), "mItems.size = " + mItems.size());
         //set media adapter
-        mMediaAdapter = new MediaAdapter(mItems);
-        mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
-        mVp.setAdapter(mMediaAdapter);
+        MediaPageProviderManager mppm = new MediaPageProviderManager(this, mDelegate);
+        mppm.setSupportGesture(mParam.isSupportGestureImage());
+        mppm.getItems().addAll(mItems);
+        mPagerDelegate.setAdapter(this, mppm.getDataProvider(),
+                new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)), false);
 
         //
         VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
@@ -110,7 +115,7 @@ public class SeeBigImageActivity extends BaseActivity {
         //remove listener
         ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
         if(l != null){
-            mVp.removeOnPageChangeListener(l);
+            mPagerDelegate.removeOnPageChangeListener(l);
         }
         mDelegate.onDestroy();
         super.onDestroy();
@@ -127,9 +132,8 @@ public class SeeBigImageActivity extends BaseActivity {
     public void onClickBack(View view) {
         finish();
     }
-
     private void setListeners() {
-        mVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mPagerDelegate.addOnPageChangListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
@@ -143,13 +147,13 @@ public class SeeBigImageActivity extends BaseActivity {
             public void onPageScrollStateChanged(int i) {
                 if (i == ViewPager.SCROLL_STATE_IDLE) {
                     //System.out.println("onPageScrollStateChanged: SCROLL_STATE_IDLE. i = " + i);
-                    setSelectOrder(mVp.getCurrentItem() + 1, false);
+                    setSelectOrder(mPagerDelegate.getCurrentItem() + 1, false);
                 }
             }
         });
-        ViewPager.OnPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
+        WrappedPageChangeListener l = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
         if(l != null){
-            mVp.addOnPageChangeListener(l);
+            mPagerDelegate.addOnPageChangListener(l);
         }
     }
 
@@ -204,7 +208,7 @@ public class SeeBigImageActivity extends BaseActivity {
         mDelegate.setUiState();
         setSelectedText();
         //handle position
-        mVp.setCurrentItem(mParam.getCurrentOrder() - 1);
+        mPagerDelegate.setCurrentItem(mParam.getCurrentOrder() - 1);
         //the first time. video not play .we need called it
         if(mParam.getCurrentOrder() == 1){
             ViewPager.OnPageChangeListener listener = ImagePickDelegateImpl.getDefault().getOnPageChangeListener();
@@ -221,21 +225,31 @@ public class SeeBigImageActivity extends BaseActivity {
     private boolean hasFlag(int flags) {
         return (mParam.getFlags() & flags) == flags;
     }
-    private class MediaAdapter extends AbstractMediaPageAdapter{
+    private static class VideoViewProvider extends PageViewProvider<IImageItem>{
 
-        public MediaAdapter(List<? extends IImageItem> mDatas) {
-            super(mDatas);
+        public VideoViewProvider(Context context) {
+            super(context);
         }
         @Override
-        protected void onBindImageItem(ImageView iv, final int index, final IImageItem data) {
-            if(!mDelegate.bindImageItem(iv, index, data)){
-                ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(SeeBigImageActivity.this,iv, data, null);
-                iv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mDelegate.onClickPageImageView(v, index, data);
-                    }
-                });
+        public View createItemView(ViewGroup parent, int i, int i1, IImageItem item) {
+            if(item.isVideo()){
+                return ImagePickDelegateImpl.getDefault().getVideoManageDelegate()
+                        .createVideoView(getContext(), parent, item);
+            }
+            return null;
+        }
+        @Override
+        public void onBindItemView(View view, int position, int realPosition, IImageItem item) {
+            if(item.isVideo()){
+                ImagePickDelegateImpl.getDefault().getVideoManageDelegate()
+                        .onBindItem(view, position, realPosition, item);
+            }
+        }
+        @Override
+        public void onDestroyItemView(View view, int position, int realPosition, IImageItem item) {
+            if(item.isVideo()){
+                ImagePickDelegateImpl.getDefault().getVideoManageDelegate()
+                        .onDestroyItem(view, position, realPosition, item);
             }
         }
     }
@@ -264,5 +278,25 @@ public class SeeBigImageActivity extends BaseActivity {
             }
         }
     }
+    //TODO PageAdapter0 handle video view
+    private class PageAdapter0 extends GenericPagerAdapter<IImageItem>{
 
+        public PageAdapter0(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
+                            boolean loop) {
+            super(dataProvider, viewProvider, loop);
+        }
+        public PageAdapter0(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
+                            boolean loop, int maxPoolSize) {
+            super(dataProvider, viewProvider, loop, maxPoolSize);
+        }
+
+        @Override
+        protected void recycle(View view, ItemViewContext context) {
+            super.recycle(view, context);
+        }
+        @Override
+        protected View obtainItemView(ItemViewContext context) {
+            return super.obtainItemView(context);
+        }
+    }
 }

@@ -151,7 +151,7 @@ public class BrowseActivity extends BaseActivity {
             super(false, mDatas, true);
         }
         @Override
-        protected void onBindItem(ImageView iv, int index, ImageItem data) {
+        protected void onBindItem(ImageView iv, int position, int index, ImageItem data) {
             ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(BrowseActivity.this, iv, data, null);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override

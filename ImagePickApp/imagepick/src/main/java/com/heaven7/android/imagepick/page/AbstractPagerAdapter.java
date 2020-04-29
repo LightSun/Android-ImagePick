@@ -78,7 +78,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
 
         ItemView itemView = obtainItemView(new ItemViewContext(container, index, data));
         container.addView(itemView);
-        onBindItem(itemView, index, data);
+        onBindItem(itemView, position, index, data);
         return itemView;
     }
 
@@ -119,10 +119,11 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
     /**
      * called on bind item data
      * @param iv the image view
-     * @param index the actually index
+     * @param position the position
+     * @param realPos the actually position
      * @param data the data
      */
-    protected abstract void onBindItem(ItemView iv, int index, T data);
+    protected abstract void onBindItem(ItemView iv, int position, int realPos, T data);
 
     /**
      * called on create item view for view pager

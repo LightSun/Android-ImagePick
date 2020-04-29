@@ -10,8 +10,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.heaven7.adapter.page.PageViewProvider;
 import com.heaven7.android.imagepick.R;
+import com.heaven7.android.imagepick.page.MediaPageProviderManager;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
@@ -21,7 +21,7 @@ import com.heaven7.android.imagepick.pub.module.IImageItem;
  * @author heaven7
  * @since 1.0.5
  */
-public abstract class SeeBigImageDelegate {
+public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Callback {
 
     private static final Object UNSET = new Object();
     private ViewGroup parent;
@@ -131,7 +131,7 @@ public abstract class SeeBigImageDelegate {
     }
 
     /**
-     * called on set ui state. this is called on final initialize of activity or {@linkplain #onClickPageImageView(View, int, IImageItem)}.
+     * called on set ui state. this is called on final initialize of activity or {@linkplain #onClickPageImageView(ImageView, int, int, IImageItem)}.
      */
     public void setUiState() {
         ViewBinder topBinder = getTopBinder();
@@ -153,10 +153,12 @@ public abstract class SeeBigImageDelegate {
     /**
      * called on click image view ,which is a child of viewpager.
      * @param v the image view
-     * @param index the real index of items/pages
+     * @param pos the pos
+     * @param realPos the realPos
      * @param data the image data.
      */
-    public void onClickPageImageView(View v, int index, IImageItem data) {
+    @Override
+    public void onClickPageImageView(ImageView v, int pos, int realPos, IImageItem data) {
         BigImageSelectParameter mParam = getParameter();
         if (mParam.hasFlag(PickConstants.FLAG_SHOW_TOP) || mParam.hasFlag(PickConstants.FLAG_SHOW_BOTTOM)) {
             mParam.deleteFlags(PickConstants.FLAG_SHOW_TOP | PickConstants.FLAG_SHOW_BOTTOM);
@@ -169,11 +171,13 @@ public abstract class SeeBigImageDelegate {
     /**
      * called on bind image item to view
      * @param iv the image view
-     * @param index the real index of view pager
+     * @param pos the pos
+     * @param realPos the realPos
      * @param data the data
      * @return true if bind success.
      */
-    public boolean bindImageItem(ImageView iv, int index, IImageItem data) {
+    @Override
+    public boolean bindImageItem(ImageView iv, int pos, int realPos, IImageItem data) {
         return false;
     }
 
@@ -243,4 +247,5 @@ public abstract class SeeBigImageDelegate {
         IImageItem getImageItem(int index);
         void onClickSelect(View v);
     }
+
 }
