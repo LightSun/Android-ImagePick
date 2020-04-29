@@ -3,6 +3,8 @@ package com.heaven7.android.imagepick.page;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.heaven7.adapter.page.ItemViewContext;
+
 import java.util.List;
 
 public abstract class BigImageAdapter<T> extends AbstractPagerAdapter<T, ImageView> {

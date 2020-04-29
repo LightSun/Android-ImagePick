@@ -27,6 +27,7 @@ import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.utils.ComposePageViewProvider;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.Toaster;
+import com.heaven7.memory.util.Cacher;
 
 import java.util.List;
 
@@ -77,8 +78,10 @@ public class SeeBigImageActivity extends BaseActivity {
         MediaPageProviderManager mppm = new MediaPageProviderManager(this, mDelegate);
         mppm.setSupportGesture(mParam.isSupportGestureImage());
         mppm.getItems().addAll(mItems);
-        mPagerDelegate.setAdapter(this, mppm.getDataProvider(),
-                new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)), false);
+        PageAdapter0 pa = new PageAdapter0(mppm.getDataProvider(),
+                new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
+                false);
+        mPagerDelegate.setAdapter(this, pa);
 
         //
         VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
@@ -278,9 +281,15 @@ public class SeeBigImageActivity extends BaseActivity {
             }
         }
     }
-    //TODO PageAdapter0 handle video view
-    private class PageAdapter0 extends GenericPagerAdapter<IImageItem>{
+    private static class PageAdapter0 extends GenericPagerAdapter<IImageItem>{
 
+        final Cacher<View, ItemViewContext> mVideoCache = new Cacher<View, ItemViewContext>(5) {
+            @Override
+            public View create(ItemViewContext context) {
+                return getViewProvider().createItemView(context.parent, context.position,
+                        context.realPosition, (IImageItem) context.data);
+            }
+        };
         public PageAdapter0(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
                             boolean loop) {
             super(dataProvider, viewProvider, loop);
@@ -292,11 +301,25 @@ public class SeeBigImageActivity extends BaseActivity {
 
         @Override
         protected void recycle(View view, ItemViewContext context) {
-            super.recycle(view, context);
+            if(isVideo(context)){
+                com.heaven7.android.imagepick.internal.MediaLog.recycleItem(context);
+                mVideoCache.recycle(view);
+            }else {
+                super.recycle(view, context);
+            }
         }
         @Override
         protected View obtainItemView(ItemViewContext context) {
+            if(isVideo(context)){
+                com.heaven7.android.imagepick.internal.MediaLog.obtainItem(context);
+                return mVideoCache.obtain(context);
+            }
             return super.obtainItemView(context);
         }
+        private boolean isVideo(ItemViewContext context){
+            IImageItem item = (IImageItem) context.data;
+            return item.isVideo();
+        }
     }
+
 }

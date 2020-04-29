@@ -2,9 +2,10 @@ package com.heaven7.android.imagepick.page;
 
 import android.widget.ImageView;
 
-import java.util.List;
-
+import com.heaven7.adapter.page.ItemViewContext;
 import com.heaven7.android.imagepick.internal.GestureImageUtils;
+
+import java.util.List;
 
 /**
  * bit image adapter ,support gesture

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.heaven7.adapter.page.ItemViewContext;
 import com.heaven7.memory.util.Cacher;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
         int index = getPositionActually(position);
         T data = mDatas.get(index);
 
-        ItemView itemView = obtainItemView(new ItemViewContext(container, index, data));
+        ItemView itemView = obtainItemView(getItemContext(container, position, index, data));
         container.addView(itemView);
         onBindItem(itemView, position, index, data);
         return itemView;
@@ -96,6 +97,12 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
             return position % mDatas.size();
         }
         return position;
+    }
+
+    private ItemViewContext getItemContext(ViewGroup parent, int position, int realPos, T data){
+        ItemViewContext context = new ItemViewContext();
+        context.set(parent, position, realPos, data);
+        return context;
     }
 
     /**
@@ -132,18 +139,4 @@ public abstract class AbstractPagerAdapter<T, ItemView extends View> extends Pag
      */
     protected abstract ItemView onCreateItemView(ItemViewContext context);
 
-
-    public static class ItemViewContext{
-        public final ViewGroup parent;
-        public final int position;
-        public final Object data;
-        public ItemViewContext(ViewGroup parent, int position, Object data) {
-            this.parent = parent;
-            this.position = position;
-            this.data = data;
-        }
-        public Context getContext(){
-            return parent.getContext();
-        }
-    }
 }
