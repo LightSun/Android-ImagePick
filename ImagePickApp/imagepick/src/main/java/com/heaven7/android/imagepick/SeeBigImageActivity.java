@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.heaven7.adapter.page.GenericPagerAdapter;
+import com.heaven7.adapter.page.GenericRvPagerAdapter;
+import com.heaven7.adapter.page.IPageAdapter;
 import com.heaven7.adapter.page.ItemViewContext;
 import com.heaven7.adapter.page.PageDataProvider;
 import com.heaven7.adapter.page.PageViewProvider;
@@ -57,12 +60,15 @@ public class SeeBigImageActivity extends BaseActivity {
     protected void onPreSetContentView() {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
-        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
+       // mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
+        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image2;
+        //TODO test ViewPager2 in playing video
     }
 
     @Override
     protected void initialize(Context context, Bundle savedInstanceState) {
-        mPagerDelegate = ViewPagerDelegate.get(mDelegate.getViewPager(getWindow().getDecorView()));
+        View vp = mDelegate.getViewPager(getWindow().getDecorView());
+        mPagerDelegate = ViewPagerDelegate.get(vp);
 
         //mVp = findViewById(R.id.lib_pick_vp);
         mVg_root = findViewById(R.id.lib_pick_vg_root);
@@ -78,12 +84,21 @@ public class SeeBigImageActivity extends BaseActivity {
         MediaPageProviderManager mppm = new MediaPageProviderManager(this, mDelegate);
         mppm.setSupportGesture(mParam.isSupportGestureImage());
         mppm.getItems().addAll(mItems);
-        PageAdapter0 pa = new PageAdapter0(mppm.getDataProvider(),
-                new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
-                false);
+        IPageAdapter pa ;
+        if(vp instanceof ViewPager){
+            pa = new PageAdapterV1(mppm.getDataProvider(),
+                    new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
+                    false);
+        }else if(vp instanceof ViewPager2){
+            pa = new PageAdapterV2(mppm.getDataProvider(),
+                    new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
+                    false);
+        }else {
+            throw new UnsupportedOperationException("wrong view pager");
+        }
         mPagerDelegate.setAdapter(this, pa);
 
-        //
+        // set video manager delegate
         VideoManageDelegate vmd = ImagePickDelegateImpl.getDefault().getVideoManageDelegate();
         if(vmd != null){
             vmd.onAttach(this);
@@ -281,7 +296,7 @@ public class SeeBigImageActivity extends BaseActivity {
             }
         }
     }
-    private static class PageAdapter0 extends GenericPagerAdapter<IImageItem>{
+    private static class PageAdapterV1 extends GenericPagerAdapter<IImageItem>{
 
         final Cacher<View, ItemViewContext> mVideoCache = new Cacher<View, ItemViewContext>(5) {
             @Override
@@ -290,15 +305,10 @@ public class SeeBigImageActivity extends BaseActivity {
                         context.realPosition, (IImageItem) context.data);
             }
         };
-        public PageAdapter0(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
-                            boolean loop) {
+        public PageAdapterV1(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
+                             boolean loop) {
             super(dataProvider, viewProvider, loop);
         }
-        public PageAdapter0(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
-                            boolean loop, int maxPoolSize) {
-            super(dataProvider, viewProvider, loop, maxPoolSize);
-        }
-
         @Override
         protected void recycle(View view, ItemViewContext context) {
             if(isVideo(context)){
@@ -321,5 +331,39 @@ public class SeeBigImageActivity extends BaseActivity {
             return item.isVideo();
         }
     }
+    private static class PageAdapterV2 extends GenericRvPagerAdapter<IImageItem> {
 
+        final Cacher<View, ItemViewContext> mVideoCache = new Cacher<View, ItemViewContext>(5) {
+            @Override
+            public View create(ItemViewContext context) {
+                return getViewProvider().createItemView(context.parent, context.position,
+                        context.realPosition, (IImageItem) context.data);
+            }
+        };
+        public PageAdapterV2(PageDataProvider<? extends IImageItem> dataProvider, PageViewProvider<? extends IImageItem> viewProvider,
+                            boolean loop) {
+            super(dataProvider, viewProvider, loop);
+        }
+        @Override
+        protected void recycle(View view, ItemViewContext context) {
+            if(isVideo(context)){
+                com.heaven7.android.imagepick.internal.MediaLog.recycleItem(context);
+                mVideoCache.recycle(view);
+            }else {
+                super.recycle(view, context);
+            }
+        }
+        @Override
+        protected View obtainItemView(ItemViewContext context) {
+            if(isVideo(context)){
+                com.heaven7.android.imagepick.internal.MediaLog.obtainItem(context);
+                return mVideoCache.obtain(context);
+            }
+            return super.obtainItemView(context);
+        }
+        private boolean isVideo(ItemViewContext context){
+            IImageItem item = (IImageItem) context.data;
+            return item.isVideo();
+        }
+    }
 }
