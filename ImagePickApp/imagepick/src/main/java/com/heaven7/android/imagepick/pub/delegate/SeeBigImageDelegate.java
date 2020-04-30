@@ -19,7 +19,7 @@ import com.heaven7.android.imagepick.pub.module.IImageItem;
 /**
  * the delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}.
  * @author heaven7
- * @since 1.0.5
+ * @since 2.0.0
  */
 public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Callback {
 
@@ -44,15 +44,33 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
     public BigImageSelectParameter getParameter(){
         return getProvider().getParameter();
     }
+    /**
+     * get the top binder
+     * @return the top binder
+     */
     public ViewBinder getTopBinder(){
         return mTopBinder != UNSET ? (ViewBinder) mTopBinder : null;
     }
+
+    /**
+     * get the bottom binder
+     * @return the bottom binder
+     */
     public ViewBinder getBottomBinder(){
         return mBottomBinder != UNSET ? (ViewBinder) mBottomBinder : null;
     }
+    /**
+     * called to get view pager from target root view. this give you a chance to change view-pager,such as you vertical-ViewPager2
+     * @param root the root view
+     * @return the view pager
+     */
     public View getViewPager(View root){
         return root.findViewById(R.id.lib_pick_vp);
     }
+
+    /**
+     * called on destroy
+     */
     public void onDestroy(){
         ViewBinder binder = getTopBinder();
         if(binder != null){
@@ -63,6 +81,13 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
             binder.onDestroy();
         }
     }
+
+    /**
+     * called on initialize the delegate.
+     * @param context the context
+     * @param parent the view parent
+     * @param intent the intent from activity
+     */
     public void initialize(Context context, ViewGroup parent, Intent intent){
         this.parent = parent;
         ViewBinder topBinder = onCreateTopBinder(context, parent, intent);
@@ -79,9 +104,6 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
         this.mTopBinder = topBinder;
         this.mBottomBinder = bottomBinder;
     }
-
-    protected abstract ViewBinder onCreateTopBinder(Context context, ViewGroup parent, Intent intent);
-    protected abstract ViewBinder onCreateBottomBinder(Context context, ViewGroup parent, Intent intent);
 
     /**
      * called on set selected text. such as 'upload(4/10)'
@@ -178,7 +200,23 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
     }
 
     /**
-     * the view binder of {@linkplain SeeBigImageDelegate}.
+     * called on create top binder
+     * @param context the context
+     * @param parent the view parent
+     * @param intent the intent
+     * @return the top binder. can be null
+     */
+    protected abstract ViewBinder onCreateTopBinder(Context context, ViewGroup parent, Intent intent);
+    /**
+     * called on create bottom binder
+     * @param context the context
+     * @param parent the view parent
+     * @param intent the intent
+     * @return the bottom binder. can be null
+     */
+    protected abstract ViewBinder onCreateBottomBinder(Context context, ViewGroup parent, Intent intent);
+    /**
+     * the view binder of {@linkplain SeeBigImageDelegate}. you can use this as the top ,bottom binder.
      */
     public abstract static class ViewBinder{
 
@@ -237,6 +275,9 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
         }
     }
 
+    /**
+     * the provider which provide something for delegate
+     */
     public interface Provider{
         AppCompatActivity getActivity();
         BigImageSelectParameter getParameter();
