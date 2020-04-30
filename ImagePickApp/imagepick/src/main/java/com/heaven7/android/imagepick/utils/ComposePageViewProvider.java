@@ -9,6 +9,11 @@ import com.heaven7.android.imagepick.pub.module.IImageItem;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * compose page view provider
+ * @author heaven7
+ * @since 2.0.0
+ */
 public final class ComposePageViewProvider extends PageViewProvider<IImageItem> {
 
     private final List<PageViewProvider<IImageItem>> mList;

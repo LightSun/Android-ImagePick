@@ -10,6 +10,12 @@ import com.heaven7.android.imagepick.pub.AdapterManageDelegate;
 
 import java.util.List;
 
+/**
+ * the simple adapter manager delegate
+ * @param <T> the data
+ * @author heaven7
+ * @since 2.0.0
+ */
 public class SimpleAdapterManagerDelegate<T extends ISelectable>  implements AdapterManageDelegate<T> {
 
     private final AdapterManager<T> mAM;
