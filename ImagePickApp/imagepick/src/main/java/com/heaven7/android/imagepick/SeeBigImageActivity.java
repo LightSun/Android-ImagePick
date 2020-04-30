@@ -60,9 +60,9 @@ public class SeeBigImageActivity extends BaseActivity {
     protected void onPreSetContentView() {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
-       // mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
-        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image2;
-        //TODO test ViewPager2 in playing video
+        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
+        //test ViewPager2 ok.
+       // mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image2;
     }
 
     @Override
@@ -84,15 +84,13 @@ public class SeeBigImageActivity extends BaseActivity {
         MediaPageProviderManager mppm = new MediaPageProviderManager(this, mDelegate);
         mppm.setSupportGesture(mParam.isSupportGestureImage());
         mppm.getItems().addAll(mItems);
+
         IPageAdapter pa ;
+        ComposePageViewProvider provider = new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this));
         if(vp instanceof ViewPager){
-            pa = new PageAdapterV1(mppm.getDataProvider(),
-                    new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
-                    false);
+            pa = new PageAdapterV1(mppm.getDataProvider(), provider, false);
         }else if(vp instanceof ViewPager2){
-            pa = new PageAdapterV2(mppm.getDataProvider(),
-                    new ComposePageViewProvider(mppm.getImageViewProvider(), new VideoViewProvider(this)),
-                    false);
+            pa = new PageAdapterV2(mppm.getDataProvider(), provider, false);
         }else {
             throw new UnsupportedOperationException("wrong view pager");
         }
@@ -310,12 +308,12 @@ public class SeeBigImageActivity extends BaseActivity {
             super(dataProvider, viewProvider, loop);
         }
         @Override
-        protected void recycle(View view, ItemViewContext context) {
+        protected void recycleItemView(View view, ItemViewContext context) {
             if(isVideo(context)){
                 com.heaven7.android.imagepick.internal.MediaLog.recycleItem(context);
                 mVideoCache.recycle(view);
             }else {
-                super.recycle(view, context);
+                super.recycleItemView(view, context);
             }
         }
         @Override
@@ -345,12 +343,12 @@ public class SeeBigImageActivity extends BaseActivity {
             super(dataProvider, viewProvider, loop);
         }
         @Override
-        protected void recycle(View view, ItemViewContext context) {
+        protected void recycleItemView(View view, ItemViewContext context) {
             if(isVideo(context)){
                 com.heaven7.android.imagepick.internal.MediaLog.recycleItem(context);
                 mVideoCache.recycle(view);
             }else {
-                super.recycle(view, context);
+                super.recycleItemView(view, context);
             }
         }
         @Override
