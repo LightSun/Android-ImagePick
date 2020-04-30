@@ -47,6 +47,10 @@ import com.heaven7.java.visitor.util.Predicates;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the default delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
+ * @since 2.0.0
+ */
 public class DefaultSeeImageDelegate extends SeeImageDelegate {
 
     private Header mHeader;

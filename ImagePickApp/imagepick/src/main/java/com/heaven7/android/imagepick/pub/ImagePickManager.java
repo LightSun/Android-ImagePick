@@ -22,6 +22,11 @@ public final class ImagePickManager {
         }
         return sInstance;
     }
+
+    /**
+     * get the image pick delegate
+     * @return the image delegate
+     */
     public ImagePickDelegate getImagePickDelegate(){
         return mDelegate;
     }

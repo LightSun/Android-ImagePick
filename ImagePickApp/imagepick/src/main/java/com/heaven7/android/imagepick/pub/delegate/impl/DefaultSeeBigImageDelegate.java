@@ -6,6 +6,10 @@ import android.view.ViewGroup;
 
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 
+/**
+ * the default delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}.
+ * @since 2.0.0
+ */
 public class DefaultSeeBigImageDelegate extends SeeBigImageDelegate{
 
     @Override

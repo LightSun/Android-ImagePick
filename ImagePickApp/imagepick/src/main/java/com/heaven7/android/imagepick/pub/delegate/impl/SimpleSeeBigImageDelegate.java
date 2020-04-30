@@ -8,6 +8,11 @@ import android.view.ViewGroup;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
 
+
+/**
+ * the simple delegate which can set the title.
+ * @since 2.0.0
+ */
 public class SimpleSeeBigImageDelegate extends SeeBigImageDelegate {
 
     private String mTitle;
