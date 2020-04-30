@@ -10,10 +10,10 @@ public interface PickConstants {
     String KEY_EXTRA                = "extra";
     String KEY_MEDIA_OPTION         = "mediaOption";
     /**
-     * the layout id of See-Big-Image-Activity
+     * the layout id. used by See-Big-Image-Activity, latter may be used by others.
      * @since 2.0.0
      */
-    String KEY_BIG_IMAGE_LAYOUT_ID  = "big_img_layout_id";
+    String KEY_LAYOUT_ID  = "layout_id";
 
     /** the flags for see-big-image */
     int FLAG_SHOW_TOP             = 0x0001;

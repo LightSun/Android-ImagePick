@@ -1,6 +1,7 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,14 @@ import com.heaven7.java.base.anno.Nullable;
         setContentView(getLayoutId());
        // ButterKnife.bind(this);
         initialize(this, savedInstanceState);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Logger.d(TAG, "onNewIntent", "" + hashCode());
+        setIntent(intent);
+        initialize(this, null);
     }
 
     protected void onPreSetContentView(){

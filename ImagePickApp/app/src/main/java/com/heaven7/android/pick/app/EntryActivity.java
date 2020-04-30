@@ -25,6 +25,7 @@ import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
+import com.heaven7.android.pick.app.impl.SeeBigImageDelegate2;
 import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
@@ -169,7 +170,8 @@ public class EntryActivity extends AppCompatActivity {
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
                             Bundle optBundle = new BundleHelper()
-                                    .putInt(PickConstants.KEY_BIG_IMAGE_LAYOUT_ID, R.layout.lib_pick_ac_big_image2)
+                                    .putInt(PickConstants.KEY_LAYOUT_ID, R.layout.lib_pick_ac_big_image2)
+                                    .putString(PickConstants.KEY_DELEGATE, SeeBigImageDelegate2.class.getName())
                                     .getBundle();
                             startWithGif(optBundle);
                         }

@@ -58,12 +58,13 @@ public class SeeBigImageActivity extends BaseActivity {
 
     @Override
     protected void onPreSetContentView() {
+        mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
+
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
 
-        mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
-
-        mLayoutId = LibUtils.getInt(getIntent(), mParam, PickConstants.KEY_BIG_IMAGE_LAYOUT_ID, R.layout.lib_pick_ac_big_image);
+        //mLayoutId = LibUtils.getInt(getIntent(), mParam, PickConstants.KEY_LAYOUT_ID, R.layout.lib_pick_ac_big_image);
+        mLayoutId = getIntent().getIntExtra(PickConstants.KEY_LAYOUT_ID, R.layout.lib_pick_ac_big_image);
         //test ViewPager2 ok.
        //R.layout.lib_pick_ac_big_image2;
     }
@@ -105,14 +106,6 @@ public class SeeBigImageActivity extends BaseActivity {
         }
         //set ui state
         setUiState();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-       // Logger.d(TAG, "onNewIntent", "" + hashCode());
-        setIntent(intent);
-        initialize(this, null);
     }
 
     @Override

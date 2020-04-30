@@ -27,6 +27,7 @@ import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.MediaResourceHelper;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.module.ImageItem;
@@ -491,7 +492,8 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             .setNext(mParam.getNext())
                             .build();
                     ImagePickManager.get().getImagePickDelegate()
-                            .startBrowseBigImages(ImageSelectActivity.this, param, items, selectItem);
+                            .startBrowseBigImages(ImageSelectActivity.this, param,
+                                    DefaultSeeBigImageDelegate.class, mParam.getNext(), items, selectItem);
                 }
             });
         }

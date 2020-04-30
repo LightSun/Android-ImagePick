@@ -260,8 +260,10 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
                                     .setSupportGestureImage(true)
                                     .setNext(getParameter().getNext())
                                     .build();
+                            //title
                             Bundle extra = new BundleHelper()
                                     .putString(PickConstants.KEY_EXTRA, mHeader.mTv_folder.getText().toString())
+                                    .putAll(getParameter().getNext())
                                     .getBundle();
                             ImagePickManager.get().getImagePickDelegate()
                                     .startBrowseBigImages(getActivity(), param, SimpleSeeBigImageDelegate.class, extra, am.getItems(), null);
