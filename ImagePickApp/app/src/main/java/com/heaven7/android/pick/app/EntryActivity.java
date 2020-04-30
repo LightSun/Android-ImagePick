@@ -150,7 +150,7 @@ public class EntryActivity extends AppCompatActivity {
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
                             //testGif();
-                            startWithGif();
+                            startWithGif(null);
                             //startWithoutGif();
                         }
                     }
@@ -161,9 +161,30 @@ public class EntryActivity extends AppCompatActivity {
                 });
 
     }
-    private void startWithGif(){
+
+    public void onClickSeeImage_viewPager2(View view){
+        mHelper.startRequestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new int[]{1}, new PermissionHelper.ICallback() {
+                    @Override
+                    public void onRequestPermissionResult(String s, int i, boolean b) {
+                        if (b) {
+                            Bundle optBundle = new BundleHelper()
+                                    .putInt(PickConstants.KEY_BIG_IMAGE_LAYOUT_ID, R.layout.lib_pick_ac_big_image2)
+                                    .getBundle();
+                            startWithGif(optBundle);
+                        }
+                    }
+                    @Override
+                    public boolean handlePermissionHadRefused(String s, int i, Runnable runnable) {
+                        return false;
+                    }
+                });
+    }
+
+    private void startWithGif(Bundle next){
         SeeImageParameter parameter = new SeeImageParameter.Builder()
                 .setPauseIconRes(R.drawable.ic_video_pause)
+                .setNext(next)
                 .build();
         Bundle extra = new BundleHelper()
                 .putParcelable(PickConstants.KEY_MEDIA_OPTION, MediaOption.withGif())

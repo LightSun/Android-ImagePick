@@ -2,13 +2,18 @@ package com.heaven7.android.imagepick.pub;
 
 public interface PickConstants {
 
-    String KEY_RESULT            = "result";
-    String KEY_PARAMS            = "params";
-    String KEY_SINGLE_ITEM       = "single_item";//only for single select
-    String KEY_SAVE_DIR          = "save_dir";
-    String KEY_DELEGATE          = "delegate";
-    String KEY_EXTRA             = "extra";
-    String KEY_MEDIA_OPTION      = "mediaOption";
+    String KEY_RESULT               = "result";
+    String KEY_PARAMS               = "params";
+    String KEY_SINGLE_ITEM          = "single_item";//only for single select
+    String KEY_SAVE_DIR             = "save_dir";
+    String KEY_DELEGATE             = "delegate";
+    String KEY_EXTRA                = "extra";
+    String KEY_MEDIA_OPTION         = "mediaOption";
+    /**
+     * the layout id of See-Big-Image-Activity
+     * @since 2.0.0
+     */
+    String KEY_BIG_IMAGE_LAYOUT_ID  = "big_img_layout_id";
 
     /** the flags for see-big-image */
     int FLAG_SHOW_TOP             = 0x0001;

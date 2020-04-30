@@ -27,6 +27,14 @@
         android:onClick="onClickSeeImage"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="start see-image 2(Will Use ViewPager2)"
+        android:onClick="onClickSeeImage_viewPager2"
+        />
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/iv"
         android:layout_width="400dp"

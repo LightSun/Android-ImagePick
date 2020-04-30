@@ -50,10 +50,6 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
     public ViewBinder getBottomBinder(){
         return mBottomBinder != UNSET ? (ViewBinder) mBottomBinder : null;
     }
-
-    public int getLayoutId(){
-        return 0;
-    }
     public View getViewPager(View root){
         return root.findViewById(R.id.lib_pick_vp);
     }

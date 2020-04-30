@@ -258,6 +258,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
                                     .setTopRightText(getResources().getString(R.string.lib_pick_upload))
                                     .setFlags(PickConstants.FLAG_SHOW_TOP)
                                     .setSupportGestureImage(true)
+                                    .setNext(getParameter().getNext())
                                     .build();
                             Bundle extra = new BundleHelper()
                                     .putString(PickConstants.KEY_EXTRA, mHeader.mTv_folder.getText().toString())

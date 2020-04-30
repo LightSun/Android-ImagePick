@@ -60,9 +60,12 @@ public class SeeBigImageActivity extends BaseActivity {
     protected void onPreSetContentView() {
         mDelegate = LibUtils.newInstance(getIntent().getStringExtra(PickConstants.KEY_DELEGATE));
         mDelegate.setProvider(new Provider0());
-        mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image;
+
+        mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
+
+        mLayoutId = LibUtils.getInt(getIntent(), mParam, PickConstants.KEY_BIG_IMAGE_LAYOUT_ID, R.layout.lib_pick_ac_big_image);
         //test ViewPager2 ok.
-       // mLayoutId = mDelegate.getLayoutId() != 0 ? mDelegate.getLayoutId() : R.layout.lib_pick_ac_big_image2;
+       //R.layout.lib_pick_ac_big_image2;
     }
 
     @Override
@@ -77,7 +80,6 @@ public class SeeBigImageActivity extends BaseActivity {
         setListeners();
         //setup data
         mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
-        mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
        // Logger.d(TAG, "init_"+hashCode(), "mItems.size = " + mItems.size());
         //set media adapter

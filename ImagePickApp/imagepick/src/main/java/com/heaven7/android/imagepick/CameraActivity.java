@@ -48,7 +48,7 @@ public class CameraActivity extends BaseActivity implements CameraFragment.Actio
         startActivity(new Intent(this, BrowseActivity.class));
     }
 
-    private class PictureCallbackImpl extends CameraFragment.PictureCallback{
+    private static class PictureCallbackImpl extends CameraFragment.PictureCallback{
         @Override
         protected void onTakePictureResult(String file) {
             ImagePickDelegateImpl.getDefault().addImagePath(file);

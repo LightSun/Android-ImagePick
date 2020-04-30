@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick.pub.module;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,7 +8,7 @@ import android.os.Parcelable;
  * the bit image select parameter
  * @author heaven7
  */
-public class BigImageSelectParameter implements Parcelable {
+public class BigImageSelectParameter implements Parcelable ,INextParameter{
 
     private int mFlags;
     private int mSelectCount;
@@ -18,6 +19,12 @@ public class BigImageSelectParameter implements Parcelable {
     // true if support gesture image. if set to true . the gradle should include.
     // implementation 'com.github.chrisbanes:PhotoView:latest.release.here'
     private boolean mSupportGestureImage;
+
+    /**
+     * the bundle parameter which will be carried to next activity.
+     * @since 2.0.0
+     */
+    private Bundle next;
 
     public boolean hasFlag(int flag){
         return (getFlags() & flag) == flag;
@@ -46,6 +53,7 @@ public class BigImageSelectParameter implements Parcelable {
         this.mCurrentOrder = builder.mCurrentOrder;
         this.mTotalCount = builder.mTotalCount;
         this.mSupportGestureImage = builder.mSupportGestureImage;
+        this.next = builder.next;
     }
 
     public int getFlags() {
@@ -76,6 +84,10 @@ public class BigImageSelectParameter implements Parcelable {
         return this.mSupportGestureImage;
     }
 
+    public Bundle getNext() {
+        return this.next;
+    }
+
     public static class Builder {
         private int mFlags;
         private int mSelectCount;
@@ -83,7 +95,13 @@ public class BigImageSelectParameter implements Parcelable {
         private String mTopRightText;
         private int mCurrentOrder;           // from 1
         private int mTotalCount;             // max
+        // true if support gesture image. if set to true . the gradle should include.
+        // implementation 'com.github.chrisbanes:PhotoView:latest.release.here'
         private boolean mSupportGestureImage;
+        /**
+         * the bundle parameter which will be carried to next activity.
+         */
+        private Bundle next;
 
         public Builder setFlags(int mFlags) {
             this.mFlags = mFlags;
@@ -120,6 +138,11 @@ public class BigImageSelectParameter implements Parcelable {
             return this;
         }
 
+        public Builder setNext(Bundle next) {
+            this.next = next;
+            return this;
+        }
+
         public BigImageSelectParameter build() {
             return new BigImageSelectParameter(this);
         }
@@ -139,6 +162,7 @@ public class BigImageSelectParameter implements Parcelable {
         dest.writeInt(this.mCurrentOrder);
         dest.writeInt(this.mTotalCount);
         dest.writeByte(this.mSupportGestureImage ? (byte) 1 : (byte) 0);
+        dest.writeBundle(this.next);
     }
 
     protected BigImageSelectParameter(Parcel in) {
@@ -149,6 +173,7 @@ public class BigImageSelectParameter implements Parcelable {
         this.mCurrentOrder = in.readInt();
         this.mTotalCount = in.readInt();
         this.mSupportGestureImage = in.readByte() != 0;
+        this.next = in.readBundle();
     }
 
     public static final Creator<BigImageSelectParameter> CREATOR = new Creator<BigImageSelectParameter>() {

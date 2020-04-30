@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick.pub.module;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,7 +13,7 @@ import com.heaven7.android.imagepick.pub.PickConstants;
  * the image select parameter
  * @author heaven7
  */
-public class ImageSelectParameter implements Parcelable {
+public class ImageSelectParameter implements Parcelable,INextParameter {
 
     private int mSpanCount = 4;
     private int mSpace;
@@ -28,6 +29,12 @@ public class ImageSelectParameter implements Parcelable {
     /** the cache dir of file */
     private String cacheDir;
 
+    /**
+     * the bundle parameter which will be carried to next activity.
+     * @since 2.0.0
+     */
+    private Bundle next;
+
     protected ImageSelectParameter(ImageSelectParameter.Builder builder) {
         this.mSpanCount = builder.mSpanCount;
         this.mSpace = builder.mSpace;
@@ -39,6 +46,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mDefaultDirIconId = builder.mDefaultDirIconId;
         this.imageParameter = builder.imageParameter;
         this.cacheDir = builder.cacheDir;
+        this.next = builder.next;
     }
 
     public int getSpanCount() {
@@ -81,6 +89,10 @@ public class ImageSelectParameter implements Parcelable {
         return this.cacheDir;
     }
 
+    public Bundle getNext() {
+        return this.next;
+    }
+
     public static class Builder {
         private int mSpanCount = 4;
         private int mSpace;
@@ -94,6 +106,10 @@ public class ImageSelectParameter implements Parcelable {
         private ImageParameter imageParameter;
         /** the cache dir of file */
         private String cacheDir;
+        /**
+         * the bundle parameter which will be carried to next activity.
+         */
+        private Bundle next;
 
         public Builder setSpanCount(int mSpanCount) {
             this.mSpanCount = mSpanCount;
@@ -145,6 +161,11 @@ public class ImageSelectParameter implements Parcelable {
             return this;
         }
 
+        public Builder setNext(Bundle next) {
+            this.next = next;
+            return this;
+        }
+
         public ImageSelectParameter build() {
             return new ImageSelectParameter(this);
         }
@@ -167,6 +188,7 @@ public class ImageSelectParameter implements Parcelable {
         dest.writeInt(this.mDefaultDirIconId);
         dest.writeParcelable(this.imageParameter, flags);
         dest.writeString(this.cacheDir);
+        dest.writeBundle(this.next);
     }
 
     protected ImageSelectParameter(Parcel in) {
@@ -180,6 +202,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mDefaultDirIconId = in.readInt();
         this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.cacheDir = in.readString();
+        this.next = in.readBundle();
     }
 
     public static final Creator<ImageSelectParameter> CREATOR = new Creator<ImageSelectParameter>() {

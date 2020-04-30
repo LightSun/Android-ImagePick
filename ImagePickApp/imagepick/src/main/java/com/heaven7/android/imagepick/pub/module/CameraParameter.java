@@ -1,25 +1,30 @@
 package com.heaven7.android.imagepick.pub.module;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.heaven7.android.imagepick.pub.module.ImageParameter;
 
 /**
  * the camera parameter.
  * @author heaven7
  * @since 1.0.1
  */
-public class CameraParameter implements Parcelable {
+public class CameraParameter implements Parcelable,INextParameter {
 
     private ImageParameter imageParameter = ImageParameter.DEFAULT;
     private boolean autoFocus = true;
     private int maxCount;
+    /**
+     * the bundle parameter which will be carried to next activity.
+     * @since 2.0.0
+     */
+    private Bundle next;
 
     protected CameraParameter(CameraParameter.Builder builder) {
         this.imageParameter = builder.imageParameter;
         this.autoFocus = builder.autoFocus;
         this.maxCount = builder.maxCount;
+        this.next = builder.next;
     }
 
     public ImageParameter getImageParameter() {
@@ -34,10 +39,15 @@ public class CameraParameter implements Parcelable {
         return this.maxCount;
     }
 
+    public Bundle getNext() {
+        return this.next;
+    }
+
     public static class Builder {
         private ImageParameter imageParameter = ImageParameter.DEFAULT;
         private boolean autoFocus = true;
         private int maxCount;
+        private Bundle next;
 
         public Builder setImageParameter(ImageParameter imageParameter) {
             this.imageParameter = imageParameter;
@@ -51,6 +61,11 @@ public class CameraParameter implements Parcelable {
 
         public Builder setMaxCount(int maxCount) {
             this.maxCount = maxCount;
+            return this;
+        }
+
+        public Builder setNext(Bundle next) {
+            this.next = next;
             return this;
         }
 
@@ -69,12 +84,14 @@ public class CameraParameter implements Parcelable {
         dest.writeParcelable(this.imageParameter, flags);
         dest.writeByte(this.autoFocus ? (byte) 1 : (byte) 0);
         dest.writeInt(this.maxCount);
+        dest.writeBundle(this.next);
     }
 
     protected CameraParameter(Parcel in) {
         this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.autoFocus = in.readByte() != 0;
         this.maxCount = in.readInt();
+        this.next = in.readBundle();
     }
 
     public static final Creator<CameraParameter> CREATOR = new Creator<CameraParameter>() {

@@ -122,7 +122,7 @@ public interface ImagePickDelegate {
      * @param context the activity
      * @param clazz the delegate class
      * @param parameter the parameter
-     * @param extra the extras
+     * @param extra the extras which is used by SeeImageActivity
      */
     void startBrowseImages2(Activity context, Class<? extends SeeImageDelegate> clazz, SeeImageParameter parameter, Bundle extra);
 
@@ -142,7 +142,7 @@ public interface ImagePickDelegate {
      * @param clazz the class of {@linkplain SeeBigImageDelegate}
      * @param extra the extra ot intent
      * @param allItems the items to browse
-     * @param single the single selected item.can be null for multi-select it must be null.
+     * @param single the single selected item, can be null for multi-select it must be null.
      * @since 1.0.5
      */
     void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz, Bundle extra,
