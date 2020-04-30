@@ -2,6 +2,7 @@ package com.heaven7.android.imagepick.pub.delegate.impl;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,12 +95,16 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
         mMediaHelper.getMediaResource(flags, new MediaResourceHelper.Callback() {
             @Override
             public void onCallback(List<MediaResourceItem> photoes, List<MediaResourceItem> videoes) {
+                Resources res = getResources();
                 List<MediaResourceItem> items = new ArrayList<>(videoes);
                 items.addAll(photoes);
 
-                KeyValuePair<String, List<IImageItem>> p0 = KeyValuePair.create("图片和视频", VisitServices.from(items).asAnother(IImageItem.class).getAsList());
-                KeyValuePair<String, List<IImageItem>> p1 = KeyValuePair.create("图片", VisitServices.from(new ArrayList<>(photoes)).asAnother(IImageItem.class).getAsList());
-                KeyValuePair<String, List<IImageItem>> p2 = KeyValuePair.create("视频", VisitServices.from(new ArrayList<>(videoes)).asAnother(IImageItem.class).getAsList());
+                KeyValuePair<String, List<IImageItem>> p0 = KeyValuePair.create(res.getString(R.string.lib_pick_all),
+                        VisitServices.from(items).asAnother(IImageItem.class).getAsList());
+                KeyValuePair<String, List<IImageItem>> p1 = KeyValuePair.create(res.getString(R.string.lib_pick_all_images),
+                        VisitServices.from(new ArrayList<>(photoes)).asAnother(IImageItem.class).getAsList());
+                KeyValuePair<String, List<IImageItem>> p2 = KeyValuePair.create(res.getString(R.string.lib_pick_all_video),
+                        VisitServices.from(new ArrayList<>(videoes)).asAnother(IImageItem.class).getAsList());
                 ArrayList<KeyValuePair<String, List<IImageItem>>> list = new ArrayList<>();
                 list.add(p0);
                 list.add(p1);
