@@ -23,7 +23,7 @@ import com.heaven7.android.imagepick.pub.module.MediaOption;
 import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
-import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageUIDelegate;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.android.pick.app.impl.SeeBigImageDelegate2;
 import com.heaven7.core.util.BundleHelper;
@@ -192,7 +192,7 @@ public class EntryActivity extends AppCompatActivity {
                 .putParcelable(PickConstants.KEY_MEDIA_OPTION, MediaOption.withGif())
                 .getBundle();
         ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this,
-                DefaultSeeImageDelegate.class, parameter, extra);
+                DefaultSeeImageUIDelegate.class, parameter, extra);
     }
     private void startWithoutGif(){
         SeeImageParameter parameter = new SeeImageParameter.Builder()

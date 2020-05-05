@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.pub.AdapterManageDelegate;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.GroupItem;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
@@ -25,7 +25,7 @@ import java.util.List;
  * see image/videos.
  * @author heaven7
  */
-public class SeeImageActivity extends BaseActivity implements SeeImageDelegate.MediaResourceCallback {
+public class SeeImageActivity extends BaseActivity implements SeeImageUIDelegate.MediaResourceCallback {
 
     private RecyclerView mRv_content;
     private RecyclerView mRv_dir;
@@ -33,7 +33,7 @@ public class SeeImageActivity extends BaseActivity implements SeeImageDelegate.M
 
     private SeeImageParameter mParam;
 
-    private SeeImageDelegate mDelegate;
+    private SeeImageUIDelegate mDelegate;
     private AdapterManageDelegate<IImageItem> mContentDelegate;
     private AdapterManageDelegate<GroupItem> mGroupDelagate;
 
@@ -101,7 +101,7 @@ public class SeeImageActivity extends BaseActivity implements SeeImageDelegate.M
         });
     }
 
-    private class Provider0 implements SeeImageDelegate.Provider{
+    private class Provider0 implements SeeImageUIDelegate.Provider{
         @Override
         public AppCompatActivity getActivity() {
             return SeeImageActivity.this;

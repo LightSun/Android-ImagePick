@@ -1,9 +1,8 @@
 package com.heaven7.android.imagepick;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -12,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,12 +18,10 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.cameraview.CameraView;
 import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
-import com.heaven7.android.imagepick.pub.module.CameraParameter;
-import com.heaven7.android.imagepick.pub.module.ImageItem;
-import com.heaven7.android.imagepick.pub.module.ImageOptions;
-import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.core.util.DimenUtil;
+import com.heaven7.android.imagepick.pub.delegate.CameraUIDelegate;
+import com.heaven7.android.imagepick.pub.module.CameraParameter;
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.core.util.ImageParser;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
@@ -49,30 +44,37 @@ public class CameraFragment extends Fragment {
     private static final String TAG = "CameraFragment";
     private CameraView mCameraView;
 
-    private ImageView mIv_image;
-    private ImageView mIv_camera;
-    private ImageView mIv_flash;
-
-    private TextView mTv_finish;
-
     private PictureCallback mPictureCallback;
-    private ActionCallback mActionCallback;
     private final ThreadHelper mThreadHelper = new ThreadHelper();
 
-    private File mSaveDir;
     private final AtomicBoolean mProcessing = new AtomicBoolean(false);
+    private File mSaveDir;
     private ImageParser mImgParser;
     private CameraParameter mCameraParam;
+
+    private CameraUIDelegate mCameraDelegate;
+
+    public void setCameraDelegate(CameraUIDelegate cameraDelegate) {
+        this.mCameraDelegate = cameraDelegate;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lib_pick_frag_camera_main, container, false);
-        mCameraView = view.findViewById(R.id.cameraView);
-        mIv_image = view.findViewById(R.id.iv_image);
-        mIv_camera = view.findViewById(R.id.iv_camera);
-        mTv_finish = view.findViewById(R.id.tv_finish);
-        mIv_flash = view.findViewById(R.id.iv_flash);
+        View view = inflater.inflate(mCameraDelegate.getLayoutId(), container, false);
+        //prepare callback #initialize
+        Bundle arguments = getArguments();
+        mCameraParam = arguments !=null ? (CameraParameter) arguments.getParcelable(PickConstants.KEY_PARAMS) : null;
+        Intent intent = new Intent();
+        if(arguments != null){
+            intent.putExtras(arguments);
+        }
+        mCameraDelegate.initialize(this, view, intent);
+        //camera view
+        mCameraView = view.findViewById(R.id.lib_pick_camera);
+        if(mCameraView == null){
+            throw new IllegalStateException("must provide camera view.");
+        }
         return view;
     }
 
@@ -85,80 +87,21 @@ public class CameraFragment extends Fragment {
         mCameraView.setFlash(CameraView.FLASH_AUTO);
         mCameraView.addCallback(mPictureCallback);
         mCameraView.addCallback(new InternalCallback());
-        mIv_flash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mProcessing.get()){
-                    return;
-                }
-                if(mCameraView.getFlash() == CameraView.FLASH_AUTO){
-                    mIv_flash.setImageResource(R.drawable.lib_pick_ic_flash_off);
-                    mCameraView.setFlash(CameraView.FLASH_OFF);
-                }else {
-                    mIv_flash.setImageResource(R.drawable.lib_pick_ic_flash_on);
-                    mCameraView.setFlash(CameraView.FLASH_ON);
-                }
-            }
-        });
-        mIv_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mProcessing.get()){
-                    return;
-                }
-                if(v.getTag() != null){
-                    //re-camera
-                    setCameraEnabled(true);
-                }else {
-                    //normal
-                    if(mCameraParam != null && mCameraParam.getMaxCount() > 0 &&
-                            ImagePickDelegateImpl.getDefault().getImages().size() >= mCameraParam.getMaxCount()){
-                        setCameraEnabled(false);
-                        setReachMax(true);
-                        Toaster.show(v.getContext(), getString(R.string.lib_pick_camera_reach_max, mCameraParam.getMaxCount()));
-                        return;
-                    }
-                    mCameraView.takePicture();
-                }
-            }
-        });
-        mIv_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mProcessing.get()){
-                    return;
-                }
-                if(mActionCallback != null){
-                    mActionCallback.onClickImage();
-                }
-            }
-        });
-        mTv_finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mProcessing.get()){
-                    return;
-                }
-                if(mActionCallback != null ){
-                    mActionCallback.onClickFinish();
-                }
-            }
-        });
-        setCameraEnabled(true);
+        mCameraDelegate.setCameraEnabled(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        List<String> images = ImagePickDelegateImpl.getDefault().getImages();
+        List<String> images = ImagePickDelegateImpl.getDefault().getCameraImages();
         //Logger.d("CameraFragment", "onResume", "" + images);
         if(images.isEmpty()){
-            mIv_image.setVisibility(View.GONE);
+            mCameraDelegate.onEmptyImage();
         }
         //check if max reach and remove some.
         if(mCameraParam != null && mCameraParam.getMaxCount() > 0 &&
                 images.size() < mCameraParam.getMaxCount() ){
-            setReachMax(false);
+            mCameraDelegate.setReachMax(false);
         }
         //for some phone have bug . when jump to another activity, then return. like samsung.
         //so just use a delay message to start camera.
@@ -191,35 +134,23 @@ public class CameraFragment extends Fragment {
         quit();
         super.onDetach();
     }
-
-    public void setActionCallback(ActionCallback mActionCallback) {
-        this.mActionCallback = mActionCallback;
-    }
-
     public void setPictureCallback(PictureCallback pictureCallback) {
         this.mPictureCallback = pictureCallback;
     }
-
-    private void setReachMax(boolean reachMax) {
-        if(reachMax){
-            mIv_camera.setEnabled(false);
-        }else {
-            mIv_camera.setEnabled(true);
-        }
+    public CameraParameter getParameter() {
+        return mCameraParam;
     }
     private void handleArguments() {
         Bundle arguments = getArguments();
         if(arguments != null){
-            CameraParameter cp = arguments.getParcelable(PickConstants.KEY_PARAMS);
-            mCameraParam = cp;
-            if(cp == null){
+            if(mCameraParam == null){
                 mImgParser = new ImageParser(4000, 4000,
                         Bitmap.Config.RGB_565, true);
                 mCameraView.setAutoFocus(true);
             }else {
-                ImageParameter ip = cp.getImageParameter();
+                ImageParameter ip = mCameraParam.getImageParameter();
                 mImgParser = Utils.createImageParser(ip, true);
-                mCameraView.setAutoFocus(cp.isAutoFocus());
+                mCameraView.setAutoFocus(mCameraParam.isAutoFocus());
             }
         }else {
             mImgParser = new ImageParser(4000, 4000,
@@ -246,62 +177,17 @@ public class CameraFragment extends Fragment {
     private Handler getBackgroundHandler() {
         return mThreadHelper.getBackgroundHandler();
     }
+
     private void quit(){
         mThreadHelper.quit(false);
     }
-    private void runOnUi(Runnable r){
-        FragmentActivity activity = getActivity();
-        if(activity != null){
-            activity.runOnUiThread(r);
-        }
-    }
-    private void setImageFile(final String file){
-         runOnUi(new Runnable() {
-             @Override
-             public void run() {
-                 Context context = getContext();
-                 if(context == null){
-                     return;
-                 }
-                 ViewGroup.LayoutParams lp = mIv_image.getLayoutParams();
-                 int round = DimenUtil.dip2px(context, 8);
-                 setCameraEnabled(false);
 
-                 ImageOptions options = new ImageOptions.Builder()
-                         .setRound(round)
-                         .setBorder(1)
-                         .setBorderColor(Color.TRANSPARENT)
-                         .setCacheFlags(ImageOptions.CACHE_FLAG_DATA | ImageOptions.CACHE_FLAG_RESOURCE)
-                         .setTargetWidth(lp.width)
-                         .setTargetHeight(lp.height)
-                         .build();
-                 ImagePickDelegateImpl.getDefault().getImageLoadDelegate().loadImage(CameraFragment.this,mIv_image, ImageItem.ofImage(file), options);
-             }
-         });
+    public CameraView getCameraView() {
+        return mCameraView;
     }
-    private void setCameraEnabled(boolean enabled){
-        if(enabled){
-            mIv_camera.setImageResource(R.drawable.lib_pick_ic_camera);
-            mIv_camera.setTag(null);
-            mIv_image.setVisibility(View.GONE);
-            mTv_finish.setVisibility(View.GONE);
-        }else {
-            mIv_camera.setImageResource(R.drawable.lib_pick_ic_re_camera);
-            mIv_camera.setTag(true);
-            mIv_image.setVisibility(View.VISIBLE);
-            mTv_finish.setVisibility(View.VISIBLE);
-        }
-    }
-    public interface ActionCallback{
-        /**
-         * called on click finish
-         */
-        void onClickFinish();
 
-        /**
-         * called on click image.
-         */
-        void onClickImage();
+    public boolean isImageProcessing() {
+        return mProcessing.get();
     }
 
     public static abstract class PictureCallback extends CameraView.Callback{
@@ -321,14 +207,13 @@ public class CameraFragment extends Fragment {
     }
 
     private class InternalCallback extends CameraView.Callback{
-
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             if(!mProcessing.compareAndSet(false, true)){
                 return;
             }
             if(!mPictureCallback.shouldSavePicture()){
-                setCameraEnabled(false);
+                mCameraDelegate.setCameraEnabled(false);
                 mProcessing.compareAndSet(true, false);
                 return;
             }
@@ -362,7 +247,7 @@ public class CameraFragment extends Fragment {
                         @Override
                         public void run() {
                             mPictureCallback.onTakePictureResult(file.getAbsolutePath());
-                            setImageFile(file.getAbsolutePath());
+                            mCameraDelegate.applyImageFile(file.getAbsolutePath());
                         }
                     });
                 }

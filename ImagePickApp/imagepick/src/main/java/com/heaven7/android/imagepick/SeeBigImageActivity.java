@@ -1,7 +1,6 @@
 package com.heaven7.android.imagepick;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.heaven7.android.imagepick.internal.LibUtils;
 import com.heaven7.android.imagepick.page.MediaPageProviderManager;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.utils.ComposePageViewProvider;
@@ -45,7 +44,7 @@ public class SeeBigImageActivity extends BaseActivity {
     private static final String TAG = "SeeBigImageActivity";
     private int mLayoutId;
     private BigImageSelectParameter mParam;
-    private SeeBigImageDelegate mDelegate;
+    private SeeBigImageUIDelegate mDelegate;
     private ViewPagerDelegate<?> mPagerDelegate;
 
     private List<IImageItem> mItems;
@@ -265,7 +264,7 @@ public class SeeBigImageActivity extends BaseActivity {
         }
     }
 
-    private class Provider0 implements SeeBigImageDelegate.Provider{
+    private class Provider0 implements SeeBigImageUIDelegate.Provider{
 
         @Override
         public AppCompatActivity getActivity() {

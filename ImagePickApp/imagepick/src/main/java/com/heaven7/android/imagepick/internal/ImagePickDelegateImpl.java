@@ -16,10 +16,10 @@ import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageUIDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageUIDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.CameraParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
@@ -43,7 +43,7 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
-    private static final String TAG = "ImagePickImpl";
+    //private static final String TAG = "ImagePickImpl";
     private static ImagePickDelegateImpl sInstance;
     private OnImageProcessListener mImageListener;
     private ExceptionHandler mHandler;
@@ -53,9 +53,10 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     private ImagePickDelegateImpl(){}
 
-    private List<String> mImages = new ArrayList<>(5);
     private List<IImageItem> mItems;
     private List<OnSelectStateChangedListener> mSelectListeners;
+
+    private final List<String> mImages = new ArrayList<>(5);
 
     public static ImagePickDelegateImpl getDefault(){
         if(sInstance == null){
@@ -79,17 +80,23 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     public ImageLoadDelegate getImageLoadDelegate() {
         return mImageLoadDelegate;
     }
-
-    public List<String> getImages(){
+    @Override
+    public List<String> getCameraImageFiles() {
         return mImages;
     }
-    public void addImagePath(String file){
+    public List<String> getCameraImages(){
+        return mImages;
+    }
+    public void addCameraImage(String file){
         if(!mImages.contains(file)){
             mImages.add(file);
         }
     }
-    public void removeImagePath(String file){
+    public void removeCameraImage(String file){
         mImages.remove(file);
+    }
+    public void clearCameraImages() {
+        mImages.clear();
     }
     public List<IImageItem> getImageItems() {
        // Logger.d(TAG, "getImageItems", "out size = " + mItems.size());
@@ -98,9 +105,6 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
     public void setImageItems(List<? extends IImageItem> mItems) {
         //Logger.d(TAG, "setImageItems", "in size = " + mItems.size());
         this.mItems = new ArrayList<>(mItems);
-    }
-    public void clearImages() {
-        mImages.clear();
     }
     public void dispatchSelectStateChanged(IImageItem item, boolean select) {
         if(mSelectListeners != null){
@@ -170,7 +174,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
                 .startActivityForResult(REQ_CAMERA);
     }
     @Override
-    public void startBrowseImages2(Activity context, Class<? extends SeeImageDelegate> clazz, SeeImageParameter parameter, Bundle extra){
+    public void startBrowseImages2(Activity context, Class<? extends SeeImageUIDelegate> clazz, SeeImageParameter parameter, Bundle extra){
         if(extra == null) {
             extra = new Bundle();
         }
@@ -185,7 +189,7 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     @Override
     public void startBrowseImages2(Activity context, SeeImageParameter parameter) {
-        startBrowseImages2(context, DefaultSeeImageDelegate.class, parameter, null);
+        startBrowseImages2(context, DefaultSeeImageUIDelegate.class, parameter, null);
     }
 
     @Override
@@ -202,11 +206,11 @@ public final class ImagePickDelegateImpl implements ImagePickDelegate {
 
     @Override
     public void startBrowseBigImages(Activity context, BigImageSelectParameter param, List<? extends IImageItem> allItems, IImageItem single) {
-        startBrowseBigImages(context, param, DefaultSeeBigImageDelegate.class, null,allItems, single);
+        startBrowseBigImages(context, param, DefaultSeeBigImageUIDelegate.class, null,allItems, single);
     }
 
     @Override
-    public void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz, Bundle extra,
+    public void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageUIDelegate> clazz, Bundle extra,
                                      List<? extends IImageItem> allItems, IImageItem single) {
         if(param == null || allItems == null){
             throw new IllegalArgumentException();

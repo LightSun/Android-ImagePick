@@ -4,13 +4,13 @@ import android.view.View;
 
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.heaven7.android.imagepick.pub.delegate.impl.SimpleSeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.SimpleSeeBigImageUIDelegate;
 
 
 /**
  *  for test just use a vertical ViewPager2
  */
-public class SeeBigImageDelegate2 extends SimpleSeeBigImageDelegate {
+public class SeeBigImageDelegate2 extends SimpleSeeBigImageUIDelegate {
 
     @Override
     public View getViewPager(View root) {

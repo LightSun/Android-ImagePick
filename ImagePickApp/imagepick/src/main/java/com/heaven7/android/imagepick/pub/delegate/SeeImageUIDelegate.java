@@ -19,7 +19,7 @@ import java.util.List;
  * the delegate for {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
  * @since 2.0.0
  */
-public abstract class SeeImageDelegate {
+public abstract class SeeImageUIDelegate {
 
     private Provider provider;
 

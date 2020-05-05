@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.heaven7.adapter.page.WrappedPageChangeListener;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
-import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.CameraParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
@@ -90,11 +90,16 @@ public interface ImagePickDelegate {
     void removeOnSelectStateChangedListener(OnSelectStateChangedListener l);
 
     /**
+     * get camera images
+     * @return the camera image files
+     * @since 2.0.0
+     */
+    List<String> getCameraImageFiles();
+    /**
      * start camera with default parameter. for more see {@linkplain #startCamera(Activity, CameraParameter)}.
      * @param context the context
      */
     void startCamera(Activity context);
-
     /**
      * start camera
      * @param context the context
@@ -124,10 +129,10 @@ public interface ImagePickDelegate {
      * @param parameter the parameter
      * @param extra the extras which is used by SeeImageActivity
      */
-    void startBrowseImages2(Activity context, Class<? extends SeeImageDelegate> clazz, SeeImageParameter parameter, Bundle extra);
+    void startBrowseImages2(Activity context, Class<? extends SeeImageUIDelegate> clazz, SeeImageParameter parameter, Bundle extra);
 
     /**
-     * start browse big images/videos with a default delegate of {@linkplain SeeBigImageDelegate}.
+     * start browse big images/videos with a default delegate of {@linkplain SeeBigImageUIDelegate}.
      * @param context the context
      * @param param the parameter of ui
      * @param allItems the items to browse
@@ -139,13 +144,13 @@ public interface ImagePickDelegate {
      * start browse big images/videos by target delegate and select params.
      * @param context the context
      * @param param the parameter of ui
-     * @param clazz the class of {@linkplain SeeBigImageDelegate}
+     * @param clazz the class of {@linkplain SeeBigImageUIDelegate}
      * @param extra the extra ot intent
      * @param allItems the items to browse
      * @param single the single selected item, can be null for multi-select it must be null.
      * @since 1.0.5
      */
-    void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageDelegate> clazz, Bundle extra,
+    void startBrowseBigImages(Activity context, BigImageSelectParameter param, Class<? extends SeeBigImageUIDelegate> clazz, Bundle extra,
                               List<? extends IImageItem> allItems, IImageItem single);
     /**
      * the dialog delegate used to helpful handle image.

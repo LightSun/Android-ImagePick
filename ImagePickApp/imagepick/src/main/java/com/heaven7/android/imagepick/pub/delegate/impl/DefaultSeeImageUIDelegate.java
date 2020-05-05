@@ -32,7 +32,7 @@ import com.heaven7.android.imagepick.pub.module.MediaOption;
 import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
-import com.heaven7.android.imagepick.pub.delegate.SeeImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.utils.AnimationListenerAdapter;
 import com.heaven7.android.imagepick.utils.SimpleAdapterManagerDelegate;
@@ -51,7 +51,7 @@ import java.util.List;
  * the default delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeImageActivity}.
  * @since 2.0.0
  */
-public class DefaultSeeImageDelegate extends SeeImageDelegate {
+public class DefaultSeeImageUIDelegate extends SeeImageUIDelegate {
 
     private Header mHeader;
     private AdapterManageDelegate<IImageItem> mContentManager;
@@ -275,7 +275,7 @@ public class DefaultSeeImageDelegate extends SeeImageDelegate {
                                     .putAll(getParameter().getNext())
                                     .getBundle();
                             ImagePickManager.get().getImagePickDelegate()
-                                    .startBrowseBigImages(getActivity(), param, SimpleSeeBigImageDelegate.class, extra, am.getItems(), null);
+                                    .startBrowseBigImages(getActivity(), param, SimpleSeeBigImageUIDelegate.class, extra, am.getItems(), null);
                         }
                     });
         }

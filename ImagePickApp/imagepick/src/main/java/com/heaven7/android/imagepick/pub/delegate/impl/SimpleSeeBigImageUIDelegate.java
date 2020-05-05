@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
 
 
 /**
  * the simple delegate which can set the title.
  * @since 2.0.0
  */
-public class SimpleSeeBigImageDelegate extends SeeBigImageDelegate {
+public class SimpleSeeBigImageUIDelegate extends SeeBigImageUIDelegate {
 
     private String mTitle;
 
@@ -36,7 +36,7 @@ public class SimpleSeeBigImageDelegate extends SeeBigImageDelegate {
 
     private static class TopBinder0 extends DefaultTopBinder{
 
-        public TopBinder0(SeeBigImageDelegate delegate, ViewGroup parent) {
+        public TopBinder0(SeeBigImageUIDelegate delegate, ViewGroup parent) {
             super(delegate, parent);
         }
         @Override

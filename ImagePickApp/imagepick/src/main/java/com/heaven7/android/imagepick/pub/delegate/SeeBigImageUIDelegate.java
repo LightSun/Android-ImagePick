@@ -21,7 +21,7 @@ import com.heaven7.android.imagepick.pub.module.IImageItem;
  * @author heaven7
  * @since 2.0.0
  */
-public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Callback {
+public abstract class SeeBigImageUIDelegate implements MediaPageProviderManager.Callback {
 
     private static final Object UNSET = new Object();
     private ViewGroup parent;
@@ -216,21 +216,21 @@ public abstract class SeeBigImageDelegate implements MediaPageProviderManager.Ca
      */
     protected abstract ViewBinder onCreateBottomBinder(Context context, ViewGroup parent, Intent intent);
     /**
-     * the view binder of {@linkplain SeeBigImageDelegate}. you can use this as the top ,bottom binder.
+     * the view binder of {@linkplain SeeBigImageUIDelegate}. you can use this as the top ,bottom binder.
      */
     public abstract static class ViewBinder{
 
-        private final SeeBigImageDelegate mDelegate;
+        private final SeeBigImageUIDelegate mDelegate;
         private final View mView;
 
-        public ViewBinder(SeeBigImageDelegate delegate,ViewGroup parent) {
+        public ViewBinder(SeeBigImageUIDelegate delegate, ViewGroup parent) {
             this.mDelegate = delegate;
             this.mView = onCreateView(parent);
         }
         public Resources getResource(){
             return mDelegate.getResource();
         }
-        public SeeBigImageDelegate getDelegate(){
+        public SeeBigImageUIDelegate getDelegate(){
             return mDelegate;
         }
         public Provider getProvider(){

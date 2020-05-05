@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.ViewGroup;
 
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
 
 /**
  * the default delegate which is used by {@linkplain com.heaven7.android.imagepick.SeeBigImageActivity}.
  * @since 2.0.0
  */
-public class DefaultSeeBigImageDelegate extends SeeBigImageDelegate{
+public class DefaultSeeBigImageUIDelegate extends SeeBigImageUIDelegate {
 
     @Override
     protected ViewBinder onCreateTopBinder(Context context, ViewGroup parent, Intent intent) {

@@ -13,17 +13,17 @@ import com.heaven7.android.imagepick.internal.ImagePickDelegateImpl;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
 
 import java.util.Locale;
 
-/*public*/ class DefaultTopBinder extends SeeBigImageDelegate.ViewBinder {
+/*public*/ class DefaultTopBinder extends SeeBigImageUIDelegate.ViewBinder {
 
     protected ImageView mIv_back;
     protected TextView mTv_title;
     protected TextView mTv_upload;
 
-    public DefaultTopBinder(SeeBigImageDelegate delegate, ViewGroup parent) {
+    public DefaultTopBinder(SeeBigImageUIDelegate delegate, ViewGroup parent) {
         super(delegate, parent);
     }
 
@@ -48,7 +48,7 @@ import java.util.Locale;
             @Override
             public void onClick(View v) {
                 //if select none. just select current
-                SeeBigImageDelegate.Provider provider = getProvider();
+                SeeBigImageUIDelegate.Provider provider = getProvider();
                 BigImageSelectParameter mParam = provider.getParameter();
                 if(mParam.getSelectCount() == 0){
                     IImageItem item = provider.getImageItem(mParam.getCurrentOrder() - 1);

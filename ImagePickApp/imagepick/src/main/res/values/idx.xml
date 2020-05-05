@@ -2,4 +2,7 @@
 <resources>
     <item name="lib_pick_vp" type="id"/>
     <item name="lib_pick_vg_root" type="id"/>
+    <item name="lib_pick_vg_top" type="id"/>
+    <item name="lib_pick_vg_bottom" type="id"/>
+    <item name="lib_pick_camera" type="id"/>
 </resources>

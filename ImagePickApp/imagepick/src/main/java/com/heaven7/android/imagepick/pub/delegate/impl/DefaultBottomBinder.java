@@ -6,15 +6,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.heaven7.android.imagepick.R;
-import com.heaven7.android.imagepick.pub.delegate.SeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.SeeBigImageUIDelegate;
 
-/*public*/ class DefaultBottomBinder extends SeeBigImageDelegate.ViewBinder {
+/*public*/ class DefaultBottomBinder extends SeeBigImageUIDelegate.ViewBinder {
 
     private ViewGroup mVg_select;
     private ImageView mIv_select;
     private TextView mTv_select;
 
-    public DefaultBottomBinder(SeeBigImageDelegate delegate, ViewGroup parent) {
+    public DefaultBottomBinder(SeeBigImageUIDelegate delegate, ViewGroup parent) {
         super(delegate, parent);
     }
 

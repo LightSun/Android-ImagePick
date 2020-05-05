@@ -27,7 +27,7 @@ import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.MediaResourceHelper;
 import com.heaven7.android.imagepick.pub.PickConstants;
-import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageDelegate;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeBigImageUIDelegate;
 import com.heaven7.android.imagepick.pub.module.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.module.ImageItem;
@@ -228,7 +228,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     @Override
     protected void onDestroy() {
         mThreadHelper.quitNow();
-        ImagePickDelegateImpl.getDefault().clearImages();
+        ImagePickDelegateImpl.getDefault().clearCameraImages();
         ImagePickDelegateImpl.getDefault().removeOnSelectStateChangedListener(this);
         mMediaHelper.cancel();
         super.onDestroy();
@@ -493,7 +493,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
                             .build();
                     ImagePickManager.get().getImagePickDelegate()
                             .startBrowseBigImages(ImageSelectActivity.this, param,
-                                    DefaultSeeBigImageDelegate.class, mParam.getNext(), items, selectItem);
+                                    DefaultSeeBigImageUIDelegate.class, mParam.getNext(), items, selectItem);
                 }
             });
         }
