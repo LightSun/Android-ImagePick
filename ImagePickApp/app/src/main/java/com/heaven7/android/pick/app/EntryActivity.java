@@ -26,6 +26,7 @@ import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
 import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageUIDelegate;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.android.pick.app.impl.SeeBigImageDelegate2;
+import com.heaven7.android.pick.app.impl.VideoManager;
 import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.PermissionHelper;
@@ -45,7 +46,6 @@ import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 public class EntryActivity extends AppCompatActivity {
 
     private final PermissionHelper mHelper = new PermissionHelper(this);
-    private RetrofitRxComponent mComponent;
 
     private static final String GIF = "/storage/emulated/0/Pictures/gangxin/27c233cf2d3f0516f75c1c4e88af5a0e.gif";
 
@@ -56,7 +56,6 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_entry);
         ButterKnife.bind(this);
-        mComponent = new RetrofitRxComponent();
 
         ImagePickManager.get().getImagePickDelegate().setImageLoadDelegate(new ImageLoadImpl());
         ImagePickManager.get().getImagePickDelegate().setOnImageProcessListener(new ImagePickDelegate.OnImageProcessListener() {
@@ -252,25 +251,5 @@ public class EntryActivity extends AppCompatActivity {
                 System.out.println("DENSITY_XHIGH");
                 break;
         }
-    }
-
-    private void uploadToServer(ArrayList<String> images) {
-        String url = "http://log.stable-test.bdfint.cn/app/api/v1/image";
-        mComponent.ofUploadImages(url, images).jsonConsumer(new Consumer<String>() {
-            @Override
-            public void accept(String s) throws Exception {
-                Logger.d("EntryActivity", "accept", "" + s);
-            }
-        }).error(new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                throwable.printStackTrace();
-            }
-        }).finishTask(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).subscribe();
     }
 }

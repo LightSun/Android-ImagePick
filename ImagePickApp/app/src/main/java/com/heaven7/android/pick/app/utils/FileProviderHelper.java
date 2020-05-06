@@ -1,4 +1,4 @@
-package com.heaven7.android.pick.app;
+package com.heaven7.android.pick.app.utils;
 
 import android.content.Context;
 import android.net.Uri;

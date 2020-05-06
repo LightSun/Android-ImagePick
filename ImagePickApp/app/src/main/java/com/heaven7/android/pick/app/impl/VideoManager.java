@@ -1,4 +1,4 @@
-package com.heaven7.android.pick.app;
+package com.heaven7.android.pick.app.impl;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +19,8 @@ import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
 import com.heaven7.android.imagepick.pub.VideoManageDelegate;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
+import com.heaven7.android.pick.app.R;
+import com.heaven7.android.pick.app.utils.FileProviderHelper;
 import com.heaven7.android.video.MediaViewCons;
 import com.heaven7.android.video.view.MediaPlayerView;
 import com.heaven7.android.video.view.TextureVideoView;

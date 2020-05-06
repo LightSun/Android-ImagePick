@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.heaven7.android.imagepick.pub.module.IImageItem;
 import com.heaven7.android.imagepick.pub.ImageLoadDelegate;
 import com.heaven7.android.imagepick.pub.module.ImageOptions;
-import com.heaven7.android.pick.app.FileProviderHelper;
+import com.heaven7.android.pick.app.utils.FileProviderHelper;
 import com.heaven7.android.video.ScaleManager;
 import com.heaven7.android.video.load.FrameInfo;
 
