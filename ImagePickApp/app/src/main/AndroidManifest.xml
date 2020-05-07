@@ -31,7 +31,7 @@
             android:name="com.heaven7.android.pick.app.image.GlideModuleImpl"
             android:value="GlideModule" />
 
-        <activity android:name=".EntryActivity">
+        <activity android:name=".MainActivity">
           <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,13 +46,10 @@
         <activity android:name="com.heaven7.android.imagepick.SeeImageActivity"/>
         <activity android:name="com.heaven7.android.imagepick.SeeBigImageActivity"
             />
-        <activity android:name=".sample.TestViewPagerRecyclerViewActivity">
-          <!--  <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+        <activity android:name=".sample.TestViewPagerRecyclerViewActivity"/>
+        <activity android:name=".sample.TestImagePickActivity"/>
+        <activity android:name=".sample.TestFangDouYinActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

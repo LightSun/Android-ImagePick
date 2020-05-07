@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="colorSecond">#888888</color>
+    <color name="colorNormal">#333333</color>
+    <color name="colorTheme">#36A1F8</color>
+    <color name="colorTheme2">#0091ea</color>
+
+    <color name="color_card_bg">#ffffff</color>
+    <color name="color_line_bg">#eeeef1</color>
+    <color name="color_page_bg">#f2f3f7</color>
 </resources>

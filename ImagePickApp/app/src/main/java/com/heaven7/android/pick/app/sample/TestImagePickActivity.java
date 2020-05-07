@@ -1,4 +1,4 @@
-package com.heaven7.android.pick.app;
+package com.heaven7.android.pick.app.sample;
 
 import android.Manifest;
 import android.app.Activity;
@@ -14,16 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.heaven7.adapter.page.WrappedPageChangeListener;
-import com.heaven7.android.imagepick.pub.module.CameraParameter;
-import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.android.imagepick.pub.ImagePickDelegate;
 import com.heaven7.android.imagepick.pub.ImagePickManager;
+import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageUIDelegate;
+import com.heaven7.android.imagepick.pub.module.CameraParameter;
+import com.heaven7.android.imagepick.pub.module.ImageParameter;
 import com.heaven7.android.imagepick.pub.module.ImageSelectParameter;
 import com.heaven7.android.imagepick.pub.module.MediaOption;
 import com.heaven7.android.imagepick.pub.module.MediaResourceItem;
-import com.heaven7.android.imagepick.pub.PickConstants;
 import com.heaven7.android.imagepick.pub.module.SeeImageParameter;
-import com.heaven7.android.imagepick.pub.delegate.impl.DefaultSeeImageUIDelegate;
+import com.heaven7.android.pick.app.R;
 import com.heaven7.android.pick.app.impl.ImageLoadImpl;
 import com.heaven7.android.pick.app.impl.SeeBigImageDelegate2;
 import com.heaven7.android.pick.app.impl.VideoManager;
@@ -37,13 +38,12 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.functions.Consumer;
 import pl.droidsonroids.gif.GifDrawable;
 
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_CAMERA;
 import static com.heaven7.android.imagepick.pub.PickConstants.REQ_GALLERY;
 
-public class EntryActivity extends AppCompatActivity {
+public class TestImagePickActivity extends AppCompatActivity {
 
     private final PermissionHelper mHelper = new PermissionHelper(this);
 
@@ -103,7 +103,7 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         if (b) {
-                            ImagePickManager.get().getImagePickDelegate().startCamera(EntryActivity.this,
+                            ImagePickManager.get().getImagePickDelegate().startCamera(TestImagePickActivity.this,
                                     new CameraParameter.Builder()
                                             .setMaxCount(4)
                                     .build());
@@ -124,7 +124,7 @@ public class EntryActivity extends AppCompatActivity {
                         if (b) {
                             //10M = 10485760 b .  Math.sqrt(10485760/4)
                             String cacheDir = Environment.getExternalStorageDirectory() + "/lib_pick";
-                            ImagePickManager.get().getImagePickDelegate().startBrowseImages(EntryActivity.this,
+                            ImagePickManager.get().getImagePickDelegate().startBrowseImages(TestImagePickActivity.this,
                                     new ImageSelectParameter.Builder()
                                             .setImageParameter(new ImageParameter.Builder()
                                                     .setMaxWidth(1619)
@@ -190,14 +190,14 @@ public class EntryActivity extends AppCompatActivity {
         Bundle extra = new BundleHelper()
                 .putParcelable(PickConstants.KEY_MEDIA_OPTION, MediaOption.withGif())
                 .getBundle();
-        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this,
+        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(TestImagePickActivity.this,
                 DefaultSeeImageUIDelegate.class, parameter, extra);
     }
     private void startWithoutGif(){
         SeeImageParameter parameter = new SeeImageParameter.Builder()
                 .setPauseIconRes(R.drawable.ic_video_pause)
                 .build();
-        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(EntryActivity.this, parameter);
+        ImagePickManager.get().getImagePickDelegate().startBrowseImages2(TestImagePickActivity.this, parameter);
     }
 
     @Override

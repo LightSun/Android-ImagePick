@@ -59,4 +59,6 @@ dependencies {
     implementation 'com.github.LightSun:android-Component:1.1.5-beta-x'
 
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+
+    implementation 'com.github.LightSun:common-view:1.2.6-x'
 }
