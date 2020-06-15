@@ -305,14 +305,15 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
     private void setSelectText() {
         List<MediaResourceItem> selects = mSelector.getSelects();
         mTv_upload.setEnabled(selects.size() > 0);
+        //confirm btn
+        String text = mParam.getConfirmText() != null ? mParam.getConfirmText() : getString(R.string.lib_pick_upload);
         //1 no need
         if(mParam.getMaxSelect() > 1){
-            String text = getString(R.string.lib_pick_upload);
             if(selects.size() > 0){
                 text +=  String.format("(%d/%d)", selects.size() , mParam.getMaxSelect());
             }
-            mTv_upload.setText(text);
         }
+        mTv_upload.setText(text);
     }
     private void showByItems(PairItem pairItem) {
         mTv_folder.setText(pairItem.dirname);

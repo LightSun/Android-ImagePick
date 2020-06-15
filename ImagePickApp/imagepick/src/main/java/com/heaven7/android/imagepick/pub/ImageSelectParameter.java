@@ -23,6 +23,8 @@ public class ImageSelectParameter implements Parcelable {
     private ImageParameter imageParameter;
     /** the cache dir of file */
     private String cacheDir;
+    /** the confirm text for upload . like 'upload' */
+    private String confirmText;
 
     protected ImageSelectParameter(ImageSelectParameter.Builder builder) {
         this.mSpanCount = builder.mSpanCount;
@@ -35,6 +37,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mDefaultDirIconId = builder.mDefaultDirIconId;
         this.imageParameter = builder.imageParameter;
         this.cacheDir = builder.cacheDir;
+        this.confirmText = builder.confirmText;
     }
 
     public int getSpanCount() {
@@ -77,6 +80,10 @@ public class ImageSelectParameter implements Parcelable {
         return this.cacheDir;
     }
 
+    public String getConfirmText() {
+        return this.confirmText;
+    }
+
     public static class Builder {
         private int mSpanCount = 4;
         private int mSpace;
@@ -90,6 +97,8 @@ public class ImageSelectParameter implements Parcelable {
         private ImageParameter imageParameter;
         /** the cache dir of file */
         private String cacheDir;
+        /** the confirm text for upload . like 'upload' */
+        private String confirmText;
 
         public Builder setSpanCount(int mSpanCount) {
             this.mSpanCount = mSpanCount;
@@ -141,6 +150,11 @@ public class ImageSelectParameter implements Parcelable {
             return this;
         }
 
+        public Builder setConfirmText(String confirmText) {
+            this.confirmText = confirmText;
+            return this;
+        }
+
         public ImageSelectParameter build() {
             return new ImageSelectParameter(this);
         }
@@ -163,6 +177,7 @@ public class ImageSelectParameter implements Parcelable {
         dest.writeInt(this.mDefaultDirIconId);
         dest.writeParcelable(this.imageParameter, flags);
         dest.writeString(this.cacheDir);
+        dest.writeString(this.confirmText);
     }
 
     protected ImageSelectParameter(Parcel in) {
@@ -176,6 +191,7 @@ public class ImageSelectParameter implements Parcelable {
         this.mDefaultDirIconId = in.readInt();
         this.imageParameter = in.readParcelable(ImageParameter.class.getClassLoader());
         this.cacheDir = in.readString();
+        this.confirmText = in.readString();
     }
 
     public static final Creator<ImageSelectParameter> CREATOR = new Creator<ImageSelectParameter>() {
