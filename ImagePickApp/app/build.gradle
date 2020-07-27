@@ -32,8 +32,8 @@ dependencies {
 
     debugImplementation 'pl.droidsonroids.foqa:foqa:0.1.17'
     debugImplementation 'pl.droidsonroids.foqa:chuck:0.0.21'
-   // debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
-   // releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
+    debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
+    releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
 
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor "com.github.bumptech.glide:compiler:4.11.0"
