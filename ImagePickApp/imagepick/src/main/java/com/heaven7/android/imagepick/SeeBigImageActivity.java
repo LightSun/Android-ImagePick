@@ -103,6 +103,11 @@ public class SeeBigImageActivity extends BaseActivity {
         if(vmd != null){
             vmd.onAttach(this);
         }
+        //check if reach max
+        if(mParam.getCurrentOrder() > mItems.size()){
+            Logger.w(TAG, "init", "un-expected mParam.getCurrentOrder() > mItems.size(). auto adjusted.");
+            mParam.setCurrentOrder(mItems.size());
+        }
         //set ui state
         setUiState();
     }
