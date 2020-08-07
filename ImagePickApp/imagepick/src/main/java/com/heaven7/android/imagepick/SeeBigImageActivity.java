@@ -17,6 +17,7 @@ import com.heaven7.android.imagepick.page.AbstractMediaPageAdapter;
 import com.heaven7.android.imagepick.pub.BigImageSelectParameter;
 import com.heaven7.android.imagepick.pub.IImageItem;
 import com.heaven7.android.imagepick.pub.PickConstants;
+import com.heaven7.core.util.Logger;
 import com.heaven7.core.util.MainWorker;
 import com.heaven7.core.util.Toaster;
 
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SeeBigImageActivity extends BaseActivity {
 
+    private static final String TAG = "SeeBigImageActivity";
     TextView mTv_upload;
     TextView mTv_indexes;
 
@@ -71,7 +73,11 @@ public class SeeBigImageActivity extends BaseActivity {
         mMediaAdapter = new MediaAdapter(mItems);
         mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
         mVp.setAdapter(mMediaAdapter);
-
+        //check if reach max
+        if(mParam.getCurrentOrder() > mItems.size()){
+            Logger.w(TAG, "init", "un-expected mParam.getCurrentOrder() > mItems.size(). auto adjusted.");
+            mParam.setCurrentOrder(mItems.size());
+        }
         //set ui state
         setUiState();
     }
