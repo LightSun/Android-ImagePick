@@ -290,7 +290,7 @@ public class ImageSelectActivity extends BaseActivity implements MediaResourceHe
         GridLayoutManager layoutManager = RecyclerViewUtils.createGridLayoutManager(adapter, this, mParam.getSpanCount());
         mRv_content.setLayoutManager(layoutManager);
         mRv_content.setAdapter(adapter);
-        mRv_content.addOnScrollListener(new OptimiseScrollListenerImpl());
+        mRv_content.addOnScrollListener(new OptimiseScrollListenerImpl(this));
 
         mRv_dir.setLayoutManager(new LinearLayoutManager(this));
         mRv_dir.setAdapter(new DirAdapter(null));

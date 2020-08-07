@@ -1,5 +1,6 @@
 package com.heaven7.android.imagepick;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -9,6 +10,12 @@ import com.bumptech.glide.Glide;
  * Created by heaven7 on 2018/1/3 0003.
  */
 public class OptimiseScrollListenerImpl extends RecyclerView.OnScrollListener{
+
+    private final Activity activity;
+
+    public OptimiseScrollListenerImpl(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -20,6 +27,9 @@ public class OptimiseScrollListenerImpl extends RecyclerView.OnScrollListener{
                 break;
 
             case RecyclerView.SCROLL_STATE_IDLE:
+                if(activity.isDestroyed() || activity.isFinishing()){
+                    return;
+                }
                 Glide.with(recyclerView.getContext()).resumeRequests();
                 break;
         }
