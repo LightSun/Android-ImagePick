@@ -69,6 +69,11 @@ public class SeeBigImageActivity extends BaseActivity {
         mLastSingleItem = getIntent().getParcelableExtra(PickConstants.KEY_SINGLE_ITEM);
         mParam = getIntent().getParcelableExtra(PickConstants.KEY_PARAMS);
         mItems = ImagePickDelegateImpl.getDefault().getImageItems();
+        //restore instance state ?
+        if(mItems == null){
+            finish();
+            return;
+        }
         //set media adapter
         mMediaAdapter = new MediaAdapter(mItems);
         mMediaAdapter.setSupportGestureImage(mParam.isSupportGestureImage());
