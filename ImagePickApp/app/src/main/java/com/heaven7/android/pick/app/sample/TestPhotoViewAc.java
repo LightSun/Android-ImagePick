@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Display;
 
+import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.heaven7.android.pick.app.R;
 import com.heaven7.core.util.ImageParser;
@@ -64,6 +65,12 @@ public class TestPhotoViewAc extends BaseActivity {
                      * 2, 点击保存时，先计算贴图的实际大小。和实际位置。 (注意横竖屏)
                      * 3, 合并
                      */
+                    mPv.setOnMatrixChangeListener(new OnMatrixChangedListener() {
+                        @Override
+                        public void onMatrixChanged(RectF rect) {
+                            System.out.println("rect: " + rect);
+                        }
+                    });
                 }
             });
         }
