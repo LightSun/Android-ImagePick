@@ -1,6 +1,7 @@
 package com.heaven7.android.pick.app;
 
 import com.heaven7.android.pick.app.sample.TestImagePickActivity;
+import com.heaven7.android.pick.app.sample.TestPhotoViewAc;
 import com.heaven7.android.pick.app.sample.TestViewPagerRecyclerViewActivity;
 
 import java.util.List;
@@ -14,5 +15,6 @@ public class MainActivity extends AbsMainActivity {
     protected void addDemos(List<ActivityInfo> list) {
         list.add(new ActivityInfo(TestImagePickActivity.class));
         list.add(new ActivityInfo(TestViewPagerRecyclerViewActivity.class));
+        list.add(new ActivityInfo(TestPhotoViewAc.class));
     }
 }

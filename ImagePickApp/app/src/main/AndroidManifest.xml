@@ -50,6 +50,7 @@
         <activity android:name=".sample.TestViewPagerRecyclerViewActivity"/>
         <activity android:name=".sample.TestImagePickActivity"/>
         <activity android:name=".sample.TestFangDouYinActivity"/>
+        <activity android:name=".sample.TestPhotoViewAc"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
